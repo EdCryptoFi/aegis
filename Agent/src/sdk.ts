@@ -4,7 +4,7 @@ import type { ReputationData, AgentStats, AgentLog } from './types';
 
 const client = new SuiClient({ url: getFullNodeUrl('testnet') });
 
-export const PACKAGE_ID = process.env.NEXT_PUBLIC_PACKAGE_ID || '0x0';
+export const PACKAGE_ID = '0x10914ba0e821ac6581660a323bde632d0a98e614fd1cbe4bbebda2171554489a';
 
 export async function getAgentReputation(agentId: string): Promise<ReputationData | null> {
   try {
