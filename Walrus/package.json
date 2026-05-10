@@ -1,0 +1,18 @@
+{
+  "name": "@aegis/walrus",
+  "version": "0.0.1",
+  "description": "Walrus storage integration for Aegis",
+  "main": "./dist/storage.js",
+  "types": "./dist/storage.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@mysten/sui": "^0.54.0",
+    "@mysten/walrus": "^0.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
