@@ -1,0 +1,104 @@
+{
+  "package_id": "0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d",
+  "badge_registry": "0xd7f704c15109a42a56b74e962745831af33fb05cece15103b928bc7d9bd4adb3",
+  "agents": [
+    {
+      "id": "alpha-trader-001",
+      "name": "AlphaTrader",
+      "description": "High-frequency trading bot with tight spread optimization",
+      "version": "2.1.0",
+      "category": "trading",
+      "capabilities": ["spot_trading", "arbitrage", "market_making"],
+      "endpoint": "https://alpha-trader.example.com",
+      "owner": "0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1",
+      "reputation_object_id": "0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc",
+      "badge": "gold",
+      "metrics": {
+        "total_executions": 5,
+        "successful_executions": 5,
+        "success_rate": 100,
+        "total_volume_sui": 2.5,
+        "avg_slippage_bps": 20,
+        "consecutive_failures": 0,
+        "is_flagged": false,
+        "uptime_score": 100
+      },
+      "verified_at": 1778458666000,
+      "created_at": 1778458600000
+    },
+    {
+      "id": "beta-bot-001",
+      "name": "BetaBot",
+      "description": "Swing trading with moderate risk management",
+      "version": "1.5.0",
+      "category": "trading",
+      "capabilities": ["swing_trading", "portfolio_rebalancing"],
+      "endpoint": "https://beta-bot.example.com",
+      "owner": "0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1",
+      "reputation_object_id": "0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec",
+      "badge": "silver",
+      "metrics": {
+        "total_executions": 5,
+        "successful_executions": 4,
+        "success_rate": 80,
+        "total_volume_sui": 3.2,
+        "avg_slippage_bps": 120,
+        "consecutive_failures": 1,
+        "is_flagged": false,
+        "uptime_score": 80
+      },
+      "verified_at": 1778458700000,
+      "created_at": 1778458650000
+    },
+    {
+      "id": "gamma-scam-001",
+      "name": "GammaScam",
+      "description": "⚠️ DEMO ONLY - High risk aggressive strategy",
+      "version": "0.9.0",
+      "category": "demo",
+      "capabilities": ["aggressive_trading"],
+      "endpoint": "https://gamma-scam.example.com",
+      "owner": "0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1",
+      "reputation_object_id": "0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6",
+      "badge": "revoked",
+      "metrics": {
+        "total_executions": 3,
+        "successful_executions": 0,
+        "success_rate": 0,
+        "total_volume_sui": 0,
+        "avg_slippage_bps": 600,
+        "consecutive_failures": 3,
+        "is_flagged": true,
+        "uptime_score": 0
+      },
+      "flagged_reason": "High slippage detected",
+      "revoked_at": 1778458800000,
+      "created_at": 1778458750000
+    },
+    {
+      "id": "epsilon-001",
+      "name": "Epsilon",
+      "description": "Testing agent for security features",
+      "version": "1.0.0",
+      "category": "testing",
+      "capabilities": ["test_execution"],
+      "endpoint": "",
+      "owner": "0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1",
+      "reputation_object_id": "0x2cc5321741f10ba6d928fc12f641e6c1e85fc1ea1043e62f6dc86da0872529f9",
+      "badge": "none",
+      "metrics": {
+        "total_executions": 1,
+        "successful_executions": 1,
+        "success_rate": 100,
+        "total_volume_sui": 0.001,
+        "avg_slippage_bps": 50,
+        "consecutive_failures": 0,
+        "is_flagged": false,
+        "uptime_score": 100
+      },
+      "created_at": 1778458900000
+    }
+  ],
+  "schema_version": "2.0",
+  "last_updated": 1778458900000
+}
