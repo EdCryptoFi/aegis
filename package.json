@@ -1,0 +1,16 @@
+{
+  "name": "aegis",
+  "version": "0.0.1",
+  "description": "Aegis - Agent Reputation Oracle for Sui Blockchain",
+  "private": true,
+  "workspaces": [
+    "Agent",
+    "Frontend"
+  ],
+  "scripts": {
+    "build": "npm run build -w Frontend",
+    "dev": "npm run dev -w Frontend",
+    "lint": "npm run lint -w Frontend",
+    "install": "npm install --workspaces"
+  }
+}
