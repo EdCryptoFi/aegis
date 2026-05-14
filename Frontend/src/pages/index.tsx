@@ -1,12 +1,9 @@
 'use client';
 
-import { WalletProvider, AllWalletsProvider } from '@mysten/wallet-kit';
 import Link from 'next/link';
 
 export default function Home() {
   return (
-    <WalletProvider>
-      <AllWalletsProvider>
         <main className="container">
           <header>
             <h1>Aegis</h1>
@@ -234,7 +231,5 @@ export default function Home() {
             }
           `}</style>
         </main>
-      </AllWalletsProvider>
-    </WalletProvider>
   );
 }

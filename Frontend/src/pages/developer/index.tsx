@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { config } from '../config';
+import { config } from '../../config';
 
 export default function DeveloperPage() {
   const [copied, setCopied] = useState<string | null>(null);

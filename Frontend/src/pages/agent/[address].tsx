@@ -1,17 +1,14 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { WalletProvider, AllWalletsProvider } from '@mysten/wallet-kit';
+import { useRouter } from 'next/router';
 import AgentCard from '../../components/AgentCard';
 import { config } from '../../config';
 
 export default function AgentPage() {
-  const params = useParams();
-  const agentAddress = params.address as string;
+  const router = useRouter();
+  const agentAddress = router.query.address as string;
 
   return (
-    <WalletProvider>
-      <AllWalletsProvider>
         <main className="container">
           <header>
             <a href="/" className="back-link">← Back to Home</a>
@@ -77,7 +74,5 @@ export default function AgentPage() {
             }
           `}</style>
         </main>
-      </AllWalletsProvider>
-    </WalletProvider>
   );
 }

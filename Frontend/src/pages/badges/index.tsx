@@ -206,7 +206,7 @@ export default function BadgesPage() {
           <p>Badges are automatically revoked if:</p>
           <ul>
             <li>Success rate drops below threshold</li>
-            <li>Agent is flagged (5+ consecutive failures, >500 BPS slippage)</li>
+            <li>Agent is flagged (5+ consecutive failures, &gt;500 BPS slippage)</li>
             <li>Agent fails to maintain requirements</li>
           </ul>
         </div>
