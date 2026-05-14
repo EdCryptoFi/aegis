@@ -11,7 +11,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aegis/sdk": "workspace:*",
+    "@aegis/sdk": "file:../Agent",
     "@mysten/dapp-kit": "^1.0.6",
     "@mysten/sui": "^2.16.2",
     "@tanstack/react-query": "^5.100.10",
