@@ -2,6 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { NeuButton } from '@/components/NeuButton';
+import { NeuCard } from '@/components/NeuCard';
+import { PremiumBadge } from '@/components/PremiumBadge';
+import { cardContainerVariants, cardItemVariants, fadeUpVariants } from '@/lib/animations';
+import { ChevronLeft } from 'lucide-react';
 import { config } from '../../config';
 
 interface AgentInfo {
@@ -106,232 +112,147 @@ export default function AgentsPage() {
   });
 
   return (
-    <main className="container">
-      <header>
-        <Link href="/" className="back-link">← Back to Home</Link>
-        <h1>Registered Agents</h1>
-        <p className="subtitle">Explore all agents registered on Aegis</p>
-      </header>
-
-      <section className="controls">
-        <div className="sort-buttons">
-          <span>Sort by:</span>
-          <button
-            className={sortBy === 'uptime' ? 'active' : ''}
-            onClick={() => setSortBy('uptime')}
+    <main className="min-h-screen bg-bg-base px-4 py-12">
+      <motion.div
+        className="max-w-6xl mx-auto"
+        initial="hidden"
+        animate="visible"
+        variants={fadeUpVariants}
+      >
+        {/* Header */}
+        <div className="mb-12">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-cyan-primary hover:text-mint-secondary transition-colors mb-6"
           >
-            Uptime Score
-          </button>
-          <button
-            className={sortBy === 'volume' ? 'active' : ''}
-            onClick={() => setSortBy('volume')}
-          >
-            Volume
-          </button>
-          <button
-            className={sortBy === 'executions' ? 'active' : ''}
-            onClick={() => setSortBy('executions')}
-          >
-            Executions
-          </button>
+            <ChevronLeft size={18} />
+            <span className="text-sm font-medium">Back to Home</span>
+          </Link>
+          <h1 className="font-display text-5xl font-bold text-text-primary mb-2">
+            Registered Agents
+          </h1>
+          <p className="text-text-secondary text-lg">
+            Explore all agents registered on Aegis
+          </p>
         </div>
-        <div className="count">{agents.length} agents found</div>
-      </section>
 
-      {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>Loading agents...</p>
-        </div>
-      ) : (
-        <section className="agents-grid">
-          {sortedAgents.map((agent, i) => {
-            const level = getTrustLevel(agent);
-            const successRate = agent.totalExecutions > 0
-              ? Math.round((agent.successfulExecutions / agent.totalExecutions) * 100) : 100;
-            return (
-              <Link href={`/agent/${agent.objectId}`} key={agent.objectId} className="agent-card">
-                <div className="rank">#{i + 1}</div>
-                <div className="info">
-                  <div className="header">
-                    <span className="object-id">{agent.objectId.slice(0, 8)}...{agent.objectId.slice(-4)}</span>
-                    <span className="trust-badge" style={{ backgroundColor: getTrustColor(level) }}>
-                      {level}
-                    </span>
-                  </div>
-                  <div className="metrics">
-                    <div className="metric">
-                      <span className="label">Uptime</span>
-                      <span className="value">{agent.uptimeScore}%</span>
-                    </div>
-                    <div className="metric">
-                      <span className="label">Success</span>
-                      <span className="value">{successRate}%</span>
-                    </div>
-                    <div className="metric">
-                      <span className="label">Volume</span>
-                      <span className="value">{formatVolume(agent.totalVolume)}</span>
-                    </div>
-                  </div>
-                </div>
-              </Link>
-            );
-          })}
-        </section>
-      )}
+        {/* Controls */}
+        <motion.div
+          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 mb-12"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <div className="flex flex-wrap items-center gap-3">
+            <span className="text-text-secondary text-sm uppercase tracking-wide">Sort by:</span>
+            <div className="flex gap-2 flex-wrap">
+              {(['uptime', 'volume', 'executions'] as const).map((option) => (
+                <NeuButton
+                  key={option}
+                  variant={sortBy === option ? 'primary' : 'secondary'}
+                  size="sm"
+                  onClick={() => setSortBy(option)}
+                >
+                  {option === 'uptime' ? 'Uptime' : option === 'volume' ? 'Volume' : 'Executions'}
+                </NeuButton>
+              ))}
+            </div>
+          </div>
+          <div className="text-sm text-text-secondary">
+            {agents.length} agent{agents.length !== 1 ? 's' : ''} found
+          </div>
+        </motion.div>
 
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          background: #0f0f1a;
-          padding: 40px 20px;
-        }
-        header {
-          text-align: center;
-          margin-bottom: 40px;
-        }
-        .back-link {
-          color: #8b5cf6;
-          text-decoration: none;
-          display: inline-block;
-          margin-bottom: 20px;
-        }
-        h1 {
-          font-size: 36px;
-          color: #fff;
-          margin: 0;
-        }
-        .subtitle {
-          color: #888;
-          margin-top: 8px;
-        }
-        .controls {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          max-width: 900px;
-          margin: 0 auto 30px;
-          flex-wrap: wrap;
-          gap: 16px;
-        }
-        .sort-buttons {
-          display: flex;
-          gap: 8px;
-          align-items: center;
-          flex-wrap: wrap;
-        }
-        .sort-buttons span {
-          color: #888;
-          font-size: 14px;
-        }
-        .sort-buttons button {
-          padding: 8px 16px;
-          background: #1a1a2e;
-          border: 1px solid #333;
-          border-radius: 8px;
-          color: #888;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        .sort-buttons button:hover {
-          border-color: #8b5cf6;
-          color: #fff;
-        }
-        .sort-buttons button.active {
-          background: linear-gradient(135deg, #8b5cf6, #ec4899);
-          border-color: transparent;
-          color: #fff;
-        }
-        .count {
-          color: #888;
-          font-size: 14px;
-        }
-        .loading {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 300px;
-          color: #888;
-        }
-        .spinner {
-          width: 40px;
-          height: 40px;
-          border: 3px solid #333;
-          border-top-color: #8b5cf6;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        .agents-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-          gap: 16px;
-          max-width: 900px;
-          margin: 0 auto;
-        }
-        .agent-card {
-          background: #1a1a2e;
-          border: 1px solid #333;
-          border-radius: 12px;
-          padding: 20px;
-          text-decoration: none;
-          transition: all 0.2s;
-          display: flex;
-          gap: 16px;
-        }
-        .agent-card:hover {
-          border-color: #8b5cf6;
-          transform: translateY(-2px);
-        }
-        .rank {
-          font-size: 24px;
-          font-weight: bold;
-          color: #8b5cf6;
-          min-width: 40px;
-        }
-        .info {
-          flex: 1;
-        }
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 12px;
-        }
-        .object-id {
-          color: #fff;
-          font-family: monospace;
-          font-size: 14px;
-        }
-        .trust-badge {
-          color: white;
-          padding: 2px 8px;
-          border-radius: 12px;
-          font-size: 10px;
-          font-weight: bold;
-        }
-        .metrics {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 8px;
-        }
-        .metric {
-          display: flex;
-          flex-direction: column;
-        }
-        .label {
-          color: #666;
-          font-size: 10px;
-        }
-        .value {
-          color: #fff;
-          font-size: 14px;
-          font-weight: bold;
-        }
-      `}</style>
+        {/* Content */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-24">
+            <div className="w-12 h-12 border-3 border-white/10 border-t-cyan-primary rounded-full animate-spin mb-4" />
+            <p className="text-text-secondary">Loading agents...</p>
+          </div>
+        ) : agents.length === 0 ? (
+          <div className="text-center py-24">
+            <p className="text-text-secondary text-lg">No agents found</p>
+          </div>
+        ) : (
+          <motion.div
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            variants={cardContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {sortedAgents.map((agent, i) => {
+              const level = getTrustLevel(agent);
+              const successRate = agent.totalExecutions > 0
+                ? Math.round((agent.successfulExecutions / agent.totalExecutions) * 100) : 100;
+
+              const trustColor = {
+                'HIGH': 'success',
+                'MEDIUM': 'warning',
+                'LOW': 'danger',
+                'FLAGGED': 'danger',
+              } as const;
+
+              return (
+                <motion.div key={agent.objectId} variants={cardItemVariants}>
+                  <Link href={`/agent/${agent.objectId}`}>
+                    <NeuCard animated={false} variant="glass" padding="md" className="h-full">
+                      <div className="space-y-4">
+                        {/* Rank and Badge */}
+                        <div className="flex items-start justify-between">
+                          <div className="text-3xl font-bold font-display text-cyan-primary">
+                            #{i + 1}
+                          </div>
+                          <PremiumBadge type={trustColor[level]} size="sm">
+                            {level}
+                          </PremiumBadge>
+                        </div>
+
+                        {/* Agent ID */}
+                        <div>
+                          <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
+                            Agent ID
+                          </p>
+                          <p className="font-mono text-sm text-text-primary">
+                            {agent.objectId.slice(0, 8)}...{agent.objectId.slice(-4)}
+                          </p>
+                        </div>
+
+                        {/* Metrics Grid */}
+                        <div className="grid grid-cols-3 gap-3 pt-2">
+                          <div className="bg-cyan-primary/5 rounded-[8px] p-2">
+                            <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
+                              Uptime
+                            </p>
+                            <p className="font-display font-semibold text-text-primary text-sm">
+                              {agent.uptimeScore}%
+                            </p>
+                          </div>
+                          <div className="bg-mint-secondary/5 rounded-[8px] p-2">
+                            <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
+                              Success
+                            </p>
+                            <p className="font-display font-semibold text-text-primary text-sm">
+                              {successRate}%
+                            </p>
+                          </div>
+                          <div className="bg-purple-tertiary/5 rounded-[8px] p-2">
+                            <p className="text-xs text-text-secondary uppercase tracking-wide mb-1">
+                              Volume
+                            </p>
+                            <p className="font-mono font-semibold text-text-primary text-xs">
+                              {formatVolume(agent.totalVolume)}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    </NeuCard>
+                  </Link>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        )}
+      </motion.div>
     </main>
   );
 }

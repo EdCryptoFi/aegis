@@ -2,13 +2,39 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&family=Inter:wght@400;500;600;700&display=swap');
+
 :root {
-  /* Dark theme (default) */
+  /* Premium Fintech Color Palette - Dark Theme (default) */
+  --bg-base: #111416;
+  --surface-1: #161B1E;
+  --surface-2: #1C2327;
+  --text-primary: #e1e2e5;
+  --text-secondary: #a8aab2;
+
+  /* Accent Colors */
+  --cyan-primary: #00F5FF;
+  --mint-secondary: #00FFA7;
+  --purple-tertiary: #7000FF;
+  --error-color: #ffb4ab;
+
+  /* Glow Effects */
+  --glow-cyan: rgba(0, 245, 255, 0.15);
+  --glow-cyan-border: rgba(0, 245, 255, 0.2);
+  --glow-glass-border: rgba(255, 255, 255, 0.08);
+
+  /* Shadows */
+  --shadow-neu-outset: 6px 6px 12px rgba(0, 0, 0, 0.4);
+  --shadow-neu-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.5);
+  --shadow-drop: 0 8px 16px rgba(0, 0, 0, 0.3);
+  --shadow-glow-cyan: 0 0 20px rgba(0, 245, 255, 0.2);
+
+  /* Legacy variables (backwards compatibility) */
   --bg-primary: #0f0f1a;
   --bg-secondary: #1a1a2e;
   --bg-tertiary: #0a0a12;
-  --text-primary: #fff;
-  --text-secondary: #aaa;
+  --text-primary-legacy: #fff;
+  --text-secondary-legacy: #aaa;
   --text-muted: #666;
   --border-color: #333;
   --accent-primary: #8b5cf6;
@@ -22,8 +48,8 @@
   --bg-primary: #f5f5f7;
   --bg-secondary: #ffffff;
   --bg-tertiary: #e5e5e7;
-  --text-primary: #1a1a1a;
-  --text-secondary: #555555;
+  --text-primary-legacy: #1a1a1a;
+  --text-secondary-legacy: #555555;
   --text-muted: #888888;
   --border-color: #d1d1d6;
   --accent-primary: #8b5cf6;
@@ -56,28 +82,61 @@
   background: var(--bg-secondary);
   border: 1px solid var(--border-color);
 }
-/* Neumorphism Variables - Dark Theme */
+/* Premium Neumorphism Variables - Dark Theme */
 .theme-dark {
-  --neu-bg-light: #2d2d3d;
-  --neu-bg-base: #252530;
-  --neu-bg-dark: #1a1a24;
-  --neu-primary: #a78bfa;
-  --neu-secondary: #ec4899;
-  --neu-accent: #c7d2fe;
+  --neu-bg-light: #1C2327;
+  --neu-bg-base: #161B1E;
+  --neu-bg-dark: #111416;
+  --neu-primary: #00F5FF;
+  --neu-secondary: #00FFA7;
+  --neu-accent: #7000FF;
   --neu-shadow-light: -3px -3px 8px rgba(0, 0, 0, 0.3);
   --neu-shadow-dark: 3px 3px 8px rgba(0, 0, 0, 0.5);
-  --neu-shadow-inset: inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.05);
+  --neu-shadow-inset: inset 4px 4px 8px rgba(0, 0, 0, 0.5);
 }
 
-/* Neumorphism Variables - Light Theme */
+/* Premium Neumorphism Variables - Light Theme */
 [data-theme="light"] .theme-light {
   --neu-bg-light: #f0f0f0;
   --neu-bg-base: #f8f9fa;
   --neu-bg-dark: #e8ecf1;
-  --neu-primary: #a78bfa;
-  --neu-secondary: #ec4899;
-  --neu-accent: #c7d2fe;
+  --neu-primary: #00F5FF;
+  --neu-secondary: #00FFA7;
+  --neu-accent: #7000FF;
   --neu-shadow-light: -3px -3px 8px rgba(255, 255, 255, 0.8);
   --neu-shadow-dark: 3px 3px 8px rgba(200, 200, 200, 0.5);
   --neu-shadow-inset: inset 2px 2px 5px rgba(255, 255, 255, 0.8), inset -2px -2px 5px rgba(200, 200, 200, 0.3);
+}
+
+/* Base Styles */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: Inter, system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Glassmorphism Base */
+.glassmorphism {
+  background: rgba(22, 27, 30, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(0, 245, 255, 0.1);
+}
+
+/* Neumorphism Base */
+.neumorphism {
+  background: var(--surface-1);
+  box-shadow: var(--shadow-neu-outset);
+  transition: all 0.3s ease;
+}
+
+.neumorphism:hover {
+  box-shadow: var(--shadow-glow-cyan), var(--shadow-neu-outset);
+  border-color: var(--cyan-primary);
 }
