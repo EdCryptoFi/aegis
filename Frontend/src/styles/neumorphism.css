@@ -1,0 +1,127 @@
+/* ===== NEUMORPHISM DESIGN SYSTEM ===== */
+
+/* Neumorphism Cards */
+.neu-card {
+  background: var(--neu-bg-base);
+  border-radius: 24px;
+  padding: 2rem;
+  box-shadow: var(--neu-shadow-light), var(--neu-shadow-dark);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.neu-card:hover {
+  transform: translateY(-8px);
+  box-shadow: var(--neu-shadow-light), var(--neu-shadow-dark);
+}
+
+/* Neumorphism Buttons */
+.neu-button {
+  padding: 1rem 2rem;
+  border-radius: 16px;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: var(--neu-shadow-light), var(--neu-shadow-dark);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.neu-button:active {
+  transform: scale(0.95);
+}
+
+.neu-button-primary {
+  background: linear-gradient(135deg, var(--neu-primary), var(--neu-secondary));
+  color: white;
+}
+
+.neu-button-primary:hover {
+  box-shadow: var(--neu-shadow-light), var(--neu-shadow-dark), 0 0 20px rgba(167, 139, 250, 0.4);
+}
+
+.neu-button-secondary {
+  background: var(--neu-bg-base);
+  color: var(--neu-primary);
+  box-shadow: var(--neu-shadow-light), var(--neu-shadow-dark);
+}
+
+.neu-button-secondary:hover {
+  background: var(--neu-bg-light);
+  transform: translateY(-2px);
+}
+
+/* Neumorphism Badge */
+.neu-badge {
+  display: inline-block;
+  background: var(--neu-bg-light);
+  padding: 0.75rem 1.5rem;
+  border-radius: 50px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--neu-primary);
+  box-shadow: var(--neu-shadow-light), var(--neu-shadow-dark);
+}
+
+/* Animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+@keyframes glow {
+  0%, 100% {
+    box-shadow: var(--neu-shadow-light), var(--neu-shadow-dark), 0 0 20px rgba(167, 139, 250, 0.2);
+  }
+  50% {
+    box-shadow: var(--neu-shadow-light), var(--neu-shadow-dark), 0 0 30px rgba(167, 139, 250, 0.4);
+  }
+}
+
+.fade-in {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.fade-in-stagger {
+  animation: fadeInUp 0.8s ease-out forwards;
+}

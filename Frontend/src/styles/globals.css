@@ -1,0 +1,83 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Dark theme (default) */
+  --bg-primary: #0f0f1a;
+  --bg-secondary: #1a1a2e;
+  --bg-tertiary: #0a0a12;
+  --text-primary: #fff;
+  --text-secondary: #aaa;
+  --text-muted: #666;
+  --border-color: #333;
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #ec4899;
+  --success: #22c55e;
+  --warning: #eab308;
+  --danger: #ef4444;
+}
+
+[data-theme="light"] {
+  --bg-primary: #f5f5f7;
+  --bg-secondary: #ffffff;
+  --bg-tertiary: #e5e5e7;
+  --text-primary: #1a1a1a;
+  --text-secondary: #555555;
+  --text-muted: #888888;
+  --border-color: #d1d1d6;
+  --accent-primary: #8b5cf6;
+  --accent-secondary: #ec4899;
+}
+
+.theme-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  font-size: 20px;
+  cursor: pointer;
+  z-index: 999;
+  transition: transform 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+}
+
+[data-theme="light"] .theme-toggle {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+}
+/* Neumorphism Variables - Dark Theme */
+.theme-dark {
+  --neu-bg-light: #2d2d3d;
+  --neu-bg-base: #252530;
+  --neu-bg-dark: #1a1a24;
+  --neu-primary: #a78bfa;
+  --neu-secondary: #ec4899;
+  --neu-accent: #c7d2fe;
+  --neu-shadow-light: -3px -3px 8px rgba(0, 0, 0, 0.3);
+  --neu-shadow-dark: 3px 3px 8px rgba(0, 0, 0, 0.5);
+  --neu-shadow-inset: inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.05);
+}
+
+/* Neumorphism Variables - Light Theme */
+[data-theme="light"] .theme-light {
+  --neu-bg-light: #f0f0f0;
+  --neu-bg-base: #f8f9fa;
+  --neu-bg-dark: #e8ecf1;
+  --neu-primary: #a78bfa;
+  --neu-secondary: #ec4899;
+  --neu-accent: #c7d2fe;
+  --neu-shadow-light: -3px -3px 8px rgba(255, 255, 255, 0.8);
+  --neu-shadow-dark: 3px 3px 8px rgba(200, 200, 200, 0.5);
+  --neu-shadow-inset: inset 2px 2px 5px rgba(255, 255, 255, 0.8), inset -2px -2px 5px rgba(200, 200, 200, 0.3);
+}
