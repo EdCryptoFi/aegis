@@ -185,12 +185,15 @@ export default function AgentsPage() {
               const successRate = agent.totalExecutions > 0
                 ? Math.round((agent.successfulExecutions / agent.totalExecutions) * 100) : 100;
 
-              const trustColor = {
-                'HIGH': 'success',
-                'MEDIUM': 'warning',
-                'LOW': 'danger',
-                'FLAGGED': 'danger',
-              } as const;
+              const getTrustColor = (trustLevel: string): 'success' | 'warning' | 'danger' => {
+                switch(trustLevel) {
+                  case 'HIGH': return 'success';
+                  case 'MEDIUM': return 'warning';
+                  case 'LOW': return 'danger';
+                  case 'FLAGGED': return 'danger';
+                  default: return 'warning';
+                }
+              };
 
               return (
                 <motion.div key={agent.objectId} variants={cardItemVariants}>
@@ -202,7 +205,7 @@ export default function AgentsPage() {
                           <div className="text-3xl font-bold font-display text-cyan-primary">
                             #{i + 1}
                           </div>
-                          <PremiumBadge type={trustColor[level]} size="sm">
+                          <PremiumBadge type={getTrustColor(level)} size="sm">
                             {level}
                           </PremiumBadge>
                         </div>

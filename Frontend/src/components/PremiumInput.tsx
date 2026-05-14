@@ -1,10 +1,10 @@
 import React, { InputHTMLAttributes, ReactNode } from 'react';
 
-interface PremiumInputProps extends InputHTMLAttributes<HTMLInputElement> {
+interface PremiumInputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
   label?: string;
   error?: string;
   icon?: ReactNode;
-  size?: 'sm' | 'md' | 'lg';
+  inputSize?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
 }
 
@@ -12,7 +12,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({
   label,
   error,
   icon,
-  size = 'md',
+  inputSize = 'md',
   fullWidth = false,
   className = '',
   ...props
@@ -27,7 +27,7 @@ export const PremiumInput: React.FC<PremiumInputProps> = ({
     bg-bg-base
     border border-white/8
     rounded-[12px]
-    ${sizeClasses[size]}
+    ${sizeClasses[inputSize]}
     text-text-primary
     placeholder-text-secondary
     transition-all

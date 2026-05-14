@@ -2,7 +2,7 @@
 
 export const fadeUpVariants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: 'easeOut' } },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
   exit: { opacity: 0, y: 10, transition: { duration: 0.2 } },
 };
 
@@ -23,7 +23,7 @@ export const cardItemVariants = {
     opacity: 1,
     y: 0,
     scale: 1,
-    transition: { duration: 0.4, ease: 'easeOut' },
+    transition: { duration: 0.4 },
   },
   hover: {
     y: -4,
@@ -65,7 +65,7 @@ export const slideInLeftVariants = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
+    transition: { duration: 0.5 },
   },
   exit: { opacity: 0, x: -20, transition: { duration: 0.2 } },
 };
@@ -75,7 +75,7 @@ export const slideInRightVariants = {
   visible: {
     opacity: 1,
     x: 0,
-    transition: { duration: 0.5, ease: 'easeOut' },
+    transition: { duration: 0.5 },
   },
   exit: { opacity: 0, x: 20, transition: { duration: 0.2 } },
 };
@@ -85,7 +85,7 @@ export const scaleInVariants = {
   visible: {
     opacity: 1,
     scale: 1,
-    transition: { duration: 0.3, ease: 'easeOut' },
+    transition: { duration: 0.3 },
   },
   hover: {
     scale: 1.05,
@@ -174,7 +174,6 @@ export const popoverVariants = {
     scale: 1,
     transition: {
       duration: 0.2,
-      ease: 'easeOut',
     },
   },
   exit: {
@@ -189,7 +188,7 @@ export const underlineVariants = {
   hidden: { width: 0 },
   visible: {
     width: '100%',
-    transition: { duration: 0.4, ease: 'easeOut' },
+    transition: { duration: 0.4 },
   },
 };
 
