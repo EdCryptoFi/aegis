@@ -103,9 +103,9 @@ const features = [
 ];
 
 const stats = [
-  { label: 'Agents Tracked', value: 1247, prefix: '', suffix: '+', icon: Users },
-  { label: 'Avg Success Rate', value: 98, prefix: '', suffix: '.7%', icon: TrendingUp },
-  { label: 'Volume Protected', value: 2, prefix: '$', suffix: '.4M', icon: Lock },
+  { label: 'Agents Tracked', sublabel: 'Registered on Sui', value: 1247, prefix: '', suffix: '+', icon: Users, delta: '+12.4%', positive: true },
+  { label: 'Avg Success Rate', sublabel: 'All agents avg.', value: 98, prefix: '', suffix: '.7%', icon: TrendingUp, delta: '+0.3%', positive: true },
+  { label: 'Volume Protected', sublabel: 'Cumulative SUI', value: 2, prefix: '$', suffix: '.4M', icon: Lock, delta: '+18.2%', positive: true },
 ];
 
 const tickerItems = [
@@ -226,52 +226,69 @@ export default function Home() {
           <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-4 mb-16">
             <Link
               href="/agents"
-              className="group inline-flex items-center gap-2 px-7 py-3.5 rounded-pill bg-gradient-cyan-mint text-bg-base font-display font-semibold text-sm transition-all hover:shadow-glow-cyan-intense hover:scale-[1.03]"
+              className="group inline-flex items-center gap-2 px-10 py-4 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm transition-all hover:shadow-glow-cyan-intense hover:scale-[1.03]"
             >
               Launch Terminal
               <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link
               href="/docs"
-              className="inline-flex items-center gap-2 px-7 py-3.5 rounded-pill border border-[rgba(255,255,255,0.1)] text-text-primary font-display font-semibold text-sm hover:border-cyan-primary/30 hover:bg-surface-1/50 transition-all"
+              className="inline-flex items-center gap-2 px-10 py-4 rounded-[12px] border border-[rgba(255,255,255,0.12)] bg-surface-1/20 backdrop-blur-sm text-text-primary font-display font-bold text-sm hover:bg-surface-1/40 transition-all"
             >
               Documentation
             </Link>
           </motion.div>
 
-          {/* Floating stats cards — staggered float animation */}
+          {/* Floating stats cards — reference style with sparkline */}
           <motion.div
             variants={containerVariants}
-            className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-2xl mx-auto"
+            className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto"
           >
             {stats.map((stat, i) => {
               const Icon = stat.icon;
               return (
                 <motion.div key={stat.label} variants={itemVariants}>
                   <motion.div
-                    animate={{ y: [0, -8, 0] }}
-                    transition={{
-                      duration: 4 + i * 0.5,
-                      repeat: Infinity,
-                      ease: 'easeInOut',
-                      delay: i * 0.7,
+                    animate={{ y: [0, -6, 0] }}
+                    transition={{ duration: 4 + i * 0.5, repeat: Infinity, ease: 'easeInOut', delay: i * 0.7 }}
+                    whileHover={{ y: -10, transition: { duration: 0.25 } }}
+                    className="rounded-xl overflow-hidden cursor-default"
+                    style={{
+                      background: 'rgba(22,27,30,0.7)',
+                      backdropFilter: 'blur(12px)',
+                      border: '1px solid rgba(255,255,255,0.08)',
+                      boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
                     }}
-                    whileHover={{
-                      y: -14,
-                      boxShadow: '0 16px 40px rgba(0, 245, 255, 0.18), 0 0 1px rgba(0, 245, 255, 0.4)',
-                      borderColor: 'rgba(0,245,255,0.25)',
-                      transition: { duration: 0.3 },
-                    }}
-                    className="bg-surface-1/70 backdrop-blur-md border border-[rgba(255,255,255,0.08)] rounded-[20px] px-5 py-4 text-center cursor-default"
-                    style={{ boxShadow: '0 4px 24px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.05)' }}
                   >
-                    <Icon size={18} className="mx-auto mb-2 text-cyan-primary opacity-70" />
-                    <p className="text-xl font-display font-bold text-text-primary">
-                      <AnimatedCounter value={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-                    </p>
-                    <p className="text-label-xs font-mono text-text-muted uppercase tracking-wider mt-1">
-                      {stat.label}
-                    </p>
+                    <div className="p-5">
+                      {/* Top row: icon + label + delta badge */}
+                      <div className="flex justify-between items-start mb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-9 h-9 rounded-full bg-surface-2/60 flex items-center justify-center">
+                            <Icon size={16} className="text-cyan-primary" />
+                          </div>
+                          <div>
+                            <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>
+                            <p className="text-[10px] font-mono text-text-muted">{stat.sublabel}</p>
+                          </div>
+                        </div>
+                        <span className={`text-[11px] font-mono px-1.5 py-0.5 rounded ${stat.positive ? 'text-mint-secondary bg-mint-secondary/10' : 'text-error bg-error/10'}`}>
+                          {stat.delta}
+                        </span>
+                      </div>
+                      {/* Value */}
+                      <p className="text-2xl font-display font-bold text-text-primary">
+                        <AnimatedCounter value={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+                      </p>
+                    </div>
+                    {/* Sparkline bar — reference style */}
+                    <div
+                      className="h-14 w-full"
+                      style={{
+                        background: 'linear-gradient(to top, rgba(0,245,255,0.18) 0%, transparent 100%)',
+                        borderBottom: '2px solid rgba(0,245,255,0.35)',
+                      }}
+                    />
                   </motion.div>
                 </motion.div>
               );
@@ -322,67 +339,175 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {features.map((feature, i) => {
-              const Icon = feature.icon;
+          {/* Bento grid — 12 col, 8/4 alternating like reference */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
 
-              const accent =
-                feature.color === 'cyan'
-                  ? { bg: 'rgba(0,245,255,0.08)', border: 'rgba(0,245,255,0.2)', icon: 'text-cyan-primary', bar: 'from-cyan-primary/40 to-transparent' }
-                  : feature.color === 'mint'
-                  ? { bg: 'rgba(0,255,167,0.08)', border: 'rgba(0,255,167,0.2)', icon: 'text-mint-secondary', bar: 'from-mint-secondary/40 to-transparent' }
-                  : { bg: 'rgba(112,0,255,0.08)', border: 'rgba(112,0,255,0.2)', icon: 'text-purple-dim', bar: 'from-purple-dim/30 to-transparent' };
+            {/* Row 1: Large (8) + Small (4) */}
+            {/* Smart Money Flow — col-span-8 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0 }}
+              className="md:col-span-8 rounded-2xl p-8 relative overflow-hidden group"
+              style={{
+                background: 'rgba(22,27,30,0.7)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+              }}
+            >
+              <div className="relative z-10">
+                <span className="text-label-sm font-mono text-cyan-primary mb-4 block uppercase tracking-widest">
+                  Institutional Analytics
+                </span>
+                <h3 className="font-display text-headline-md font-semibold text-text-primary mb-4">
+                  Smart Money Flow Detection
+                </h3>
+                <p className="text-text-secondary max-w-md text-sm leading-relaxed">
+                  Track wallet clusters with high win rates and historical alpha performance. Our proprietary algorithms filter noise from real signal.
+                </p>
+                <Link
+                  href="/agents"
+                  className="mt-8 inline-flex items-center gap-2 text-cyan-primary hover:gap-4 transition-all text-sm font-medium"
+                >
+                  View Intelligence Dashboard
+                  <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
+                </Link>
+              </div>
+              {/* Background visual — abstract network glow */}
+              <div
+                className="absolute top-0 right-0 w-1/2 h-full opacity-20"
+                style={{
+                  background: 'radial-gradient(ellipse at 80% 50%, rgba(0,245,255,0.25) 0%, transparent 70%)',
+                }}
+              />
+              <div className="absolute bottom-4 right-8 opacity-10">
+                <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
+                  <polyline points="0,60 20,40 40,50 60,20 80,35 100,10 120,25" stroke="#00F5FF" strokeWidth="2" fill="none" />
+                  <polyline points="0,60 20,40 40,50 60,20 80,35 100,10 120,25" stroke="#00F5FF" strokeWidth="8" fill="none" strokeOpacity="0.15" />
+                </svg>
+              </div>
+            </motion.div>
 
-              return (
-                <GlowCard key={feature.title} delay={i * 0.08} className="flex flex-col justify-between group">
-                  {/* Top accent line */}
-                  <div className={`h-px w-16 bg-gradient-to-r ${accent.bar} mb-5 rounded-full`} />
+            {/* Developer SDK — col-span-4 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.08 }}
+              whileHover={{ backgroundColor: 'rgba(28,35,39,0.9)', transition: { duration: 0.2 } }}
+              className="md:col-span-4 rounded-2xl p-8 flex flex-col"
+              style={{
+                background: 'rgba(22,27,30,0.5)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-6"
+                style={{ background: 'rgba(0,245,255,0.08)', border: '1px solid rgba(0,245,255,0.2)' }}
+              >
+                <Code2 size={20} className="text-cyan-primary" />
+              </div>
+              <h3 className="font-display text-headline-md font-semibold text-text-primary mb-4">
+                Developer SDK
+              </h3>
+              <p className="text-text-secondary text-sm leading-relaxed flex-1">
+                Stream live on-chain events directly into your trading bots or dApps with &lt;50ms latency.
+              </p>
+              <Link href="/developer" className="mt-6 inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors">
+                Explore SDK <ArrowRight size={13} />
+              </Link>
+            </motion.div>
 
-                  <div>
-                    <div className="flex items-center gap-3 mb-5">
-                      {/* Icon container with glow */}
-                      <div
-                        className="w-10 h-10 rounded-[12px] flex items-center justify-center shrink-0 transition-all duration-300 group-hover:scale-110"
-                        style={{ background: accent.bg, border: `1px solid ${accent.border}` }}
-                      >
-                        <Icon size={18} className={accent.icon} />
-                      </div>
+            {/* Row 2: Small (4) + Large (8) */}
+            {/* DAO Voting — col-span-4 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.14 }}
+              whileHover={{ backgroundColor: 'rgba(28,35,39,0.9)', transition: { duration: 0.2 } }}
+              className="md:col-span-4 rounded-2xl p-8 flex flex-col"
+              style={{
+                background: 'rgba(22,27,30,0.5)',
+                border: '1px solid rgba(255,255,255,0.08)',
+              }}
+            >
+              <div
+                className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-6"
+                style={{ background: 'rgba(112,0,255,0.08)', border: '1px solid rgba(112,0,255,0.2)' }}
+              >
+                <Vote size={20} className="text-purple-dim" />
+              </div>
+              <h3 className="font-display text-headline-md font-semibold text-text-primary mb-4">
+                DAO Voting
+              </h3>
+              <p className="text-text-secondary text-sm leading-relaxed flex-1">
+                Monitor proposal sentiment and voter participation across the Aegis ecosystem.
+              </p>
+              <Link href="/badges" className="mt-6 inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors">
+                View Governance <ArrowRight size={13} />
+              </Link>
+            </motion.div>
 
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-cyan-primary/10 text-label-xs font-mono text-cyan-primary uppercase tracking-wider">
-                          {feature.label}
-                        </span>
-                        {feature.sublabel && (
-                          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-[8px] bg-mint-secondary/10 text-label-xs font-mono text-mint-secondary uppercase tracking-wider">
-                            {feature.sublabel}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="mb-4">
-                      <h3 className="font-display text-lg font-semibold text-text-primary mb-2">
-                        {feature.title}
-                      </h3>
-                      <p className="text-sm text-text-secondary leading-relaxed">
-                        {feature.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between mt-4 pt-4 border-t border-[rgba(255,255,255,0.05)]">
-                    <Link
-                      href={feature.link}
-                      className="inline-flex items-center gap-1.5 text-sm font-medium text-cyan-primary hover:text-mint-secondary transition-colors group/link"
+            {/* Real-Time Threat Monitoring — col-span-8 */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="md:col-span-8 rounded-2xl p-8 relative overflow-hidden"
+              style={{
+                background: 'rgba(22,27,30,0.7)',
+                backdropFilter: 'blur(12px)',
+                border: '1px solid rgba(255,255,255,0.08)',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.4)',
+              }}
+            >
+              <div className="flex flex-col md:flex-row gap-8 items-center">
+                <div className="flex-1">
+                  <span className="text-label-sm font-mono text-cyan-primary mb-4 block uppercase tracking-widest">
+                    Risk Management
+                  </span>
+                  <h3 className="font-display text-headline-md font-semibold text-text-primary mb-4">
+                    Real-Time Threat Monitoring
+                  </h3>
+                  <p className="text-text-secondary text-sm leading-relaxed">
+                    Active defense against rug pulls, reentrancy risks, and malicious contract patterns across 50+ chains.
+                  </p>
+                  <div className="flex gap-4 mt-6">
+                    <div
+                      className="px-4 py-2.5 rounded-[10px]"
+                      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
                     >
-                      {feature.linkText}
-                      <ArrowRight size={13} className="group-hover/link:translate-x-1 transition-transform" />
-                    </Link>
-                    <CheckCircle size={14} className="text-text-muted opacity-40" />
+                      <p className="text-cyan-primary font-bold text-lg font-display">2.4k+</p>
+                      <p className="text-[10px] uppercase text-text-muted font-mono tracking-wider">Protocols Tracked</p>
+                    </div>
+                    <div
+                      className="px-4 py-2.5 rounded-[10px]"
+                      style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.08)' }}
+                    >
+                      <p className="text-mint-secondary font-bold text-lg font-display">0ms</p>
+                      <p className="text-[10px] uppercase text-text-muted font-mono tracking-wider">Downtime</p>
+                    </div>
                   </div>
-                </GlowCard>
-              );
-            })}
+                </div>
+                {/* Shield visual */}
+                <div
+                  className="shrink-0 w-40 h-36 rounded-xl flex items-center justify-center"
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(0,245,255,0.08) 0%, transparent 100%)',
+                    border: '1px solid rgba(0,245,255,0.15)',
+                  }}
+                >
+                  <Shield size={56} className="text-cyan-primary opacity-40" />
+                </div>
+              </div>
+              <Link href="/architecture" className="mt-6 inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors">
+                View Architecture <ArrowRight size={13} />
+              </Link>
+            </motion.div>
           </div>
         </div>
       </section>

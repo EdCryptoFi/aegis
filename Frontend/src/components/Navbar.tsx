@@ -1,92 +1,204 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Shield,
+  Users,
+  Trophy,
+  Award,
+  Code2,
+  BookOpen,
+  Menu,
+  X,
+  Search,
+  Workflow,
+  Bell,
+  Wallet,
+} from 'lucide-react';
+import { ConnectButton } from '@mysten/dapp-kit';
 
 const navLinks = [
-  { href: '/', label: 'Home', icon: '🏠' },
-  { href: '/agents', label: 'Agents', icon: '🤖' },
-  { href: '/architecture', label: 'Pipeline', icon: '⚙️' },
-  { href: '/badges', label: 'Badges', icon: '🏅' },
-  { href: '/leaderboard', label: 'Rank', icon: '📊' },
-  { href: '/developer', label: 'Dev', icon: '🚀' },
-  { href: '/docs', label: 'Docs', icon: '📖' },
+  { href: '/agents', label: 'Agents', icon: Users },
+  { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+  { href: '/badges', label: 'Badges', icon: Award },
+  { href: '/architecture', label: 'Pipeline', icon: Workflow },
+  { href: '/developer', label: 'Developers', icon: Code2 },
+  { href: '/docs', label: 'Docs', icon: BookOpen },
 ];
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
+  const [lastScroll, setLastScroll] = useState(0);
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScroll = window.scrollY;
+      setScrolled(currentScroll > 20);
+      setHidden(currentScroll > lastScroll && currentScroll > 100);
+      setLastScroll(currentScroll);
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [lastScroll]);
+
+  useEffect(() => {
+    setIsOpen(false);
+  }, [router.pathname]);
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-slate-900/95 backdrop-blur-md border-b border-slate-800">
-        <div className="max-w-7xl mx-auto px-4">
+      <motion.nav
+        initial={{ y: 0 }}
+        animate={{ y: hidden ? -80 : 0 }}
+        transition={{ duration: 0.3 }}
+        className={`
+          fixed top-0 left-0 right-0 z-50
+          transition-all duration-300
+          ${
+            scrolled
+              ? 'bg-bg-base/80 backdrop-blur-xl border-b border-[rgba(255,255,255,0.06)] shadow-drop'
+              : 'bg-transparent'
+          }
+        `}
+      >
+        <div className="max-w-7xl mx-auto px-6">
           <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl font-bold bg-gradient-to-r from-indigo-400 to-purple-400 bg-clip-text text-transparent">
+            {/* Logo */}
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <Shield size={22} className="text-cyan-primary group-hover:drop-shadow-[0_0_8px_rgba(0,245,255,0.4)] transition-all" />
+              <span className="text-lg font-display font-bold text-text-primary">
                 Aegis
+              </span>
+              <span className="hidden sm:inline text-xs font-mono text-text-muted tracking-wider">
+                On-Chain
               </span>
             </Link>
 
-            <div className="hidden md:flex items-center gap-1">
-              {navLinks.slice(0, 5).map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  className="px-3 py-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800 text-sm font-medium transition-colors"
-                >
-                  {link.label}
-                </Link>
-              ))}
+            {/* Desktop links */}
+            <div className="hidden lg:flex items-center gap-1">
+              {navLinks.map((link) => {
+                const isActive = router.pathname === link.href || router.pathname.startsWith(link.href + '/');
+                return (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className={`
+                      relative px-3.5 py-2 text-sm font-medium transition-all duration-200
+                      ${
+                        isActive
+                          ? 'text-cyan-primary border-b-2 border-cyan-primary pb-1'
+                          : 'text-text-secondary hover:text-cyan-primary transition-colors'
+                      }
+                    `}
+                  >
+                    {link.label}
+                  </Link>
+                );
+              })}
             </div>
 
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="md:hidden p-2 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800"
-            >
-              <span className="text-xl">{isOpen ? '✕' : '☰'}</span>
-            </button>
+            {/* Right side */}
+            <div className="flex items-center gap-3">
+              {/* Search */}
+              <div className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full bg-surface-0 border border-[rgba(255,255,255,0.06)] text-text-muted text-xs w-56">
+                <Search size={13} />
+                <span className="font-mono text-[12px] tracking-wide">Search protocol...</span>
+              </div>
+
+              {/* Bell */}
+              <button className="hidden md:flex items-center justify-center w-8 h-8 text-text-muted hover:text-cyan-primary transition-colors">
+                <Bell size={17} />
+              </button>
+
+              {/* Connect Wallet — styled as cyan pill */}
+              <div className="hidden md:block connect-btn-wrapper">
+                <ConnectButton />
+              </div>
+
+              {/* Mobile toggle */}
+              <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="lg:hidden p-2 rounded-[10px] text-text-secondary hover:text-text-primary hover:bg-surface-1 transition-colors"
+              >
+                {isOpen ? <X size={20} /> : <Menu size={20} />}
+              </button>
+            </div>
+
+            <style jsx>{`
+              .connect-btn-wrapper :global(button) {
+                background: linear-gradient(135deg, #00F5FF, #00dce5) !important;
+                color: #0c0f11 !important;
+                font-size: 12px !important;
+                font-weight: 700 !important;
+                font-family: 'JetBrains Mono', monospace !important;
+                padding: 8px 20px !important;
+                border-radius: 9999px !important;
+                border: none !important;
+                letter-spacing: 0.03em !important;
+                transition: all 0.2s !important;
+                box-shadow: 0 0 16px rgba(0,245,255,0.2) !important;
+              }
+              .connect-btn-wrapper :global(button:hover) {
+                box-shadow: 0 0 24px rgba(0,245,255,0.4) !important;
+                transform: scale(1.03) !important;
+              }
+            `}</style>
           </div>
         </div>
 
-        {isOpen && (
-          <div className="md:hidden bg-slate-900 border-t border-slate-800">
-            <div className="px-4 py-3 space-y-2">
-              {navLinks.map((link) => (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={() => setIsOpen(false)}
-                  className="flex items-center gap-3 px-4 py-3 rounded-lg text-slate-300 hover:text-white hover:bg-slate-800"
-                >
-                  <span className="text-lg">{link.icon}</span>
-                  <span className="font-medium">{link.label}</span>
-                </Link>
-              ))}
-            </div>
-          </div>
-        )}
-      </nav>
+        {/* Mobile menu */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="lg:hidden bg-bg-base/95 backdrop-blur-xl border-t border-[rgba(255,255,255,0.06)] overflow-hidden"
+            >
+              <div className="px-6 py-4 space-y-1">
+                {navLinks.map((link, i) => {
+                  const Icon = link.icon;
+                  const isActive = router.pathname === link.href;
+                  return (
+                    <motion.div
+                      key={link.href}
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                    >
+                      <Link
+                        href={link.href}
+                        className={`
+                          flex items-center gap-3 px-4 py-3 rounded-[12px] transition-all duration-200
+                          ${
+                            isActive
+                              ? 'bg-cyan-primary/10 text-cyan-primary'
+                              : 'text-text-secondary hover:text-text-primary hover:bg-surface-1'
+                          }
+                        `}
+                      >
+                        <Icon size={18} />
+                        <span className="font-medium">{link.label}</span>
+                      </Link>
+                    </motion.div>
+                  );
+                })}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.nav>
 
+      {/* Spacer */}
       <div className="h-16" />
     </>
-  );
-}
-
-export function MobileNav() {
-  return (
-    <nav className="fixed bottom-0 left-0 right-0 z-50 md:hidden bg-slate-900/95 backdrop-blur-md border-t border-slate-800">
-      <div className="flex justify-around items-center h-16">
-        {navLinks.slice(0, 4).map((link) => (
-          <Link
-            key={link.href}
-            href={link.href}
-            className="flex flex-col items-center gap-1 px-3 py-2 text-slate-400 hover:text-white"
-          >
-            <span className="text-lg">{link.icon}</span>
-            <span className="text-xs">{link.label}</span>
-          </Link>
-        ))}
-      </div>
-    </nav>
   );
 }
