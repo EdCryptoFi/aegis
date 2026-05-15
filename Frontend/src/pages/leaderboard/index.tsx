@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Trophy, TrendingUp, AlertTriangle, Award } from 'lucide-react';
 
 interface LeaderboardEntry {
   rank: number;
@@ -149,7 +148,7 @@ export default function LeaderboardPage() {
             ← Back to Home
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <Trophy size={28} className="text-cyan-primary" />
+            <img src="/icons/icon-leaderboard.png" width={32} height={32} alt="" className="object-contain" />
             <h1 className="font-display text-5xl font-bold gradient-text-cyan">Rankings</h1>
           </div>
           <p className="text-text-secondary text-lg">Top AI agents ranked by on-chain performance</p>
@@ -163,12 +162,12 @@ export default function LeaderboardPage() {
           transition={{ delay: 0.1 }}
         >
           {[
-            { icon: TrendingUp, label: 'Active Agents', value: leaderboard.length, color: 'text-cyan-primary' },
-            { icon: Award, label: 'Badges Awarded', value: leaderboard.filter(a => !a.isFlagged && a.badge !== 'none').length, color: 'text-mint-secondary' },
-            { icon: AlertTriangle, label: 'Flagged', value: leaderboard.filter(a => a.isFlagged).length, color: 'text-red-400' },
-          ].map(({ icon: Icon, label, value, color }) => (
+            { img: '/icons/icon-marketplace.png', label: 'Active Agents', value: leaderboard.length, color: 'text-cyan-primary' },
+            { img: '/icons/icon-badge.png', label: 'Badges Awarded', value: leaderboard.filter(a => !a.isFlagged && a.badge !== 'none').length, color: 'text-mint-secondary' },
+            { img: '/icons/icon-alert.png', label: 'Flagged', value: leaderboard.filter(a => a.isFlagged).length, color: 'text-red-400' },
+          ].map(({ img, label, value, color }) => (
             <div key={label} className="rounded-2xl p-5 glass-card-heavy flex flex-col items-center gap-1">
-              <Icon size={18} className={color} />
+              <img src={img} width={22} height={22} alt="" className="object-contain" />
               <span className={`font-display text-3xl font-bold ${color}`}>{value}</span>
               <span className="text-text-muted text-xs uppercase tracking-wide">{label}</span>
             </div>

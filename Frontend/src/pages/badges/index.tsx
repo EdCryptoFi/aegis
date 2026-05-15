@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Award, Shield, ShieldOff, AlertTriangle, Code2, ArrowRight, Activity, TrendingUp, Zap, BarChart2, CheckCircle, XCircle, Clock } from 'lucide-react';
+import { Shield, ShieldOff, AlertTriangle, Code2, ArrowRight, Activity, Zap, BarChart2, CheckCircle, XCircle, Clock } from 'lucide-react';
 
 interface BadgeHolder {
   agentId: string;
@@ -227,7 +227,7 @@ export default function BadgesPage() {
           </Link>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
             <div className="flex items-center gap-3">
-              <Award size={28} className="text-cyan-primary" />
+              <img src="/icons/icon-badge.png" width={32} height={32} alt="" className="object-contain" />
               <h1 className="font-display text-5xl font-bold gradient-text-cyan">Badge Registry</h1>
             </div>
             <Link
@@ -475,7 +475,7 @@ export default function BadgesPage() {
               {
                 name: 'Gold Badge',
                 level: 'LVL 5',
-                icon: TrendingUp,
+                img: '/icons/icon-reputation.png',
                 border: 'border-yellow-400/40',
                 bg: 'bg-yellow-400/[0.04]',
                 accentColor: '#ffd700',
@@ -493,7 +493,7 @@ export default function BadgesPage() {
               {
                 name: 'Silver Badge',
                 level: 'LVL 3',
-                icon: Activity,
+                img: '/icons/icon-uptime.png',
                 border: 'border-slate-400/40',
                 bg: 'bg-slate-400/[0.04]',
                 accentColor: '#c0c0c0',
@@ -511,7 +511,7 @@ export default function BadgesPage() {
               {
                 name: 'Bronze Badge',
                 level: 'LVL 1',
-                icon: Shield,
+                img: '/icons/icon-shield.png',
                 border: 'border-amber-700/40',
                 bg: 'bg-amber-700/[0.04]',
                 accentColor: '#cd7f32',
@@ -526,7 +526,7 @@ export default function BadgesPage() {
                 reqs: ['10+ executions', '80%+ success rate'],
                 accessLabel: 'RESTRICTED — READ ONLY',
               },
-            ] as const).map(({ name, level, icon: Icon, border, bg, accentColor, accentText, accentBg, chartPoints, metrics, reqs, accessLabel }, idx) => (
+            ] as const).map(({ name, level, img, border, bg, accentColor, accentText, accentBg, chartPoints, metrics, reqs, accessLabel }, idx) => (
               <motion.div
                 key={name}
                 initial={{ opacity: 0, y: 16 }}
@@ -539,7 +539,7 @@ export default function BadgesPage() {
                 <div className="px-5 pt-5 pb-4">
                   <div className="flex items-start justify-between mb-4">
                     <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center ${accentBg} border ${border}`}>
-                      <Icon size={18} className={accentText} />
+                      <img src={img} width={24} height={24} alt="" className="object-contain" />
                     </div>
                     <span className={`font-mono text-[10px] font-bold px-2 py-1 rounded-md ${accentBg} ${accentText}`}>{level}</span>
                   </div>
