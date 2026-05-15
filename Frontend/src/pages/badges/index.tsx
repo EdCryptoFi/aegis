@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Award, ShieldOff, ShieldCheck } from 'lucide-react';
 
 interface BadgeHolder {
   agentId: string;
@@ -16,9 +18,9 @@ interface BadgeHolder {
 }
 
 const BADGE_INFO = {
-  3: { name: 'Gold', emoji: '🥇', description: '200+ execs, 95%+ success, $1M+ volume', color: '#ffd700' },
-  2: { name: 'Silver', emoji: '🥈', description: '50+ execs, 90%+ success', color: '#c0c0c0' },
-  1: { name: 'Bronze', emoji: '🥉', description: '10+ execs, 80%+ success', color: '#cd7f32' },
+  3: { name: 'Gold', emoji: '🥇', description: '200+ execs, 95%+ success, $1M+ volume', border: 'border-yellow-400/40', bg: 'bg-yellow-400/[0.06]', accent: 'text-yellow-400', stat: 'bg-yellow-400/10' },
+  2: { name: 'Silver', emoji: '🥈', description: '50+ execs, 90%+ success', border: 'border-slate-400/40', bg: 'bg-slate-400/[0.06]', accent: 'text-slate-300', stat: 'bg-slate-400/10' },
+  1: { name: 'Bronze', emoji: '🥉', description: '10+ execs, 80%+ success', border: 'border-amber-700/40', bg: 'bg-amber-700/[0.06]', accent: 'text-amber-600', stat: 'bg-amber-700/10' },
 };
 
 async function getBadgeHolders(): Promise<BadgeHolder[]> {
@@ -64,10 +66,12 @@ async function getBadgeHolders(): Promise<BadgeHolder[]> {
   return holders;
 }
 
+type FilterType = 'all' | 'gold' | 'silver' | 'bronze';
+
 export default function BadgesPage() {
   const [holders, setHolders] = useState<BadgeHolder[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState<'all' | 'gold' | 'silver' | 'bronze'>('all');
+  const [filter, setFilter] = useState<FilterType>('all');
 
   useEffect(() => {
     loadBadges();
@@ -88,378 +92,199 @@ export default function BadgesPage() {
     return true;
   });
 
-  const validCount = holders.filter(h => h.isValid).length;
   const revokedCount = holders.filter(h => !h.isValid).length;
 
+  const FILTERS: { key: FilterType; label: string }[] = [
+    { key: 'all', label: 'All' },
+    { key: 'gold', label: '🥇 Gold' },
+    { key: 'silver', label: '🥈 Silver' },
+    { key: 'bronze', label: '🥉 Bronze' },
+  ];
+
   return (
-    <main className="container">
-      <header>
-        <a href="/" className="back-link">← Back to Home</a>
-        <h1>🏅 Aegis Badges</h1>
-        <p className="subtitle">Certified agent trust badges</p>
-      </header>
+    <main className="min-h-screen bg-bg-base px-4 py-12">
+      <div className="max-w-5xl mx-auto">
 
-      <section className="stats">
-        <div className="stat gold">
-          <span className="emoji">🥇</span>
-          <span className="count">{holders.filter(h => h.badgeType === 3 && h.isValid).length}</span>
-          <span className="label">Gold</span>
-        </div>
-        <div className="stat silver">
-          <span className="emoji">🥈</span>
-          <span className="count">{holders.filter(h => h.badgeType === 2 && h.isValid).length}</span>
-          <span className="label">Silver</span>
-        </div>
-        <div className="stat bronze">
-          <span className="emoji">🥉</span>
-          <span className="count">{holders.filter(h => h.badgeType === 1 && h.isValid).length}</span>
-          <span className="label">Bronze</span>
-        </div>
-        <div className="stat revoked">
-          <span className="emoji">🚫</span>
-          <span className="count">{revokedCount}</span>
-          <span className="label">Revoked</span>
-        </div>
-      </section>
+        {/* Header */}
+        <motion.div className="mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors mb-6">
+            ← Back to Home
+          </Link>
+          <div className="flex items-center gap-3 mb-2">
+            <Award size={28} className="text-cyan-primary" />
+            <h1 className="font-display text-5xl font-bold gradient-text-cyan">Badge Registry</h1>
+          </div>
+          <p className="text-text-secondary text-lg">Certified agent trust badges on Sui</p>
+        </motion.div>
 
-      <section className="filters">
-        <button className={filter === 'all' ? 'active' : ''} onClick={() => setFilter('all')}>All</button>
-        <button className={filter === 'gold' ? 'active' : ''} onClick={() => setFilter('gold')}>🥇 Gold</button>
-        <button className={filter === 'silver' ? 'active' : ''} onClick={() => setFilter('silver')}>🥈 Silver</button>
-        <button className={filter === 'bronze' ? 'active' : ''} onClick={() => setFilter('bronze')}>🥉 Bronze</button>
-      </section>
+        {/* Stats */}
+        <motion.div
+          className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          {[
+            { emoji: '🥇', label: 'Gold', count: holders.filter(h => h.badgeType === 3 && h.isValid).length, border: 'border-yellow-400/40' },
+            { emoji: '🥈', label: 'Silver', count: holders.filter(h => h.badgeType === 2 && h.isValid).length, border: 'border-slate-400/40' },
+            { emoji: '🥉', label: 'Bronze', count: holders.filter(h => h.badgeType === 1 && h.isValid).length, border: 'border-amber-700/40' },
+            { emoji: '🚫', label: 'Revoked', count: revokedCount, border: 'border-red-500/40' },
+          ].map(({ emoji, label, count, border }) => (
+            <div key={label} className={`rounded-2xl p-5 glass-card-heavy border ${border} flex flex-col items-center gap-1`}>
+              <span className="text-2xl">{emoji}</span>
+              <span className="font-display text-3xl font-bold text-text-primary">{count}</span>
+              <span className="text-text-muted text-xs uppercase tracking-wide">{label}</span>
+            </div>
+          ))}
+        </motion.div>
 
-      <section className="badge-cards">
+        {/* Filter pills */}
+        <motion.div
+          className="flex flex-wrap gap-2 mb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.15 }}
+        >
+          {FILTERS.map(({ key, label }) => (
+            <button
+              key={key}
+              onClick={() => setFilter(key)}
+              className={`
+                px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
+                ${filter === key
+                  ? 'bg-cyan-primary text-bg-base font-bold shadow-glow-cyan'
+                  : 'bg-surface-1 border border-[rgba(255,255,255,0.08)] text-text-secondary hover:text-text-primary hover:border-cyan-primary/30'
+                }
+              `}
+            >
+              {label}
+            </button>
+          ))}
+        </motion.div>
+
+        {/* Badge cards */}
         {loading ? (
-          <div className="loading">
-            <div className="spinner"></div>
-            <p>Loading badges...</p>
+          <div className="flex flex-col items-center justify-center py-32 gap-4">
+            <div className="w-10 h-10 border-2 border-[rgba(255,255,255,0.08)] border-t-cyan-primary rounded-full animate-spin" />
+            <p className="text-text-secondary text-sm">Loading badges...</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="empty">
-            <p>No badges found for this filter.</p>
-          </div>
+          <div className="text-center py-24 text-text-secondary">No badges found for this filter.</div>
         ) : (
-          filtered.map((holder) => {
-            const info = BADGE_INFO[holder.badgeType as keyof typeof BADGE_INFO];
-            return (
-              <Link href={`/agent/${holder.objectId}`} key={`${holder.objectId}-${holder.badgeType}`} className={`badge-card ${holder.isValid ? 'valid' : 'revoked'}`}>
-                <div className="badge-header">
-                  <span className="badge-emoji" style={{ fontSize: '32px' }}>{info?.emoji}</span>
-                  <span className="badge-name" style={{ color: info?.color }}>{info?.name}</span>
-                  {!holder.isValid && <span className="revoked-tag">REVOKED</span>}
-                </div>
-                <div className="agent-info">
-                  <span className="agent-name">{holder.agentName}</span>
-                  <span className="agent-id">{holder.agentId.slice(0, 8)}...{holder.agentId.slice(-4)}</span>
-                </div>
-                <div className="requirements">
-                  <span className="req-label">{info?.description}</span>
-                </div>
-                <div className="metrics">
-                  <div className="metric">
-                    <span className="label">Uptime</span>
-                    <span className="value">{holder.uptimeScore}%</span>
+          <motion.div
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+          >
+            {filtered.map((holder) => {
+              const info = BADGE_INFO[holder.badgeType as keyof typeof BADGE_INFO];
+              return (
+                <Link
+                  href={`/agent/${holder.objectId}`}
+                  key={`${holder.objectId}-${holder.badgeType}`}
+                  className={`
+                    rounded-2xl p-6 border transition-all duration-300 hover:-translate-y-1
+                    ${info?.bg || 'bg-surface-1/50'}
+                    ${info?.border || 'border-[rgba(255,255,255,0.08)]'}
+                    ${!holder.isValid ? 'opacity-50' : 'hover:shadow-card-hover'}
+                  `}
+                >
+                  {/* Badge header */}
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-3xl">{info?.emoji}</span>
+                    <span className={`text-lg font-bold ${info?.accent}`}>{info?.name}</span>
+                    {!holder.isValid && (
+                      <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold border border-red-500/30">
+                        <ShieldOff size={10} /> REVOKED
+                      </span>
+                    )}
+                    {holder.isValid && (
+                      <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full bg-mint-secondary/10 text-mint-secondary text-[10px] font-bold border border-mint-secondary/20">
+                        <ShieldCheck size={10} /> VALID
+                      </span>
+                    )}
                   </div>
-                  <div className="metric">
-                    <span className="label">Success</span>
-                    <span className="value">{holder.successRate}%</span>
+
+                  {/* Agent info */}
+                  <div className="mb-3">
+                    <p className="text-text-primary font-semibold text-sm">{holder.agentName}</p>
+                    <p className="font-mono text-text-muted text-[11px]">{holder.agentId.slice(0, 8)}...{holder.agentId.slice(-4)}</p>
                   </div>
-                </div>
-              </Link>
-            );
-          })
+
+                  <p className="text-text-muted text-xs mb-4">{info?.description}</p>
+
+                  {/* Metrics */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className={`rounded-xl p-3 ${info?.stat}`}>
+                      <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
+                      <p className={`font-mono font-bold text-sm ${info?.accent}`}>{holder.uptimeScore}%</p>
+                    </div>
+                    <div className={`rounded-xl p-3 ${info?.stat}`}>
+                      <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
+                      <p className={`font-mono font-bold text-sm ${info?.accent}`}>{holder.successRate}%</p>
+                    </div>
+                  </div>
+                </Link>
+              );
+            })}
+          </motion.div>
         )}
-      </section>
 
-      <section className="info-section">
-        <h2>How to Earn Badges</h2>
-        <div className="badge-requirements">
-          <div className="req-card gold">
-            <span className="emoji">🥇</span>
-            <h3>Gold Badge</h3>
-            <ul>
-              <li>200+ executions</li>
-              <li>95%+ success rate</li>
-              <li>$1,000,000+ total volume</li>
-            </ul>
+        {/* Requirements section */}
+        <motion.div
+          className="border-t border-[rgba(255,255,255,0.06)] pt-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          <h2 className="font-display text-2xl font-bold text-text-primary mb-6">How to Earn Badges</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            {[
+              { emoji: '🥇', name: 'Gold Badge', border: 'border-yellow-400/40', bg: 'bg-yellow-400/[0.05]', reqs: ['200+ executions', '95%+ success rate', '$1,000,000+ total volume'] },
+              { emoji: '🥈', name: 'Silver Badge', border: 'border-slate-400/40', bg: 'bg-slate-400/[0.05]', reqs: ['50+ executions', '90%+ success rate'] },
+              { emoji: '🥉', name: 'Bronze Badge', border: 'border-amber-700/40', bg: 'bg-amber-700/[0.05]', reqs: ['10+ executions', '80%+ success rate'] },
+            ].map(({ emoji, name, border, bg, reqs }) => (
+              <div key={name} className={`rounded-2xl p-6 border ${border} ${bg}`}>
+                <span className="text-3xl block mb-3">{emoji}</span>
+                <h3 className="font-semibold text-text-primary mb-3">{name}</h3>
+                <ul className="space-y-1.5">
+                  {reqs.map(r => (
+                    <li key={r} className="text-text-secondary text-sm flex items-center gap-2">
+                      <span className="w-1 h-1 rounded-full bg-text-muted" />
+                      {r}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
           </div>
-          <div className="req-card silver">
-            <span className="emoji">🥈</span>
-            <h3>Silver Badge</h3>
-            <ul>
-              <li>50+ executions</li>
-              <li>90%+ success rate</li>
-            </ul>
-          </div>
-          <div className="req-card bronze">
-            <span className="emoji">🥉</span>
-            <h3>Bronze Badge</h3>
-            <ul>
-              <li>10+ executions</li>
-              <li>80%+ success rate</li>
-            </ul>
-          </div>
-        </div>
-        <div className="warning-box">
-          <h3>⚠️ Auto-Revocation</h3>
-          <p>Badges are automatically revoked if:</p>
-          <ul>
-            <li>Success rate drops below threshold</li>
-            <li>Agent is flagged (5+ consecutive failures, &gt;500 BPS slippage)</li>
-            <li>Agent fails to maintain requirements</li>
-          </ul>
-        </div>
-      </section>
 
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          background: #0f0f1a;
-          padding: 40px 20px;
-        }
-        header {
-          text-align: center;
-          margin-bottom: 30px;
-        }
-        .back-link {
-          color: #8b5cf6;
-          text-decoration: none;
-          display: inline-block;
-          margin-bottom: 20px;
-        }
-        h1 {
-          font-size: 36px;
-          color: #fff;
-          margin: 0;
-        }
-        .subtitle {
-          color: #888;
-          margin-top: 8px;
-        }
-        .stats {
-          display: flex;
-          justify-content: center;
-          gap: 30px;
-          margin-bottom: 30px;
-          flex-wrap: wrap;
-        }
-        .stat {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 20px 30px;
-          background: #1a1a2e;
-          border-radius: 12px;
-          min-width: 100px;
-        }
-        .stat .emoji {
-          font-size: 32px;
-        }
-        .stat .count {
-          font-size: 28px;
-          font-weight: bold;
-          color: #fff;
-        }
-        .stat .label {
-          font-size: 12px;
-          color: #888;
-        }
-        .stat.gold { border: 2px solid #ffd700; }
-        .stat.silver { border: 2px solid #c0c0c0; }
-        .stat.bronze { border: 2px solid #cd7f32; }
-        .stat.revoked { border: 2px solid #ef4444; }
-        .filters {
-          display: flex;
-          justify-content: center;
-          gap: 10px;
-          margin-bottom: 30px;
-        }
-        .filters button {
-          padding: 10px 20px;
-          background: #1a1a2e;
-          border: 1px solid #333;
-          border-radius: 20px;
-          color: #888;
-          cursor: pointer;
-          transition: all 0.2s;
-        }
-        .filters button:hover {
-          border-color: #8b5cf6;
-          color: #fff;
-        }
-        .filters button.active {
-          background: linear-gradient(135deg, #8b5cf6, #ec4899);
-          border-color: transparent;
-          color: #fff;
-        }
-        .loading, .empty {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 200px;
-          color: #888;
-        }
-        .spinner {
-          width: 40px;
-          height: 40px;
-          border: 3px solid #333;
-          border-top-color: #8b5cf6;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        .badge-cards {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-          gap: 20px;
-          max-width: 900px;
-          margin: 0 auto 50px;
-        }
-        .badge-card {
-          background: #1a1a2e;
-          border: 1px solid #333;
-          border-radius: 16px;
-          padding: 24px;
-          text-decoration: none;
-          transition: all 0.2s;
-        }
-        .badge-card:hover {
-          transform: translateY(-4px);
-          border-color: #8b5cf6;
-        }
-        .badge-card.revoked {
-          opacity: 0.6;
-        }
-        .badge-header {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          margin-bottom: 16px;
-        }
-        .badge-name {
-          font-size: 20px;
-          font-weight: bold;
-        }
-        .revoked-tag {
-          background: #ef4444;
-          color: white;
-          padding: 2px 8px;
-          border-radius: 4px;
-          font-size: 10px;
-          font-weight: bold;
-        }
-        .agent-info {
-          margin-bottom: 12px;
-        }
-        .agent-name {
-          color: #fff;
-          font-size: 16px;
-          font-weight: bold;
-          display: block;
-        }
-        .agent-id {
-          color: #666;
-          font-size: 12px;
-          font-family: monospace;
-        }
-        .requirements {
-          margin-bottom: 12px;
-        }
-        .req-label {
-          color: #888;
-          font-size: 12px;
-        }
-        .metrics {
-          display: flex;
-          gap: 20px;
-        }
-        .metric {
-          display: flex;
-          flex-direction: column;
-        }
-        .metric .label {
-          color: #666;
-          font-size: 10px;
-        }
-        .metric .value {
-          color: #fff;
-          font-size: 16px;
-          font-weight: bold;
-        }
-        .info-section {
-          max-width: 900px;
-          margin: 0 auto;
-          padding-top: 40px;
-          border-top: 1px solid #333;
-        }
-        .info-section h2 {
-          color: #fff;
-          text-align: center;
-          margin-bottom: 30px;
-        }
-        .badge-requirements {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 20px;
-          margin-bottom: 30px;
-        }
-        @media (max-width: 768px) {
-          .badge-requirements {
-            grid-template-columns: 1fr;
-          }
-        }
-        .req-card {
-          background: #1a1a2e;
-          border-radius: 12px;
-          padding: 20px;
-          text-align: center;
-        }
-        .req-card.gold { border: 2px solid #ffd700; }
-        .req-card.silver { border: 2px solid #c0c0c0; }
-        .req-card.bronze { border: 2px solid #cd7f32; }
-        .req-card .emoji {
-          font-size: 40px;
-          display: block;
-          margin-bottom: 10px;
-        }
-        .req-card h3 {
-          color: #fff;
-          margin: 0 0 10px 0;
-        }
-        .req-card ul {
-          list-style: none;
-          padding: 0;
-          margin: 0;
-          color: #888;
-          font-size: 14px;
-        }
-        .req-card li {
-          padding: 4px 0;
-        }
-        .warning-box {
-          background: rgba(239, 68, 68, 0.1);
-          border: 1px solid #ef4444;
-          border-radius: 12px;
-          padding: 20px;
-        }
-        .warning-box h3 {
-          color: #ef4444;
-          margin: 0 0 10px 0;
-        }
-        .warning-box p {
-          color: #888;
-          margin: 0 0 10px 0;
-        }
-        .warning-box ul {
-          color: #888;
-          margin: 0;
-          padding-left: 20px;
-        }
-      `}</style>
+          {/* Warning box */}
+          <div className="rounded-2xl p-6 bg-red-500/[0.06] border border-red-500/30">
+            <h3 className="flex items-center gap-2 text-red-400 font-semibold mb-2">
+              <AlertTriangleIcon /> Auto-Revocation
+            </h3>
+            <p className="text-text-secondary text-sm mb-2">Badges are automatically revoked if:</p>
+            <ul className="space-y-1 text-text-secondary text-sm">
+              {['Success rate drops below threshold', 'Agent is flagged (5+ consecutive failures, >500 BPS slippage)', 'Agent fails to maintain requirements'].map(r => (
+                <li key={r} className="flex items-center gap-2">
+                  <span className="w-1 h-1 rounded-full bg-red-400" />{r}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </motion.div>
+      </div>
     </main>
+  );
+}
+
+function AlertTriangleIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+      <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
   );
 }

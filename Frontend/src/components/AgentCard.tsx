@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import { AlertTriangle, Activity, TrendingUp, Layers, BarChart2, Hash } from 'lucide-react';
 import { config } from '../config';
 
 interface ReputationData {
@@ -96,6 +98,13 @@ function calculateAgentStats(data: ReputationData): AgentStats {
   };
 }
 
+const TRUST_STYLES: Record<string, { pill: string; color: string }> = {
+  High: { pill: 'bg-mint-secondary/10 text-mint-secondary border-mint-secondary/30', color: 'text-mint-secondary' },
+  Medium: { pill: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30', color: 'text-yellow-400' },
+  Low: { pill: 'bg-orange-500/10 text-orange-400 border-orange-500/30', color: 'text-orange-400' },
+  Flagged: { pill: 'bg-red-500/10 text-red-400 border-red-500/30', color: 'text-red-400' },
+};
+
 export default function AgentCard({ agentAddress }: { agentAddress: string }) {
   const [reputation, setReputation] = useState<ReputationData | null>(null);
   const [stats, setStats] = useState<AgentStats | null>(null);
@@ -123,230 +132,101 @@ export default function AgentCard({ agentAddress }: { agentAddress: string }) {
 
   if (loading) {
     return (
-      <div className="card loading">
-        <div className="spinner"></div>
-        <p>Loading reputation...</p>
+      <div className="flex flex-col items-center justify-center py-24 gap-4 w-full">
+        <div className="w-10 h-10 border-2 border-[rgba(255,255,255,0.08)] border-t-cyan-primary rounded-full animate-spin" />
+        <p className="text-text-secondary text-sm">Loading reputation...</p>
       </div>
     );
   }
 
   if (!reputation) {
     return (
-      <div className="card empty">
-        <h3>Agent Not Found</h3>
-        <p>No reputation data available for this agent.</p>
-        <p className="hint">Object ID: {agentAddress}</p>
+      <div className="rounded-2xl glass-card-heavy p-8 max-w-lg w-full text-center">
+        <p className="text-text-primary font-semibold mb-2">Agent Not Found</p>
+        <p className="text-text-secondary text-sm mb-3">No reputation data available for this agent.</p>
+        <p className="font-mono text-text-muted text-xs">{agentAddress}</p>
       </div>
     );
   }
 
-  const trustLevelColors: Record<string, string> = {
-    High: '#22c55e',
-    Medium: '#eab308',
-    Low: '#f97316',
-    Flagged: '#ef4444',
-  };
+  const trustStyle = TRUST_STYLES[stats?.trustLevel || 'Low'];
+
+  const metrics = [
+    { icon: Activity, label: 'Uptime Score', value: stats?.estimatedUptime, color: 'text-cyan-primary', bg: 'bg-cyan-primary/[0.06]' },
+    { icon: TrendingUp, label: 'Success Rate', value: `${stats?.successRate}%`, color: 'text-mint-secondary', bg: 'bg-mint-secondary/[0.06]' },
+    { icon: Layers, label: 'Total Executions', value: reputation.totalExecutions, color: 'text-text-primary', bg: 'bg-surface-2' },
+    { icon: BarChart2, label: 'Total Volume', value: formatVolume(reputation.totalVolume), color: 'text-text-primary', bg: 'bg-surface-2' },
+    { icon: TrendingUp, label: 'Avg Slippage', value: formatSlippage(stats?.averageSlippage || 0), color: 'text-text-secondary', bg: 'bg-surface-2' },
+    { icon: Hash, label: 'Agent ID', value: `${reputation.agentId?.slice(0, 10)}...`, color: 'text-text-muted', bg: 'bg-surface-2', mono: true },
+  ];
+
+  const badgeChecks = [
+    { emoji: '🥉', name: 'Bronze', eligible: successRate >= 80 && totalExecutions >= 10 },
+    { emoji: '🥈', name: 'Silver', eligible: successRate >= 90 && totalExecutions >= 50 },
+    { emoji: '🥇', name: 'Gold', eligible: successRate >= 95 && totalExecutions >= 200 && totalVolume >= 1_000_000_000_000 },
+  ];
 
   return (
-    <div className="card">
-      <div className="header">
-        <h3>Agent Reputation</h3>
-        <span
-          className="badge"
-          style={{ backgroundColor: trustLevelColors[stats?.trustLevel || 'Low'] }}
-        >
+    <motion.div
+      className="rounded-2xl glass-card-heavy p-6 w-full max-w-lg"
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="font-display text-lg font-bold text-text-primary">Agent Reputation</h3>
+        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${trustStyle.pill}`}>
           {stats?.trustLevel}
         </span>
       </div>
 
-      <div className="metrics">
-        <div className="metric">
-          <span className="label">Uptime Score</span>
-          <span className="value">{stats?.estimatedUptime}</span>
-        </div>
-        <div className="metric">
-          <span className="label">Success Rate</span>
-          <span className="value">{stats?.successRate}%</span>
-        </div>
-        <div className="metric">
-          <span className="label">Total Executions</span>
-          <span className="value">{reputation.totalExecutions}</span>
-        </div>
-        <div className="metric">
-          <span className="label">Total Volume</span>
-          <span className="value">{formatVolume(reputation.totalVolume)}</span>
-        </div>
-        <div className="metric">
-          <span className="label">Avg Slippage</span>
-          <span className="value">{formatSlippage(stats?.averageSlippage || 0)}</span>
-        </div>
-        <div className="metric">
-          <span className="label">Agent ID</span>
-          <span className="value address">{reputation.agentId?.slice(0, 10)}...</span>
-        </div>
+      {/* Metrics grid */}
+      <div className="grid grid-cols-2 gap-3 mb-5">
+        {metrics.map(({ icon: Icon, label, value, color, bg, mono }) => (
+          <div key={label} className={`rounded-xl p-4 ${bg}`}>
+            <div className="flex items-center gap-1.5 mb-1">
+              <Icon size={12} className="text-text-muted" />
+              <p className="text-text-muted text-[10px] uppercase tracking-wide">{label}</p>
+            </div>
+            <p className={`${mono ? 'font-mono text-xs' : 'font-display font-bold text-base'} ${color}`}>
+              {value}
+            </p>
+          </div>
+        ))}
       </div>
 
+      {/* Flagged warning */}
       {reputation.isFlagged && (
-        <div className="warning">
-          <span className="icon">⚠️</span>
-          <span>This agent has been flagged for suspicious activity.</span>
+        <div className="flex items-center gap-3 rounded-xl p-4 bg-red-500/[0.08] border border-red-500/30 mb-5">
+          <AlertTriangle size={16} className="text-red-400 flex-shrink-0" />
+          <p className="text-red-400 text-sm">This agent has been flagged for suspicious activity.</p>
         </div>
       )}
 
-      <div className="badge-eligibility">
-        <h4>Badge Eligibility</h4>
-        <div className="badges">
-          <div className={`badge-item ${successRate >= 80 && totalExecutions >= 10 ? 'eligible' : 'not-eligible'}`}>
-            <span className="emoji">🥉</span>
-            <span className="name">Bronze</span>
-            <span className="status">{successRate >= 80 && totalExecutions >= 10 ? '✓' : '✗'}</span>
-          </div>
-          <div className={`badge-item ${successRate >= 90 && totalExecutions >= 50 ? 'eligible' : 'not-eligible'}`}>
-            <span className="emoji">🥈</span>
-            <span className="name">Silver</span>
-            <span className="status">{successRate >= 90 && totalExecutions >= 50 ? '✓' : '✗'}</span>
-          </div>
-          <div className={`badge-item ${successRate >= 95 && totalExecutions >= 200 && totalVolume >= 1_000_000_000_000 ? 'eligible' : 'not-eligible'}`}>
-            <span className="emoji">🥇</span>
-            <span className="name">Gold</span>
-            <span className="status">{successRate >= 95 && totalExecutions >= 200 && totalVolume >= 1_000_000_000_000 ? '✓' : '✗'}</span>
-          </div>
+      {/* Badge eligibility */}
+      <div className="border-t border-[rgba(255,255,255,0.06)] pt-5">
+        <p className="text-text-muted text-xs uppercase tracking-wide mb-3">Badge Eligibility</p>
+        <div className="grid grid-cols-3 gap-2">
+          {badgeChecks.map(({ emoji, name, eligible }) => (
+            <div
+              key={name}
+              className={`
+                rounded-xl p-3 flex flex-col items-center gap-1 border
+                ${eligible
+                  ? 'bg-mint-secondary/[0.06] border-mint-secondary/30'
+                  : 'bg-surface-2 border-[rgba(255,255,255,0.06)] opacity-50'
+                }
+              `}
+            >
+              <span className="text-xl">{emoji}</span>
+              <span className="text-text-muted text-[10px]">{name}</span>
+              <span className={`text-sm font-bold ${eligible ? 'text-mint-secondary' : 'text-red-400'}`}>
+                {eligible ? '✓' : '✗'}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
-
-      <style jsx>{`
-        .card {
-          background: #1a1a2e;
-          border: 1px solid #333;
-          border-radius: 12px;
-          padding: 24px;
-          max-width: 500px;
-        }
-        .header {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          margin-bottom: 20px;
-        }
-        .header h3 {
-          color: #fff;
-          margin: 0;
-        }
-        .badge {
-          color: white;
-          padding: 4px 12px;
-          border-radius: 20px;
-          font-size: 12px;
-          font-weight: bold;
-        }
-        .metrics {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 16px;
-        }
-        .metric {
-          display: flex;
-          flex-direction: column;
-        }
-        .label {
-          color: #888;
-          font-size: 12px;
-          margin-bottom: 4px;
-        }
-        .value {
-          color: #fff;
-          font-size: 18px;
-          font-weight: bold;
-        }
-        .value.address {
-          font-size: 12px;
-          font-family: monospace;
-        }
-        .warning {
-          margin-top: 16px;
-          padding: 12px;
-          background: rgba(239, 68, 68, 0.2);
-          border: 1px solid #ef4444;
-          border-radius: 8px;
-          color: #ef4444;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .loading, .empty {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 200px;
-          color: #888;
-        }
-        .hint {
-          font-size: 12px;
-          color: #666;
-          font-family: monospace;
-        }
-        .badge-eligibility {
-          margin-top: 20px;
-          padding-top: 16px;
-          border-top: 1px solid #333;
-        }
-        .badge-eligibility h4 {
-          color: #fff;
-          margin: 0 0 12px 0;
-          font-size: 14px;
-        }
-        .badges {
-          display: flex;
-          gap: 12px;
-        }
-        .badge-item {
-          flex: 1;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          padding: 12px;
-          background: #0f0f1a;
-          border-radius: 8px;
-          border: 1px solid #333;
-        }
-        .badge-item.eligible {
-          border-color: #22c55e;
-          background: rgba(34, 197, 94, 0.1);
-        }
-        .badge-item.not-eligible {
-          opacity: 0.5;
-        }
-        .badge-item .emoji {
-          font-size: 20px;
-        }
-        .badge-item .name {
-          color: #888;
-          font-size: 10px;
-          margin-top: 4px;
-        }
-        .badge-item .status {
-          font-size: 14px;
-          margin-top: 4px;
-        }
-        .badge-item.eligible .status {
-          color: #22c55e;
-        }
-        .badge-item.not-eligible .status {
-          color: #ef4444;
-        }
-        .spinner {
-          width: 32px;
-          height: 32px;
-          border: 3px solid #333;
-          border-top-color: #8b5cf6;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-      `}</style>
-    </div>
+    </motion.div>
   );
 }

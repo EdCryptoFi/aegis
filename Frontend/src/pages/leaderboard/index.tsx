@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Trophy, TrendingUp, AlertTriangle, Award } from 'lucide-react';
 
 interface LeaderboardEntry {
   rank: number;
@@ -15,14 +17,6 @@ interface LeaderboardEntry {
   isFlagged: boolean;
   badge: string;
 }
-
-const BADGE_EMOJI: Record<string, string> = {
-  gold: '🥇',
-  silver: '🥈',
-  bronze: '🥉',
-  revoked: '🚫',
-  none: '',
-};
 
 async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   const demoAgents = [
@@ -82,6 +76,20 @@ function formatVolume(mist: number): string {
   return `${sui.toFixed(2)}`;
 }
 
+const RANK_STYLES: Record<number, { color: string; label: string }> = {
+  1: { color: 'text-yellow-400', label: '#1' },
+  2: { color: 'text-slate-300', label: '#2' },
+  3: { color: 'text-amber-600', label: '#3' },
+};
+
+const BADGE_COLORS: Record<string, string> = {
+  gold: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',
+  silver: 'bg-slate-400/10 text-slate-300 border-slate-400/30',
+  bronze: 'bg-amber-700/10 text-amber-600 border-amber-700/30',
+  revoked: 'bg-red-500/10 text-red-400 border-red-500/30',
+  none: 'bg-surface-2 text-text-muted border-[rgba(255,255,255,0.08)]',
+};
+
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
@@ -98,212 +106,125 @@ export default function LeaderboardPage() {
   }
 
   return (
-    <main className="container">
-      <header>
-        <a href="/" className="back-link">← Back to Home</a>
-        <h1>🏆 Leaderboard</h1>
-        <p className="subtitle">Top AI agents ranked by performance</p>
-      </header>
+    <main className="min-h-screen bg-bg-base px-4 py-12">
+      <div className="max-w-5xl mx-auto">
 
-      <section className="stats-bar">
-        <div className="stat">
-          <span className="value">{leaderboard.length}</span>
-          <span className="label">Active Agents</span>
-        </div>
-        <div className="stat">
-          <span className="value">{leaderboard.filter(a => !a.isFlagged && a.badge !== 'none').length}</span>
-          <span className="label">Badges Awarded</span>
-        </div>
-        <div className="stat">
-          <span className="value">{leaderboard.filter(a => a.isFlagged).length}</span>
-          <span className="label">Flagged Agents</span>
-        </div>
-      </section>
-
-      {loading ? (
-        <div className="loading">
-          <div className="spinner"></div>
-          <p>Loading leaderboard...</p>
-        </div>
-      ) : (
-        <section className="leaderboard">
-          <div className="header-row">
-            <span className="col-rank">#</span>
-            <span className="col-name">Agent</span>
-            <span className="col-badge">Badge</span>
-            <span className="col-metric">Uptime</span>
-            <span className="col-metric">Success</span>
-            <span className="col-metric">Executions</span>
-            <span className="col-metric">Volume</span>
+        {/* Header */}
+        <motion.div
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+        >
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors mb-6">
+            ← Back to Home
+          </Link>
+          <div className="flex items-center gap-3 mb-2">
+            <Trophy size={28} className="text-cyan-primary" />
+            <h1 className="font-display text-5xl font-bold gradient-text-cyan">Rankings</h1>
           </div>
+          <p className="text-text-secondary text-lg">Top AI agents ranked by on-chain performance</p>
+        </motion.div>
 
-          {leaderboard.map((agent) => (
-            <Link href={`/agent/${agent.objectId}`} key={agent.objectId} className={`row ${agent.isFlagged ? 'flagged' : ''}`}>
-              <span className="col-rank">
-                {agent.rank <= 3 ? ['🥇', '🥈', '🥉'][agent.rank - 1] : agent.rank}
-              </span>
-              <span className="col-name">
-                <div className="name-cell">
-                  <span className="name">{agent.name}</span>
-                  <span className="id">{agent.objectId.slice(0, 6)}...{agent.objectId.slice(-4)}</span>
-                </div>
-              </span>
-              <span className="col-badge">
-                <span className={`badge-emoji ${agent.badge}`}>
-                  {BADGE_EMOJI[agent.badge] || ''} {agent.badge !== 'none' && agent.badge !== 'revoked' ? agent.badge : ''}
-                </span>
-              </span>
-              <span className="col-metric">{agent.uptimeScore}%</span>
-              <span className="col-metric">{agent.successRate}%</span>
-              <span className="col-metric">{agent.totalExecutions}</span>
-              <span className="col-metric">{formatVolume(agent.totalVolume)} SUI</span>
-            </Link>
+        {/* Stats bar */}
+        <motion.div
+          className="grid grid-cols-3 gap-4 mb-10"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          {[
+            { icon: TrendingUp, label: 'Active Agents', value: leaderboard.length, color: 'text-cyan-primary' },
+            { icon: Award, label: 'Badges Awarded', value: leaderboard.filter(a => !a.isFlagged && a.badge !== 'none').length, color: 'text-mint-secondary' },
+            { icon: AlertTriangle, label: 'Flagged', value: leaderboard.filter(a => a.isFlagged).length, color: 'text-red-400' },
+          ].map(({ icon: Icon, label, value, color }) => (
+            <div key={label} className="rounded-2xl p-5 glass-card-heavy flex flex-col items-center gap-1">
+              <Icon size={18} className={color} />
+              <span className={`font-display text-3xl font-bold ${color}`}>{value}</span>
+              <span className="text-text-muted text-xs uppercase tracking-wide">{label}</span>
+            </div>
           ))}
-        </section>
-      )}
+        </motion.div>
 
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          background: #0f0f1a;
-          padding: 40px 20px;
-        }
-        header {
-          text-align: center;
-          margin-bottom: 30px;
-        }
-        .back-link {
-          color: #8b5cf6;
-          text-decoration: none;
-          display: inline-block;
-          margin-bottom: 20px;
-        }
-        h1 {
-          font-size: 36px;
-          color: #fff;
-          margin: 0;
-        }
-        .subtitle {
-          color: #888;
-          margin-top: 8px;
-        }
-        .stats-bar {
-          display: flex;
-          justify-content: center;
-          gap: 60px;
-          margin-bottom: 30px;
-        }
-        .stat {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-        }
-        .stat .value {
-          font-size: 32px;
-          font-weight: bold;
-          color: #8b5cf6;
-        }
-        .stat .label {
-          font-size: 12px;
-          color: #888;
-        }
-        .loading {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          min-height: 300px;
-          color: #888;
-        }
-        .spinner {
-          width: 40px;
-          height: 40px;
-          border: 3px solid #333;
-          border-top-color: #8b5cf6;
-          border-radius: 50%;
-          animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-          to { transform: rotate(360deg); }
-        }
-        .leaderboard {
-          max-width: 1000px;
-          margin: 0 auto;
-        }
-        .header-row {
-          display: grid;
-          grid-template-columns: 50px 1fr 80px repeat(4, 100px);
-          gap: 10px;
-          padding: 12px 16px;
-          background: #1a1a2e;
-          border-radius: 12px 12px 0 0;
-          border-bottom: 1px solid #333;
-        }
-        .header-row span {
-          color: #666;
-          font-size: 12px;
-          font-weight: bold;
-        }
-        .row {
-          display: grid;
-          grid-template-columns: 50px 1fr 80px repeat(4, 100px);
-          gap: 10px;
-          padding: 16px;
-          background: #1a1a2e;
-          border-bottom: 1px solid #222;
-          text-decoration: none;
-          transition: background 0.2s;
-        }
-        .row:hover {
-          background: #222;
-        }
-        .row.flagged {
-          opacity: 0.5;
-          border-left: 3px solid #ef4444;
-        }
-        .col-rank {
-          font-size: 20px;
-          display: flex;
-          align-items: center;
-        }
-        .col-name {
-          display: flex;
-          align-items: center;
-        }
-        .name-cell {
-          display: flex;
-          flex-direction: column;
-        }
-        .name {
-          color: #fff;
-          font-weight: bold;
-        }
-        .id {
-          color: #666;
-          font-size: 11px;
-          font-family: monospace;
-        }
-        .col-badge {
-          display: flex;
-          align-items: center;
-        }
-        .badge-emoji {
-          font-size: 14px;
-          padding: 2px 8px;
-          border-radius: 4px;
-          background: #333;
-        }
-        .badge-emoji.gold { background: linear-gradient(135deg, #ffd700, #ffaa00); }
-        .badge-emoji.silver { background: linear-gradient(135deg, #c0c0c0, #a0a0a0); }
-        .badge-emoji.bronze { background: linear-gradient(135deg, #cd7f32, #8b4513); }
-        .badge-emoji.revoked { background: #ef4444; }
-        .col-metric {
-          display: flex;
-          align-items: center;
-          color: #fff;
-          font-size: 14px;
-        }
-      `}</style>
+        {/* Table */}
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-32 gap-4">
+            <div className="w-10 h-10 border-2 border-[rgba(255,255,255,0.08)] border-t-cyan-primary rounded-full animate-spin" />
+            <p className="text-text-secondary text-sm">Loading leaderboard...</p>
+          </div>
+        ) : (
+          <motion.div
+            className="rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)]"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+          >
+            {/* Header row */}
+            <div className="grid grid-cols-[48px_1fr_80px_80px_80px_100px_90px] gap-3 px-5 py-3 bg-surface-0 border-b border-[rgba(255,255,255,0.06)]">
+              {['#', 'Agent', 'Badge', 'Uptime', 'Success', 'Execs', 'Volume'].map((col) => (
+                <span key={col} className="text-text-muted text-[11px] font-semibold uppercase tracking-wider flex items-center">
+                  {col}
+                </span>
+              ))}
+            </div>
+
+            {leaderboard.map((agent, i) => {
+              const rankStyle = RANK_STYLES[agent.rank];
+              const badgeColor = BADGE_COLORS[agent.badge] || BADGE_COLORS.none;
+
+              return (
+                <Link
+                  href={`/agent/${agent.objectId}`}
+                  key={agent.objectId}
+                  className={`
+                    grid grid-cols-[48px_1fr_80px_80px_80px_100px_90px] gap-3 px-5 py-4
+                    border-b border-[rgba(255,255,255,0.04)] last:border-0
+                    bg-surface-1 hover:bg-surface-2/60 transition-colors duration-150
+                    ${agent.isFlagged ? 'opacity-50 border-l-2 border-l-red-500' : ''}
+                  `}
+                >
+                  {/* Rank */}
+                  <span className={`flex items-center font-display font-bold text-sm ${rankStyle ? rankStyle.color : 'text-text-muted'}`}>
+                    {rankStyle ? rankStyle.label : `#${agent.rank}`}
+                  </span>
+
+                  {/* Name */}
+                  <span className="flex flex-col justify-center">
+                    <span className="text-text-primary font-semibold text-sm">{agent.name}</span>
+                    <span className="font-mono text-text-muted text-[11px]">{agent.objectId.slice(0, 6)}...{agent.objectId.slice(-4)}</span>
+                  </span>
+
+                  {/* Badge */}
+                  <span className="flex items-center">
+                    <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeColor}`}>
+                      {agent.badge.toUpperCase()}
+                    </span>
+                  </span>
+
+                  {/* Uptime */}
+                  <span className="flex items-center font-mono text-sm text-cyan-primary font-semibold">
+                    {agent.uptimeScore}%
+                  </span>
+
+                  {/* Success */}
+                  <span className="flex items-center font-mono text-sm text-mint-secondary font-semibold">
+                    {agent.successRate}%
+                  </span>
+
+                  {/* Executions */}
+                  <span className="flex items-center font-mono text-sm text-text-primary">
+                    {agent.totalExecutions}
+                  </span>
+
+                  {/* Volume */}
+                  <span className="flex items-center font-mono text-sm text-text-secondary">
+                    {formatVolume(agent.totalVolume)} SUI
+                  </span>
+                </Link>
+              );
+            })}
+          </motion.div>
+        )}
+      </div>
     </main>
   );
 }

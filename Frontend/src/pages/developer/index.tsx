@@ -2,6 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { motion } from 'framer-motion';
+import { Code2, Copy, Check, Terminal, Zap, BookOpen, Lock, BarChart2, AlertTriangle } from 'lucide-react';
 import { config } from '../../config';
 
 export default function DeveloperPage() {
@@ -13,46 +15,62 @@ export default function DeveloperPage() {
     setTimeout(() => setCopied(null), 2000);
   }
 
+  const fadeUp = { hidden: { opacity: 0, y: 16 }, visible: { opacity: 1, y: 0 } };
+
   return (
-    <main className="container">
-      <header>
-        <a href="/" className="back-link">← Back to Home</a>
-        <h1>⚙️ Developer Hub</h1>
-        <p className="subtitle">Integrate your AI agent with Aegis</p>
-      </header>
+    <main className="min-h-screen bg-bg-base px-4 py-12">
+      <div className="max-w-4xl mx-auto">
 
-      <section className="contract-info">
-        <h2>Contract Addresses</h2>
-        <div className="address-card">
-          <div className="address-row">
-            <span className="label">Package ID</span>
-            <div className="value-box">
-              <code>{config.packageId}</code>
-              <button onClick={() => copyToClipboard(config.packageId, 'package')} className="copy-btn">
-                {copied === 'package' ? '✓ Copied' : 'Copy'}
-              </button>
+        {/* Header */}
+        <motion.div className="mb-12" initial="hidden" animate="visible" variants={fadeUp}>
+          <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors mb-6">
+            ← Back to Home
+          </Link>
+          <div className="flex items-center gap-3 mb-2">
+            <Code2 size={28} className="text-cyan-primary" />
+            <h1 className="font-display text-5xl font-bold gradient-text-cyan">Developer Hub</h1>
+          </div>
+          <p className="text-text-secondary text-lg">Integrate your AI agent with Aegis</p>
+        </motion.div>
+
+        {/* Contract Addresses */}
+        <motion.section
+          className="mb-10"
+          initial="hidden" animate="visible" variants={fadeUp}
+          transition={{ delay: 0.1 }}
+        >
+          <h2 className="font-display text-xl font-bold text-text-primary mb-4">Contract Addresses</h2>
+          <div className="rounded-2xl glass-card-heavy divide-y divide-[rgba(255,255,255,0.06)]">
+            {[
+              { label: 'Package ID', value: config.packageId, id: 'package' },
+              { label: 'BadgeRegistry', value: config.badgeRegistry, id: 'registry' },
+            ].map(({ label, value, id }) => (
+              <div key={id} className="flex items-center justify-between px-6 py-4 gap-4">
+                <span className="text-text-muted text-sm min-w-[110px]">{label}</span>
+                <code className="font-mono text-xs text-text-primary flex-1 truncate">{value}</code>
+                <button
+                  onClick={() => copyToClipboard(value, id)}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-2 hover:bg-cyan-primary/10 border border-[rgba(255,255,255,0.08)] hover:border-cyan-primary/30 text-text-secondary hover:text-cyan-primary text-xs font-medium transition-all"
+                >
+                  {copied === id ? <Check size={12} /> : <Copy size={12} />}
+                  {copied === id ? 'Copied' : 'Copy'}
+                </button>
+              </div>
+            ))}
+            <div className="flex items-center px-6 py-4 gap-4">
+              <span className="text-text-muted text-sm min-w-[110px]">Network</span>
+              <span className="font-mono text-xs font-bold text-cyan-primary">testnet</span>
             </div>
           </div>
-          <div className="address-row">
-            <span className="label">BadgeRegistry</span>
-            <div className="value-box">
-              <code>{config.badgeRegistry}</code>
-              <button onClick={() => copyToClipboard(config.badgeRegistry, 'registry')} className="copy-btn">
-                {copied === 'registry' ? '✓ Copied' : 'Copy'}
-              </button>
-            </div>
-          </div>
-          <div className="address-row">
-            <span className="label">Network</span>
-            <span className="value static">testnet</span>
-          </div>
-        </div>
-      </section>
+        </motion.section>
 
-      <section className="quick-start">
-        <h2>🚀 Quick Start</h2>
-        <div className="code-block">
-          <pre>{`// 1. Register your agent
+        {/* Quick Start */}
+        <motion.section className="mb-10" initial="hidden" whileInView="visible" variants={fadeUp} viewport={{ once: true }}>
+          <h2 className="font-display text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+            <Zap size={18} className="text-cyan-primary" /> Quick Start
+          </h2>
+          <div className="rounded-2xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-6 overflow-x-auto">
+            <pre className="font-mono text-sm text-cyan-primary leading-relaxed whitespace-pre">{`// 1. Register your agent
 const result = await aegis.registerAgent();
 // Returns: { digest, objectId }
 
@@ -73,128 +91,91 @@ await aegis.grantBadge({
   agentId: '0x...',
   badgeType: 1  // Bronze
 });`}</pre>
-        </div>
-      </section>
+          </div>
+        </motion.section>
 
-      <section className="sdk-functions">
-        <h2>📦 SDK Functions</h2>
-        <div className="function-grid">
-          <div className="function-card">
-            <h3>registerAgent()</h3>
-            <p>Create a new ReputationObject for your agent</p>
-            <div className="returns">
-              <span className="tag">Returns</span>
-              <code>{`{ digest: string, objectId: string }`}</code>
-            </div>
+        {/* SDK Functions */}
+        <motion.section className="mb-10" initial="hidden" whileInView="visible" variants={fadeUp} viewport={{ once: true }}>
+          <h2 className="font-display text-xl font-bold text-text-primary mb-4">SDK Functions</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { name: 'registerAgent()', desc: 'Create a new ReputationObject for your agent', tag: 'Returns', code: '{ digest: string, objectId: string }' },
+              { name: 'recordExecution()', desc: 'Report execution results to build reputation', tag: 'Params', code: 'success: bool, volume: u64, slippage: u64' },
+              { name: 'isEligibleForBadge()', desc: 'Check if agent meets badge requirements', tag: 'Params', code: 'badgeType: 1|2|3 (Bronze|Silver|Gold)' },
+              { name: 'grantBadge()', desc: 'Request a badge from the registry', tag: 'Params', code: 'agentId, badgeType' },
+              { name: 'getAgentReputation()', desc: 'Fetch agent metrics from blockchain', tag: 'Returns', code: 'ReputationData' },
+              { name: 'checkAndRevokeInvalid()', desc: 'Trigger auto-revocation check — anyone can call', tag: null, code: null },
+            ].map(({ name, desc, tag, code }) => (
+              <div key={name} className="rounded-2xl p-5 glass-card-matte hover:bg-surface-2/60 transition-colors">
+                <p className="font-mono text-sm font-semibold text-cyan-primary mb-1">{name}</p>
+                <p className="text-text-secondary text-xs mb-3">{desc}</p>
+                {tag && code && (
+                  <div className="flex items-center gap-2 flex-wrap">
+                    <span className="px-2 py-0.5 rounded-md bg-surface-2 text-text-muted text-[10px] font-semibold uppercase tracking-wide">{tag}</span>
+                    <code className="font-mono text-xs text-text-primary">{code}</code>
+                  </div>
+                )}
+              </div>
+            ))}
           </div>
-          <div className="function-card">
-            <h3>recordExecution()</h3>
-            <p>Report execution results to build reputation</p>
-            <div className="params">
-              <span className="tag">Params</span>
-              <code>{`success: bool, volume: u64, slippage: u64`}</code>
-            </div>
-          </div>
-          <div className="function-card">
-            <h3>isEligibleForBadge()</h3>
-            <p>Check if agent meets badge requirements</p>
-            <div className="params">
-              <span className="tag">Params</span>
-              <code>{`badgeType: 1|2|3 (Bronze|Silver|Gold)`}</code>
-            </div>
-            <div className="returns">
-              <span className="tag">Returns</span>
-              <code>{`bool`}</code>
-            </div>
-          </div>
-          <div className="function-card">
-            <h3>grantBadge()</h3>
-            <p>Request a badge from the registry</p>
-            <div className="params">
-              <span className="tag">Params</span>
-              <code>{`agentId, badgeType`}</code>
-            </div>
-          </div>
-          <div className="function-card">
-            <h3>getAgentReputation()</h3>
-            <p>Fetch agent metrics from blockchain</p>
-            <div className="returns">
-              <span className="tag">Returns</span>
-              <code>{`ReputationData`}</code>
-            </div>
-          </div>
-          <div className="function-card">
-            <h3>checkAndRevokeInvalid()</h3>
-            <p>Trigger auto-revocation check</p>
-            <p className="note">Anyone can call this function</p>
-          </div>
-        </div>
-      </section>
+        </motion.section>
 
-      <section className="badge-requirements">
-        <h2>🏅 Badge Requirements</h2>
-        <table>
-          <thead>
-            <tr>
-              <th>Badge</th>
-              <th>Executions</th>
-              <th>Success Rate</th>
-              <th>Volume</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td className="bronze">🥉 Bronze</td>
-              <td>10+</td>
-              <td>80%+</td>
-              <td>Any</td>
-            </tr>
-            <tr>
-              <td className="silver">🥈 Silver</td>
-              <td>50+</td>
-              <td>90%+</td>
-              <td>Any</td>
-            </tr>
-            <tr>
-              <td className="gold">🥇 Gold</td>
-              <td>200+</td>
-              <td>95%+</td>
-              <td>$1M+</td>
-            </tr>
-          </tbody>
-        </table>
-      </section>
+        {/* Badge Requirements Table */}
+        <motion.section className="mb-10" initial="hidden" whileInView="visible" variants={fadeUp} viewport={{ once: true }}>
+          <h2 className="font-display text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+            <BarChart2 size={18} className="text-cyan-primary" /> Badge Requirements
+          </h2>
+          <div className="rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)]">
+            <div className="grid grid-cols-4 px-5 py-3 bg-surface-0 border-b border-[rgba(255,255,255,0.06)]">
+              {['Badge', 'Executions', 'Success Rate', 'Volume'].map(h => (
+                <span key={h} className="text-text-muted text-[11px] font-semibold uppercase tracking-wider">{h}</span>
+              ))}
+            </div>
+            {[
+              { badge: '🥉 Bronze', execs: '10+', success: '80%+', volume: 'Any', color: 'text-amber-600' },
+              { badge: '🥈 Silver', execs: '50+', success: '90%+', volume: 'Any', color: 'text-slate-300' },
+              { badge: '🥇 Gold', execs: '200+', success: '95%+', volume: '$1M+', color: 'text-yellow-400' },
+            ].map(({ badge, execs, success, volume, color }) => (
+              <div key={badge} className="grid grid-cols-4 px-5 py-3.5 bg-surface-1 border-b border-[rgba(255,255,255,0.04)] last:border-0 hover:bg-surface-2/50 transition-colors">
+                <span className={`font-semibold text-sm ${color}`}>{badge}</span>
+                <span className="font-mono text-sm text-text-primary">{execs}</span>
+                <span className="font-mono text-sm text-text-primary">{success}</span>
+                <span className="font-mono text-sm text-text-primary">{volume}</span>
+              </div>
+            ))}
+          </div>
+        </motion.section>
 
-      <section className="auto-system">
-        <h2>⚠️ Auto-Revocation Rules</h2>
-        <div className="rules-grid">
-          <div className="rule-card">
-            <span className="rule-icon">📉</span>
-            <h3>Low Success Rate</h3>
-            <p>Agent flagged if success rate drops below 50%</p>
+        {/* Auto-revocation rules */}
+        <motion.section className="mb-10" initial="hidden" whileInView="visible" variants={fadeUp} viewport={{ once: true }}>
+          <h2 className="font-display text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+            <AlertTriangle size={18} className="text-red-400" /> Auto-Revocation Rules
+          </h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {[
+              { icon: '📉', title: 'Low Success Rate', desc: 'Agent flagged if success rate drops below 50%' },
+              { icon: '❌', title: 'Consecutive Failures', desc: 'Agent flagged after 5+ consecutive failures' },
+              { icon: '💸', title: 'High Slippage', desc: 'Agent flagged if slippage exceeds 500 BPS' },
+              { icon: '🔄', title: 'Recovery', desc: 'Unflag after 100 consecutive successes' },
+            ].map(({ icon, title, desc }) => (
+              <div key={title} className="rounded-2xl p-5 glass-card-matte flex gap-3">
+                <span className="text-xl">{icon}</span>
+                <div>
+                  <p className="text-text-primary font-semibold text-sm mb-1">{title}</p>
+                  <p className="text-text-secondary text-xs">{desc}</p>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="rule-card">
-            <span className="rule-icon">❌</span>
-            <h3>Consecutive Failures</h3>
-            <p>Agent flagged after 5+ consecutive failures</p>
-          </div>
-          <div className="rule-card">
-            <span className="rule-icon">💸</span>
-            <h3>High Slippage</h3>
-            <p>Agent flagged if slippage exceeds 500 BPS</p>
-          </div>
-          <div className="rule-card">
-            <span className="rule-icon">🔄</span>
-            <h3>Recovery</h3>
-            <p>Unflag after 100 consecutive successes</p>
-          </div>
-        </div>
-      </section>
+        </motion.section>
 
-      <section className="cli-reference">
-        <h2>💻 CLI Reference</h2>
-        <div className="code-block">
-          <pre>{`# Register agent
+        {/* CLI Reference */}
+        <motion.section className="mb-10" initial="hidden" whileInView="visible" variants={fadeUp} viewport={{ once: true }}>
+          <h2 className="font-display text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+            <Terminal size={18} className="text-cyan-primary" /> CLI Reference
+          </h2>
+          <div className="rounded-2xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-6 overflow-x-auto">
+            <pre className="font-mono text-sm text-cyan-primary leading-relaxed whitespace-pre">{`# Register agent
 sui client call \\
   --package ${config.packageId} \\
   --module reputation \\
@@ -224,253 +205,34 @@ sui client call \\
   --function is_badge_valid_for \\
   --args ${config.badgeRegistry} <AGENT_ID> <BADGE_TYPE> \\
   --gas-budget 10000000`}</pre>
-        </div>
-      </section>
+          </div>
+        </motion.section>
 
-      <section className="docs-links">
-        <h2>📚 Documentation</h2>
-        <div className="links-grid">
-          <a href="/docs/AGENT_INTEGRATION_GUIDE.md" className="doc-link">
-            <span className="icon">📖</span>
-            <span>Integration Guide</span>
-          </a>
-          <a href="/docs/AGENT_QUICKSTART.md" className="doc-link">
-            <span className="icon">⚡</span>
-            <span>Quick Start</span>
-          </a>
-          <a href="/docs/AGENT_PERFORMANCE.md" className="doc-link">
-            <span className="icon">📊</span>
-            <span>Performance Metrics</span>
-          </a>
-          <a href="/docs/SECURITY_ANALYSIS.md" className="doc-link">
-            <span className="icon">🔒</span>
-            <span>Security Analysis</span>
-          </a>
-        </div>
-      </section>
+        {/* Doc links */}
+        <motion.section initial="hidden" whileInView="visible" variants={fadeUp} viewport={{ once: true }}>
+          <h2 className="font-display text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+            <BookOpen size={18} className="text-cyan-primary" /> Documentation
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { icon: '📖', label: 'Integration Guide', href: '/docs/AGENT_INTEGRATION_GUIDE.md' },
+              { icon: '⚡', label: 'Quick Start', href: '/docs/AGENT_QUICKSTART.md' },
+              { icon: '📊', label: 'Performance Metrics', href: '/docs/AGENT_PERFORMANCE.md' },
+              { icon: '🔒', label: 'Security Analysis', href: '/docs/SECURITY_ANALYSIS.md' },
+            ].map(({ icon, label, href }) => (
+              <a
+                key={label}
+                href={href}
+                className="rounded-2xl p-5 glass-card-matte hover:bg-surface-2/60 hover:border-cyan-primary/20 hover:-translate-y-1 transition-all text-center flex flex-col items-center gap-2"
+              >
+                <span className="text-2xl">{icon}</span>
+                <span className="text-text-secondary text-xs font-medium leading-tight">{label}</span>
+              </a>
+            ))}
+          </div>
+        </motion.section>
 
-      <style jsx>{`
-        .container {
-          min-height: 100vh;
-          background: #0f0f1a;
-          padding: 40px 20px;
-          max-width: 900px;
-          margin: 0 auto;
-        }
-        header {
-          text-align: center;
-          margin-bottom: 40px;
-        }
-        .back-link {
-          color: #8b5cf6;
-          text-decoration: none;
-          display: inline-block;
-          margin-bottom: 20px;
-        }
-        h1 {
-          font-size: 36px;
-          color: #fff;
-          margin: 0;
-        }
-        .subtitle {
-          color: #888;
-          margin-top: 8px;
-        }
-        h2 {
-          color: #fff;
-          font-size: 20px;
-          margin: 0 0 20px 0;
-        }
-        section {
-          margin-bottom: 50px;
-        }
-        .contract-info {
-          background: #1a1a2e;
-          border-radius: 12px;
-          padding: 24px;
-        }
-        .address-card {
-          display: flex;
-          flex-direction: column;
-          gap: 12px;
-        }
-        .address-row {
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 12px 0;
-          border-bottom: 1px solid #333;
-        }
-        .address-row:last-child {
-          border-bottom: none;
-        }
-        .address-row .label {
-          color: #888;
-        }
-        .value-box {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .value-box code {
-          color: #fff;
-          font-size: 12px;
-          font-family: monospace;
-        }
-        .value.static {
-          color: #8b5cf6;
-          font-weight: bold;
-        }
-        .copy-btn {
-          padding: 4px 12px;
-          background: #333;
-          border: none;
-          border-radius: 4px;
-          color: #fff;
-          font-size: 12px;
-          cursor: pointer;
-        }
-        .copy-btn:hover {
-          background: #444;
-        }
-        .code-block {
-          background: #1a1a2e;
-          border-radius: 12px;
-          padding: 20px;
-          overflow-x: auto;
-        }
-        .code-block pre {
-          margin: 0;
-          color: #a5f3fc;
-          font-family: 'Monaco', 'Menlo', monospace;
-          font-size: 13px;
-          line-height: 1.5;
-        }
-        .function-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-          gap: 16px;
-        }
-        .function-card {
-          background: #1a1a2e;
-          border-radius: 12px;
-          padding: 20px;
-        }
-        .function-card h3 {
-          color: #8b5cf6;
-          margin: 0 0 8px 0;
-          font-size: 14px;
-          font-family: monospace;
-        }
-        .function-card p {
-          color: #888;
-          margin: 0 0 12px 0;
-          font-size: 13px;
-        }
-        .function-card .tag {
-          display: inline-block;
-          background: #333;
-          color: #888;
-          padding: 2px 6px;
-          border-radius: 4px;
-          font-size: 10px;
-          margin-right: 8px;
-        }
-        .function-card code {
-          color: #fff;
-          font-size: 12px;
-        }
-        .function-card .note {
-          color: #ef4444;
-          font-style: italic;
-        }
-        table {
-          width: 100%;
-          border-collapse: collapse;
-          background: #1a1a2e;
-          border-radius: 12px;
-          overflow: hidden;
-        }
-        th {
-          background: #222;
-          color: #888;
-          padding: 12px;
-          text-align: left;
-          font-size: 12px;
-        }
-        td {
-          padding: 12px;
-          color: #fff;
-          border-top: 1px solid #333;
-        }
-        td.bronze { color: #cd7f32; font-weight: bold; }
-        td.silver { color: #c0c0c0; font-weight: bold; }
-        td.gold { color: #ffd700; font-weight: bold; }
-        .rules-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 16px;
-        }
-        @media (max-width: 600px) {
-          .rules-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-        .rule-card {
-          background: #1a1a2e;
-          border-radius: 12px;
-          padding: 20px;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        .rule-icon {
-          font-size: 24px;
-        }
-        .rule-card h3 {
-          color: #fff;
-          margin: 0;
-          font-size: 14px;
-        }
-        .rule-card p {
-          color: #888;
-          margin: 0;
-          font-size: 13px;
-        }
-        .links-grid {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 12px;
-        }
-        @media (max-width: 600px) {
-          .links-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-        .doc-link {
-          background: #1a1a2e;
-          border-radius: 12px;
-          padding: 16px;
-          text-align: center;
-          text-decoration: none;
-          transition: all 0.2s;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: 8px;
-        }
-        .doc-link:hover {
-          border-color: #8b5cf6;
-          background: #222;
-        }
-        .doc-link .icon {
-          font-size: 24px;
-        }
-        .doc-link span:last-child {
-          color: #fff;
-          font-size: 12px;
-        }
-      `}</style>
+      </div>
     </main>
   );
 }
