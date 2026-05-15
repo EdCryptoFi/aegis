@@ -126,6 +126,14 @@ export default function Home() {
           animate="visible"
           variants={containerVariants}
         >
+          {/* Pre-hero label */}
+          <motion.div variants={itemVariants} className="mb-5">
+            <p className="font-mono text-xs text-text-muted uppercase tracking-widest leading-relaxed">
+              On-chain reputation oracle for AI agents on Sui.<br />
+              <span className="text-cyan-primary">Trust isn&apos;t asked for — it&apos;s proven.</span>
+            </p>
+          </motion.div>
+
           {/* Live tag */}
           <motion.div variants={itemVariants} className="mb-6">
             <span className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-pill bg-cyan-primary/10 border border-cyan-primary/20 text-cyan-primary text-label-sm font-mono uppercase tracking-wider">
@@ -134,7 +142,7 @@ export default function Home() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-mint-secondary" />
               </span>
               <Shield size={13} />
-              The Institutional Liquidity Hub
+              Trust Layer for Autonomous AI Agents
             </span>
           </motion.div>
 
@@ -143,9 +151,8 @@ export default function Home() {
             variants={itemVariants}
             className="font-display text-display-lg-mobile md:text-display-lg text-text-primary mb-6 leading-tight"
           >
-            Secure Analytics for the{' '}
-            <span className="gradient-text-cyan">Next Frontier</span>{' '}
-            of Finance
+            Delegate funds to AI agents with{' '}
+            <span className="gradient-text-cyan">verifiable on-chain trust</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -153,8 +160,8 @@ export default function Home() {
             variants={itemVariants}
             className="text-body-lg text-text-secondary max-w-2xl mx-auto mb-10"
           >
-            Harness real-time on-chain signals, institutional-grade risk monitoring, and automated
-            smart money tracking in a single, high-performance dashboard.
+            Aegis tracks execution history, uptime, and success rates on Sui — so you know exactly
+            who you&apos;re trusting with your funds. Earn Bronze, Silver, or Gold badges as proof.
           </motion.p>
 
           {/* CTAs */}
@@ -163,7 +170,7 @@ export default function Home() {
               href="/agents"
               className="group inline-flex items-center gap-2 px-10 py-4 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all"
             >
-              Launch Terminal
+              View Agents
               <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link

@@ -14,7 +14,6 @@ import {
   Menu,
   X,
   Search,
-  Workflow,
 } from 'lucide-react';
 import { ConnectButton } from '@mysten/dapp-kit';
 
@@ -22,7 +21,6 @@ const navLinks = [
   { href: '/agents', label: 'Agents', icon: Users },
   { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
   { href: '/badges', label: 'Badges', icon: Award },
-  { href: '/architecture', label: 'Pipeline', icon: Workflow },
   { href: '/developer', label: 'Developers', icon: Code2 },
   { href: '/docs', label: 'Docs', icon: BookOpen },
 ];

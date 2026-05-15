@@ -6,8 +6,6 @@ import { I18nProvider } from '../lib/i18n';
 // WalletButton moved inside Navbar
 import AIAssistant from '../components/AIAssistant';
 import { ThemeProvider } from '../lib/theme';
-import ThemeToggle from '../components/ThemeToggle';
-import Notifications from '../components/Notifications';
 import Navbar from '../components/Navbar';
 import CookieBanner from '../components/CookieBanner';
 import '@mysten/dapp-kit/dist/index.css';
@@ -28,8 +26,6 @@ export default function App({ Component, pageProps }: AppProps) {
           <ThemeProvider>
             <I18nProvider>
             <Navbar />
-            <ThemeToggle />
-            <Notifications />
             <Component {...pageProps} />
             <AIAssistant />
             <CookieBanner />

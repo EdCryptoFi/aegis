@@ -11,19 +11,19 @@ interface Message {
 export default function AIAssistant() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Olá! Sou o assistente do Aegis. Posso ajudar com:\n\n• Explicar como funciona a reputação\n• Dicas para seu agente ganhar badges\n• Entender o sistema de flagging\n• Guia de integração\n\nO que gostaria de saber?', timestamp: new Date() }
+    { role: 'assistant', content: 'Hi! I\'m the Aegis assistant. I can help with:\n\n• How the reputation system works\n• Tips to earn badges for your agent\n• Understanding the auto-flagging system\n• Integration & SDK guide\n\nWhat would you like to know?', timestamp: new Date() }
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const FAQ_RESPONSES: Record<string, string> = {
-    'reputação': 'A reputação no Aegis é baseada em métricas on-chain:\n\n• Success Rate = execuções bem-sucedidas / total\n• Uptime = mesma coisa que success rate\n• Volume = total de fundos processados\n• Slippage = diferença entre preço esperado e execução\n\nQuer ver os detalhes de um agente? Vá para /agents',
-    'badge': 'As badges são conquistadas automaticamente:\n\n🥉 Bronze: 10+ execuções, 80%+ success\n🥈 Silver: 50+ execuções, 90%+ success\n🥇 Gold: 200+ execuções, 95%+, $1M+ volume\n\n⚠️ Importante: Badges expiram após 5 dias!\n\nQuer verificar elegibilidade? Vá para /badges',
-    'flag': 'O flagging é AUTOMÁTICO! Ocorre quando:\n\n• Success rate < 50%\n• 5+ falhas consecutivas\n• Slippage > 5%\n\nPara recuperar, precisa de 100 successes consecutivos + 200+ total.',
-    'integrar': 'Para integrar seu agente:\n\n1. Conecte sua wallet\n2. Execute registerAgent() para criar ReputationObject\n3. Após cada execução, chame recordExecution()\n\n4. Após 10+ execuções com 80%+ success, ganha Bronze\n\nVeja detalhes em /developer',
-    'wallet': 'Você NÃO precisa de wallet para ler dados!\n\n• Ver agentes: aberto a todos\n• Ler reputação: aberto a todos\n• Conectar wallet apenas para:\n  - Registrar agente\n  - Gravar execução\n  - Solicitar badge\n\nQuer ver os agentes? Vá para /agents',
-    'expir': 'As badges expiram após 5 dias! Para renovar:\n\n• Continue executando operações\n• Mantenha os requisitos (executions, success rate)\n• O sistema renova automaticamente\n\nCaso contrário, o badge é revogado.',
+    'reputation': 'Aegis reputation is based on on-chain metrics:\n\n• Success Rate = successful executions / total\n• Uptime = same as success rate\n• Volume = total funds processed\n• Slippage = difference between expected and actual price\n\nWant to see an agent\'s details? Visit /agents',
+    'badge': 'Badges are earned automatically:\n\n🥉 Bronze: 10+ executions, 80%+ success\n🥈 Silver: 50+ executions, 90%+ success\n🥇 Gold: 200+ executions, 95%+, $1M+ volume\n\n⚠️ Important: Badges expire after 5 days!\n\nCheck eligibility at /badges',
+    'flag': 'Flagging is AUTOMATIC and triggers when:\n\n• Success rate < 50%\n• 5+ consecutive failures\n• Slippage > 5%\n\nRecovery requires 100 consecutive successes + 200+ total executions.',
+    'integrat': 'To integrate your agent:\n\n1. Connect your wallet\n2. Call registerAgent() to create a ReputationObject\n3. After each execution, call recordExecution()\n4. After 10+ executions with 80%+ success, you earn Bronze\n\nSee details at /developer',
+    'wallet': 'You do NOT need a wallet to read data!\n\n• View agents: open to everyone\n• Read reputation: open to everyone\n• Wallet only needed for:\n  - Registering an agent\n  - Recording executions\n  - Requesting a badge\n\nWant to see agents? Visit /agents',
+    'expir': 'Badges expire after 5 days! To renew:\n\n• Keep executing operations\n• Maintain the requirements (executions, success rate)\n• The system renews automatically\n\nOtherwise, the badge is revoked.',
   };
 
   function getFAQResponse(question: string): string | null {
@@ -71,7 +71,7 @@ export default function AIAssistant() {
       const faqResponse = getFAQResponse(input);
       const fallbackMessage: Message = {
         role: 'assistant',
-        content: faqResponse || `Interessante! Posso ajudar com:\n\n📖 *Documentação*: /docs\n❓ *FAQ*: /docs/faq\n💻 *Dev Hub*: /developer\n🏆 *Leaderboard*: /leaderboard\n❌ *Badges*: /badges\n\nO que gostaria de explorar?`,
+        content: faqResponse || `Sure! Here are some places to explore:\n\n📖 *Docs*: /docs\n❓ *FAQ*: /docs/faq\n💻 *Dev Hub*: /developer\n🏆 *Leaderboard*: /leaderboard\n🏅 *Badges*: /badges\n\nWhat would you like to explore?`,
         timestamp: new Date()
       };
       setMessages(prev => [...prev, fallbackMessage]);
@@ -96,7 +96,7 @@ export default function AIAssistant() {
       {isOpen && (
         <div className="chat-window">
           <div className="chat-header">
-            <span className="chat-title">🤖 Assistente Aegis</span>
+            <span className="chat-title">🤖 Aegis Assistant</span>
             <button className="close-btn" onClick={() => setIsOpen(false)}>✕</button>
           </div>
 
@@ -109,7 +109,7 @@ export default function AIAssistant() {
             {loading && (
               <div className="message assistant">
                 <div className="message-content typing">
-                  <span>•••</span> Pensando...
+                  <span>•••</span> Thinking...
                 </div>
               </div>
             )}
@@ -122,7 +122,7 @@ export default function AIAssistant() {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder="Digite sua pergunta..."
+              placeholder="Ask a question..."
               disabled={loading}
             />
             <button onClick={sendMessage} disabled={loading || !input.trim()}>
