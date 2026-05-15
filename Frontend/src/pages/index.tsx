@@ -212,6 +212,45 @@ export default function Home() {
               );
             })}
           </motion.div>
+
+          {/* Integrated with */}
+          <motion.div
+            variants={itemVariants}
+            className="mt-14 flex flex-col items-center gap-5"
+          >
+            <p className="text-text-muted text-xs font-mono uppercase tracking-widest">Integrated with</p>
+            <div className="flex flex-wrap items-center justify-center gap-8">
+              {/* Sui */}
+              <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+                <svg width="22" height="22" viewBox="0 0 100 100" fill="none">
+                  <path d="M50 5C25.1 5 5 25.1 5 50s20.1 45 45 45 45-20.1 45-45S74.9 5 50 5z" fill="#4DA2FF" opacity="0.2"/>
+                  <path d="M50 15c-19.3 0-35 15.7-35 35s15.7 35 35 35 35-15.7 35-35-15.7-35-35-35zm-8 49.5c-5.2-3-8.5-8.5-8.5-14.5 0-4.7 1.9-8.9 5-12l3.5 6c-1.8 1.7-2.9 4-2.9 6.5 0 3.7 2.2 7 5.5 8.6l-2.6 5.4zm8 3.2c-1.1 0-2.1-.1-3.1-.3l1.8-5.7c.4.1.9.1 1.3.1 5.5 0 10-4.5 10-10s-4.5-10-10-10c-3.3 0-6.3 1.6-8.1 4.2l-4.2-4.2c2.9-3.7 7.4-6 12.3-6 8.8 0 16 7.2 16 16s-7.2 16-16 16z" fill="#4DA2FF"/>
+                </svg>
+                <span className="font-display font-bold text-text-secondary text-base tracking-wide">Sui</span>
+              </div>
+
+              <span className="w-px h-5 bg-[rgba(255,255,255,0.08)]" />
+
+              {/* MemWal */}
+              <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+                <div className="w-6 h-6 rounded-md bg-white flex items-center justify-center">
+                  <span className="font-black text-black text-xs leading-none">M</span>
+                </div>
+                <span className="font-display font-bold text-text-secondary text-base tracking-wide">MemWal</span>
+              </div>
+
+              <span className="w-px h-5 bg-[rgba(255,255,255,0.08)]" />
+
+              {/* Walrus */}
+              <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+                <div className="w-6 h-6 rounded-full bg-gradient-to-br from-cyan-primary/30 to-mint-secondary/20 border border-cyan-primary/20 flex items-center justify-center">
+                  <span className="font-black text-cyan-primary text-[10px] leading-none">W</span>
+                </div>
+                <span className="font-display font-bold text-text-secondary text-base tracking-wide">Walrus</span>
+              </div>
+            </div>
+          </motion.div>
+
         </motion.div>
       </section>
 

@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Award, ShieldOff, ShieldCheck } from 'lucide-react';
+import { Award, Shield, ShieldOff, AlertTriangle } from 'lucide-react';
 
 interface BadgeHolder {
   agentId: string;
@@ -18,9 +18,91 @@ interface BadgeHolder {
 }
 
 const BADGE_INFO = {
-  3: { name: 'Gold', emoji: '🥇', description: '200+ execs, 95%+ success, $1M+ volume', border: 'border-yellow-400/40', bg: 'bg-yellow-400/[0.06]', accent: 'text-yellow-400', stat: 'bg-yellow-400/10' },
-  2: { name: 'Silver', emoji: '🥈', description: '50+ execs, 90%+ success', border: 'border-slate-400/40', bg: 'bg-slate-400/[0.06]', accent: 'text-slate-300', stat: 'bg-slate-400/10' },
-  1: { name: 'Bronze', emoji: '🥉', description: '10+ execs, 80%+ success', border: 'border-amber-700/40', bg: 'bg-amber-700/[0.06]', accent: 'text-amber-600', stat: 'bg-amber-700/10' },
+  3: {
+    name: 'NÍVEL OURO',
+    shortName: 'Gold',
+    emoji: '⭐',
+    description: '200+ execs, 95%+ success, $1M+ volume',
+    accessLabel: 'AUTÔNOMO — IRRESTRITO',
+    accessDesc: 'Permissão total para execução autônoma de tarefas críticas e acesso a sistemas de produção.',
+    level: 'LVL 5',
+    border: 'border-yellow-400/60',
+    glow: 'shadow-[0_0_40px_rgba(255,215,0,0.2),0_0_1px_rgba(255,215,0,0.6)]',
+    outerRing: 'border-yellow-400/80',
+    accent: '#ffd700',
+    accentText: 'text-yellow-400',
+    accentBg: 'bg-yellow-400/10',
+    ballFrom: 'from-yellow-300',
+    ballTo: 'to-yellow-600',
+    ballShadow: 'shadow-[0_0_60px_rgba(255,215,0,0.4),inset_0_2px_8px_rgba(255,255,255,0.3)]',
+    labelColor: 'text-yellow-400',
+    accessBg: 'bg-yellow-400/[0.12]',
+    accessText: 'text-yellow-300',
+  },
+  2: {
+    name: 'NÍVEL PRATA',
+    shortName: 'Silver',
+    emoji: '🏅',
+    description: '50+ execs, 90%+ success',
+    accessLabel: 'SUPERVISIONADO',
+    accessDesc: 'Execução de tarefas sob supervisão. Requer aprovação humana para ações destrutivas ou de produção.',
+    level: 'LVL 3',
+    border: 'border-slate-400/60',
+    glow: 'shadow-[0_0_40px_rgba(192,192,192,0.2),0_0_1px_rgba(192,192,192,0.5)]',
+    outerRing: 'border-slate-400/80',
+    accent: '#c0c0c0',
+    accentText: 'text-slate-300',
+    accentBg: 'bg-slate-400/10',
+    ballFrom: 'from-slate-200',
+    ballTo: 'to-slate-500',
+    ballShadow: 'shadow-[0_0_60px_rgba(192,192,192,0.3),inset_0_2px_8px_rgba(255,255,255,0.25)]',
+    labelColor: 'text-slate-300',
+    accessBg: 'bg-slate-400/[0.10]',
+    accessText: 'text-slate-200',
+  },
+  1: {
+    name: 'NÍVEL BRONZE',
+    shortName: 'Bronze',
+    emoji: '🛡️',
+    description: '10+ execs, 80%+ success',
+    accessLabel: 'RESTRITO — LEITURA',
+    accessDesc: 'Acesso restrito apenas para leitura e processamento de dados não sensíveis em ambiente de sandbox.',
+    level: 'LVL 1',
+    border: 'border-amber-600/60',
+    glow: 'shadow-[0_0_40px_rgba(180,83,9,0.25),0_0_1px_rgba(205,127,50,0.5)]',
+    outerRing: 'border-amber-600/80',
+    accent: '#cd7f32',
+    accentText: 'text-amber-600',
+    accentBg: 'bg-amber-600/10',
+    ballFrom: 'from-amber-400',
+    ballTo: 'to-amber-800',
+    ballShadow: 'shadow-[0_0_60px_rgba(205,127,50,0.3),inset_0_2px_8px_rgba(255,255,255,0.15)]',
+    labelColor: 'text-amber-500',
+    accessBg: 'bg-amber-600/[0.10]',
+    accessText: 'text-amber-300',
+  },
+};
+
+const REVOKED_INFO = {
+  name: 'REVOGADO',
+  shortName: 'Revoked',
+  emoji: '🚫',
+  description: 'Credenciais revogadas',
+  accessLabel: 'DESATIVADO / QUARENTENA',
+  accessDesc: 'Credenciais revogadas devido a violação de segurança ou comportamento anômalo. Acesso bloqueado.',
+  level: 'LVL 0',
+  border: 'border-red-600/60',
+  glow: 'shadow-[0_0_40px_rgba(239,68,68,0.2),0_0_1px_rgba(239,68,68,0.5)]',
+  outerRing: 'border-red-600/80',
+  accent: '#ef4444',
+  accentText: 'text-red-400',
+  accentBg: 'bg-red-500/10',
+  ballFrom: 'from-red-700',
+  ballTo: 'to-red-900',
+  ballShadow: 'shadow-[0_0_60px_rgba(239,68,68,0.3),inset_0_2px_8px_rgba(255,255,255,0.08)]',
+  labelColor: 'text-red-400',
+  accessBg: 'bg-red-500/[0.12]',
+  accessText: 'text-red-300',
 };
 
 async function getBadgeHolders(): Promise<BadgeHolder[]> {
@@ -52,7 +134,7 @@ async function getBadgeHolders(): Promise<BadgeHolder[]> {
           agentId: fields.agent_id,
           objectId: agent.objectId,
           badgeType: agent.badge,
-          badgeName: BADGE_INFO[agent.badge as keyof typeof BADGE_INFO]?.name || 'Unknown',
+          badgeName: BADGE_INFO[agent.badge as keyof typeof BADGE_INFO]?.shortName || 'Unknown',
           agentName: agent.name,
           uptimeScore: Number(fields.uptime_score),
           successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
@@ -68,14 +150,18 @@ async function getBadgeHolders(): Promise<BadgeHolder[]> {
 
 type FilterType = 'all' | 'gold' | 'silver' | 'bronze';
 
+const ISSUE_DATES: Record<string, string> = {
+  '0x4cd8': '2026-01-15',
+  '0xabed': '2026-03-22',
+  '0xb3fa': '2026-05-10',
+};
+
 export default function BadgesPage() {
   const [holders, setHolders] = useState<BadgeHolder[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<FilterType>('all');
 
-  useEffect(() => {
-    loadBadges();
-  }, []);
+  useEffect(() => { loadBadges(); }, []);
 
   async function loadBadges() {
     setLoading(true);
@@ -103,7 +189,7 @@ export default function BadgesPage() {
 
   return (
     <main className="min-h-screen bg-bg-base px-4 py-12">
-      <div className="max-w-5xl mx-auto">
+      <div className="max-w-6xl mx-auto">
 
         {/* Header */}
         <motion.div className="mb-12" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
@@ -117,17 +203,12 @@ export default function BadgesPage() {
           <p className="text-text-secondary text-lg">Certified agent trust badges on Sui</p>
         </motion.div>
 
-        {/* Stats */}
-        <motion.div
-          className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
-        >
+        {/* Stats row */}
+        <motion.div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-10" initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}>
           {[
             { emoji: '🥇', label: 'Gold', count: holders.filter(h => h.badgeType === 3 && h.isValid).length, border: 'border-yellow-400/40' },
             { emoji: '🥈', label: 'Silver', count: holders.filter(h => h.badgeType === 2 && h.isValid).length, border: 'border-slate-400/40' },
-            { emoji: '🥉', label: 'Bronze', count: holders.filter(h => h.badgeType === 1 && h.isValid).length, border: 'border-amber-700/40' },
+            { emoji: '🥉', label: 'Bronze', count: holders.filter(h => h.badgeType === 1 && h.isValid).length, border: 'border-amber-600/40' },
             { emoji: '🚫', label: 'Revoked', count: revokedCount, border: 'border-red-500/40' },
           ].map(({ emoji, label, count, border }) => (
             <div key={label} className={`rounded-2xl p-5 glass-card-heavy border ${border} flex flex-col items-center gap-1`}>
@@ -138,13 +219,8 @@ export default function BadgesPage() {
           ))}
         </motion.div>
 
-        {/* Filter pills */}
-        <motion.div
-          className="flex flex-wrap gap-2 mb-8"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.15 }}
-        >
+        {/* Filters */}
+        <motion.div className="flex flex-wrap gap-2 mb-10" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.15 }}>
           {FILTERS.map(({ key, label }) => (
             <button
               key={key}
@@ -162,7 +238,7 @@ export default function BadgesPage() {
           ))}
         </motion.div>
 
-        {/* Badge cards */}
+        {/* Badge cards — image 1 style */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="w-10 h-10 border-2 border-[rgba(255,255,255,0.08)] border-t-cyan-primary rounded-full animate-spin" />
@@ -172,72 +248,117 @@ export default function BadgesPage() {
           <div className="text-center py-24 text-text-secondary">No badges found for this filter.</div>
         ) : (
           <motion.div
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 mb-16"
+            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-16"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            {filtered.map((holder) => {
-              const info = BADGE_INFO[holder.badgeType as keyof typeof BADGE_INFO];
+            {filtered.map((holder, i) => {
+              const info = holder.isValid
+                ? BADGE_INFO[holder.badgeType as keyof typeof BADGE_INFO]
+                : REVOKED_INFO;
+
+              const issueDate = ISSUE_DATES[holder.objectId.slice(0, 6)] || '2026-01-01';
+
               return (
-                <Link
-                  href={`/agent/${holder.objectId}`}
+                <motion.div
                   key={`${holder.objectId}-${holder.badgeType}`}
-                  className={`
-                    rounded-2xl p-6 border transition-all duration-300 hover:-translate-y-1
-                    ${info?.bg || 'bg-surface-1/50'}
-                    ${info?.border || 'border-[rgba(255,255,255,0.08)]'}
-                    ${!holder.isValid ? 'opacity-50' : 'hover:shadow-card-hover'}
-                  `}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: i * 0.07 }}
+                  whileHover={{ y: -6, transition: { duration: 0.25 } }}
                 >
-                  {/* Badge header */}
-                  <div className="flex items-center gap-3 mb-4">
-                    <span className="text-3xl">{info?.emoji}</span>
-                    <span className={`text-lg font-bold ${info?.accent}`}>{info?.name}</span>
-                    {!holder.isValid && (
-                      <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full bg-red-500/20 text-red-400 text-[10px] font-bold border border-red-500/30">
-                        <ShieldOff size={10} /> REVOKED
-                      </span>
-                    )}
-                    {holder.isValid && (
-                      <span className="ml-auto flex items-center gap-1 px-2 py-0.5 rounded-full bg-mint-secondary/10 text-mint-secondary text-[10px] font-bold border border-mint-secondary/20">
-                        <ShieldCheck size={10} /> VALID
-                      </span>
-                    )}
-                  </div>
+                  <Link href={`/agent/${holder.objectId}`} className="block h-full">
+                    <div className={`
+                      relative flex flex-col rounded-3xl border-2 ${info.border} ${info.glow}
+                      bg-[#0a0a0a] overflow-hidden h-full
+                      transition-all duration-300
+                    `}>
 
-                  {/* Agent info */}
-                  <div className="mb-3">
-                    <p className="text-text-primary font-semibold text-sm">{holder.agentName}</p>
-                    <p className="font-mono text-text-muted text-[11px]">{holder.agentId.slice(0, 8)}...{holder.agentId.slice(-4)}</p>
-                  </div>
+                      {/* Top header bar */}
+                      <div className="flex items-start justify-between px-5 pt-5 pb-3">
+                        <div className="flex items-center gap-2.5">
+                          <div className={`w-8 h-8 rounded-full flex items-center justify-center bg-gradient-to-br ${info.ballFrom} ${info.ballTo} ${info.ballShadow}`}>
+                            {holder.isValid
+                              ? <Shield size={14} className="text-black/70" />
+                              : <ShieldOff size={14} className="text-red-300" />
+                            }
+                          </div>
+                          <div>
+                            <p className={`font-display font-bold text-sm tracking-wider ${info.labelColor}`}>{info.name}</p>
+                            <p className="font-mono text-[10px] text-text-muted">ID: {holder.objectId.slice(2, 8).toUpperCase()}-{info.shortName.toUpperCase().slice(0, 4)}</p>
+                          </div>
+                        </div>
+                      </div>
 
-                  <p className="text-text-muted text-xs mb-4">{info?.description}</p>
+                      {/* Large medallion circle */}
+                      <div className="flex justify-center py-6">
+                        <div className={`
+                          relative w-32 h-32 rounded-full
+                          bg-gradient-to-br ${info.ballFrom} ${info.ballTo}
+                          ${info.ballShadow}
+                          flex items-center justify-center
+                        `}>
+                          {/* Metallic sheen overlay */}
+                          <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/20 to-transparent" />
+                          {holder.isValid
+                            ? <Shield size={44} className="text-black/60 relative z-10" />
+                            : <ShieldOff size={44} className="text-red-300/80 relative z-10" />
+                          }
+                        </div>
+                      </div>
 
-                  {/* Metrics */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className={`rounded-xl p-3 ${info?.stat}`}>
-                      <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
-                      <p className={`font-mono font-bold text-sm ${info?.accent}`}>{holder.uptimeScore}%</p>
+                      {/* Agent name + protocol */}
+                      <div className="px-5 pb-3 text-center">
+                        <h3 className="font-display text-xl font-bold text-white mb-1">{holder.agentName}</h3>
+                        <div className="flex items-center justify-center gap-1.5 text-text-muted text-xs font-mono">
+                          <span>⚙</span>
+                          <span className="uppercase tracking-wide">AEGIS PROTOCOL</span>
+                        </div>
+                      </div>
+
+                      {/* Access level status */}
+                      <div className={`mx-4 mb-3 rounded-xl ${info.accessBg} px-4 py-3`}>
+                        <p className={`font-mono text-[11px] font-bold tracking-widest ${info.accessText} mb-1.5`}>
+                          {info.accessLabel}
+                        </p>
+                        <p className="text-text-muted text-xs leading-relaxed">{info.accessDesc}</p>
+                      </div>
+
+                      {/* Metrics bar */}
+                      <div className="mx-4 mb-3 grid grid-cols-2 gap-2">
+                        <div className="rounded-lg bg-white/[0.04] px-3 py-2">
+                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
+                          <p className={`font-mono text-sm font-bold ${info.accentText}`}>{holder.uptimeScore}%</p>
+                        </div>
+                        <div className="rounded-lg bg-white/[0.04] px-3 py-2">
+                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
+                          <p className={`font-mono text-sm font-bold ${info.accentText}`}>{holder.successRate}%</p>
+                        </div>
+                      </div>
+
+                      {/* Bottom footer */}
+                      <div className="mt-auto mx-4 mb-4 flex items-end justify-between border-t border-white/[0.06] pt-3">
+                        <div>
+                          <p className="text-text-muted text-[9px] uppercase tracking-widest mb-0.5">EMITIDO</p>
+                          <p className="font-mono text-xs text-text-secondary">{issueDate}</p>
+                        </div>
+                        <div className="text-right">
+                          <p className="text-text-muted text-[9px] uppercase tracking-widest mb-0.5">LIM. LIBERAÇÃO</p>
+                          <p className={`font-mono text-sm font-bold ${info.labelColor}`}>{info.level}</p>
+                        </div>
+                      </div>
+
                     </div>
-                    <div className={`rounded-xl p-3 ${info?.stat}`}>
-                      <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
-                      <p className={`font-mono font-bold text-sm ${info?.accent}`}>{holder.successRate}%</p>
-                    </div>
-                  </div>
-                </Link>
+                  </Link>
+                </motion.div>
               );
             })}
           </motion.div>
         )}
 
         {/* Requirements section */}
-        <motion.div
-          className="border-t border-[rgba(255,255,255,0.06)] pt-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-        >
+        <motion.div className="border-t border-[rgba(255,255,255,0.06)] pt-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
           <h2 className="font-display text-2xl font-bold text-text-primary mb-6">How to Earn Badges</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {[
@@ -251,40 +372,26 @@ export default function BadgesPage() {
                 <ul className="space-y-1.5">
                   {reqs.map(r => (
                     <li key={r} className="text-text-secondary text-sm flex items-center gap-2">
-                      <span className="w-1 h-1 rounded-full bg-text-muted" />
-                      {r}
+                      <span className="w-1 h-1 rounded-full bg-text-muted" />{r}
                     </li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
-
-          {/* Warning box */}
           <div className="rounded-2xl p-6 bg-red-500/[0.06] border border-red-500/30">
             <h3 className="flex items-center gap-2 text-red-400 font-semibold mb-2">
-              <AlertTriangleIcon /> Auto-Revocation
+              <AlertTriangle size={15} /> Auto-Revocation
             </h3>
             <p className="text-text-secondary text-sm mb-2">Badges are automatically revoked if:</p>
             <ul className="space-y-1 text-text-secondary text-sm">
               {['Success rate drops below threshold', 'Agent is flagged (5+ consecutive failures, >500 BPS slippage)', 'Agent fails to maintain requirements'].map(r => (
-                <li key={r} className="flex items-center gap-2">
-                  <span className="w-1 h-1 rounded-full bg-red-400" />{r}
-                </li>
+                <li key={r} className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-red-400" />{r}</li>
               ))}
             </ul>
           </div>
         </motion.div>
       </div>
     </main>
-  );
-}
-
-function AlertTriangleIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
-      <line x1="12" y1="9" x2="12" y2="13" /><line x1="12" y1="17" x2="12.01" y2="17" />
-    </svg>
   );
 }

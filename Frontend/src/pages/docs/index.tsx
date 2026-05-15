@@ -199,7 +199,7 @@ const eligible = await isEligibleForBadge(objectId, 2); // Silver`}</pre>
               {[
                 { label: 'FAQ', href: '/docs/faq', internal: true },
                 { label: 'Terms & Privacy', href: '/docs/terms', internal: true },
-                { label: 'GitHub — Report issues', href: 'https://github.com/aegis-ai', internal: false },
+                { label: 'GitHub — Report issues', href: 'https://github.com/EdCryptoFi/aegis', internal: false },
               ].map(({ label, href, internal }) => (
                 <li key={label} className="flex items-center gap-2 text-sm">
                   <span className="w-1 h-1 rounded-full bg-cyan-primary" />

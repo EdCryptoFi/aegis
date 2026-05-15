@@ -9,6 +9,7 @@ import { ThemeProvider } from '../lib/theme';
 import ThemeToggle from '../components/ThemeToggle';
 import Notifications from '../components/Notifications';
 import Navbar from '../components/Navbar';
+import CookieBanner from '../components/CookieBanner';
 import '@mysten/dapp-kit/dist/index.css';
 import '../styles/globals.css';
 
@@ -31,6 +32,7 @@ export default function App({ Component, pageProps }: AppProps) {
             <Notifications />
             <Component {...pageProps} />
             <AIAssistant />
+            <CookieBanner />
             </I18nProvider>
           </ThemeProvider>
         </WalletProvider>

@@ -1,6 +1,9 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
+import { BookOpen, ChevronDown, ExternalLink, HelpCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const SIDEBAR = [
   { title: 'Getting Started', items: [
@@ -65,21 +68,84 @@ const FAQS = [
   },
 ];
 
+function FAQItem({ q, a, index }: { q: string; a: string; index: number }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: index * 0.04 }}
+      className={`rounded-2xl border transition-all duration-200 overflow-hidden ${open ? 'border-cyan-primary/20 bg-surface-1' : 'border-[rgba(255,255,255,0.06)] bg-surface-0/60 hover:border-[rgba(255,255,255,0.12)]'}`}
+    >
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between px-5 py-4 text-left"
+      >
+        <span className="text-text-primary font-medium text-sm pr-4">{q}</span>
+        <ChevronDown
+          size={16}
+          className={`flex-shrink-0 text-text-muted transition-transform duration-200 ${open ? 'rotate-180 text-cyan-primary' : ''}`}
+        />
+      </button>
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <p className="px-5 pb-5 text-text-secondary text-sm leading-relaxed border-t border-[rgba(255,255,255,0.06)] pt-4">
+              {a}
+            </p>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+}
+
 export default function FAQPage() {
   return (
-    <div className="docs-layout">
-      <aside className="sidebar">
-        <div className="sidebar-header">
-          <Link href="/" className="logo">📖 Aegis Docs</Link>
+    <div className="flex min-h-screen bg-bg-base">
+
+      {/* Sidebar */}
+      <aside className="w-60 flex-shrink-0 fixed h-screen overflow-y-auto bg-surface-0 border-r border-[rgba(255,255,255,0.06)] z-10">
+        <div className="px-5 py-5 border-b border-[rgba(255,255,255,0.06)]">
+          <Link href="/" className="flex items-center gap-2 text-cyan-primary font-bold text-base hover:text-mint-secondary transition-colors">
+            <BookOpen size={18} />
+            Aegis Docs
+          </Link>
         </div>
-        <nav className="sidebar-nav">
+        <nav className="py-5">
           {SIDEBAR.map((section) => (
-            <div key={section.title} className="nav-section">
-              <h3>{section.title}</h3>
-              <ul>
+            <div key={section.title} className="mb-5 px-5">
+              <p className="text-text-muted text-[10px] font-semibold uppercase tracking-widest mb-2">{section.title}</p>
+              <ul className="space-y-0.5">
                 {section.items.map((item) => (
                   <li key={item.href}>
-                    <Link href={item.href}>{item.name}</Link>
+                    {item.href.startsWith('http') ? (
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-2 px-3 py-2 rounded-xl text-sm text-text-secondary hover:text-text-primary hover:bg-surface-1 transition-all"
+                      >
+                        <ExternalLink size={12} className="flex-shrink-0" />
+                        {item.name}
+                      </a>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        className={`block px-3 py-2 rounded-xl text-sm transition-all ${
+                          item.href === '/docs/faq'
+                            ? 'bg-cyan-primary/10 text-cyan-primary'
+                            : 'text-text-secondary hover:text-text-primary hover:bg-surface-1'
+                        }`}
+                      >
+                        {item.name}
+                      </Link>
+                    )}
                   </li>
                 ))}
               </ul>
@@ -88,136 +154,29 @@ export default function FAQPage() {
         </nav>
       </aside>
 
-      <main className="docs-content">
-        <h1>Frequently Asked Questions</h1>
+      {/* Main content */}
+      <main className="ml-60 flex-1 px-12 py-12 max-w-[860px]">
+        <div className="flex items-center gap-3 mb-2">
+          <HelpCircle size={24} className="text-cyan-primary" />
+          <h1 className="font-display text-4xl font-bold text-text-primary">FAQ</h1>
+        </div>
+        <p className="text-text-secondary text-lg mb-10">Frequently asked questions about Aegis.</p>
 
-        {FAQS.map((faq, i) => (
-          <details key={i} className="faq-item">
-            <summary>{faq.q}</summary>
-            <p>{faq.a}</p>
-          </details>
-        ))}
+        <div className="space-y-3 mb-12">
+          {FAQS.map((faq, i) => (
+            <FAQItem key={i} q={faq.q} a={faq.a} index={i} />
+          ))}
+        </div>
 
-        <section className="more-help">
-          <h2>Still have questions?</h2>
-          <p>Check our <Link href="/docs">full documentation</Link> or contact the team.</p>
-        </section>
-
-        <style jsx>{`
-          .docs-layout {
-            display: flex;
-            min-height: 100vh;
-            background: #0f0f1a;
-          }
-          .sidebar {
-            width: 260px;
-            background: #0a0a12;
-            border-right: 1px solid #222;
-            position: fixed;
-            height: 100vh;
-            overflow-y: auto;
-          }
-          .sidebar-header {
-            padding: 20px;
-            border-bottom: 1px solid #222;
-          }
-          .logo {
-            color: #8b5cf6;
-            font-size: 18px;
-            font-weight: bold;
-            text-decoration: none;
-          }
-          .sidebar-nav {
-            padding: 20px 0;
-          }
-          .nav-section {
-            margin-bottom: 20px;
-          }
-          .nav-section h3 {
-            color: #666;
-            font-size: 11px;
-            text-transform: uppercase;
-            padding: 0 20px;
-            margin: 0 0 8px 0;
-          }
-          .nav-section ul {
-            list-style: none;
-            padding: 0;
-            margin: 0;
-          }
-          .nav-section li a {
-            display: block;
-            padding: 8px 20px;
-            color: #888;
-            text-decoration: none;
-            font-size: 14px;
-            transition: all 0.2s;
-          }
-          .nav-section li a:hover {
-            color: #fff;
-            background: rgba(139, 92, 246, 0.1);
-          }
-          .docs-content {
-            flex: 1;
-            margin-left: 260px;
-            padding: 40px 60px;
-            max-width: 800px;
-          }
-          h1 {
-            color: #fff;
-            font-size: 32px;
-            margin: 0 0 40px 0;
-          }
-          .faq-item {
-            background: #1a1a2e;
-            border: 1px solid #333;
-            border-radius: 8px;
-            margin-bottom: 12px;
-          }
-          .faq-item summary {
-            padding: 16px 20px;
-            cursor: pointer;
-            color: #fff;
-            font-weight: 500;
-            list-style: none;
-          }
-          .faq-item summary::-webkit-details-marker {
-            display: none;
-          }
-          .faq-item summary::after {
-            content: '▼';
-            float: right;
-            color: #666;
-            font-size: 12px;
-          }
-          .faq-item[open] summary::after {
-            content: '▲';
-          }
-          .faq-item p {
-            padding: 0 20px 20px;
-            color: #aaa;
-            line-height: 1.6;
-            margin: 0;
-          }
-          .more-help {
-            margin-top: 40px;
-            padding-top: 30px;
-            border-top: 1px solid #222;
-          }
-          .more-help h2 {
-            color: #fff;
-            font-size: 20px;
-            margin: 0 0 12px 0;
-          }
-          .more-help a {
-            color: #8b5cf6;
-          }
-          @media (max-width: 768px) {
-            .docs-layout { flex-direction: column; }
-            .sidebar { position: static; width: 100%; }
-            .docs-content { margin-left: 0; padding: 20px; }
-          }
-        `}</style>
+        <div className="rounded-2xl p-6 bg-cyan-primary/[0.05] border border-cyan-primary/20">
+          <h2 className="font-display text-lg font-bold text-text-primary mb-2">Still have questions?</h2>
+          <p className="text-text-secondary text-sm">
+            Check our{' '}
+            <Link href="/docs" className="text-cyan-primary hover:text-mint-secondary transition-colors underline">full documentation</Link>
+            {' '}or contact the team on{' '}
+            <a href="https://github.com/EdCryptoFi/aegis" target="_blank" rel="noopener noreferrer" className="text-cyan-primary hover:text-mint-secondary transition-colors underline">GitHub</a>.
+          </p>
+        </div>
       </main>
     </div>
   );
