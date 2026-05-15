@@ -19,52 +19,52 @@ const SIDEBAR = [
 
 const FAQS = [
   {
-    q: 'O que é o Aegis?',
-    a: 'Aegis é um oráculo de reputação decentralized para agentes de IA na blockchain Sui. Ele rastreia métricas on-chain como taxa de sucesso, volume e slippage para criar uma pontuação de confiança verificável.'
+    q: 'What is Aegis?',
+    a: 'Aegis is a decentralized reputation oracle for AI agents on the Sui blockchain. It tracks on-chain metrics such as success rate, volume, and slippage to create a verifiable trust score for any registered agent.'
   },
   {
-    q: 'Como um agente é "flagged"?',
-    a: 'O flagging é automático! Quando um agente registra execuções, o contrato inteligente verifica: taxa de sucesso < 50%, 5+ falhas consecutivas, ou slippage > 5%. Se qualquer condição for atingida, o agente é automaticamente marcado como "flagged".'
+    q: 'How does an agent get "flagged"?',
+    a: 'Flagging is automatic. When an agent records executions, the smart contract checks: success rate < 50%, 5+ consecutive failures, or slippage > 5%. If any condition is met, the agent is automatically marked as flagged — no manual intervention required.'
   },
   {
-    q: 'Quem pode chamar record_execution()?',
-    a: 'Qualquer pessoa! O sistema é permissionless - qualquer um pode registrar uma execução para qualquer agente. Isso cria um mecanismo de vigilância descentralizado onde ninguém pode omitir falhas.'
+    q: 'Who can call record_execution()?',
+    a: 'Anyone. The system is permissionless — any address can record an execution for any agent. This creates a decentralized watchdog mechanism where failures cannot be hidden or omitted.'
   },
   {
-    q: 'Como funcionam as badges?',
-    a: 'As badges são concedidas automaticamente quando um agente atinge os requisitos: Bronze (10+ exec, 80%+), Silver (50+ exec, 90%+), Gold (200+ exec, 95%+, $1M+ volume). A verificação é feita on-chain.'
+    q: 'How do badges work?',
+    a: 'Badges are granted automatically when an agent meets the thresholds: Bronze (10+ executions, 80%+ success), Silver (50+ executions, 90%+ success), Gold (200+ executions, 95%+, $1M+ volume). All verification is done on-chain. Badges expire after 5 days and must be renewed by continued execution.'
   },
   {
-    q: 'Os dados são realmente à prova de manipulação?',
-    a: 'Sim! Todas as métricas são armazenadas em smart contracts na Sui. Uma vez que uma execução é registrada, ela não pode ser alterada ou apagada. O histórico é completamente auditável.'
+    q: 'Is the data tamper-proof?',
+    a: 'Yes. All metrics are stored in Move smart contracts on Sui. Once an execution is recorded, it cannot be altered or deleted. The full history is permanently auditable on-chain.'
   },
   {
-    q: 'O que é Walrus e por que é usado?',
-    a: 'Walrus é um sistema de armazenamento decentralized da Mysten Labs. Aegis usa Walrus para armazenar logs detalhados de execução que não caberiam on-chain. Isso cria um trail de auditoria completo.'
+    q: 'What is Walrus and why is it used?',
+    a: 'Walrus is a decentralized storage system by Mysten Labs. Aegis uses Walrus to store detailed execution logs that are too large to fit on-chain, while anchoring the blob_id in the ReputationObject — creating a complete, verifiable audit trail.'
   },
   {
-    q: 'Posso usar Aegis sem conectar minha wallet?',
-    a: 'Sim! A leitura é completamente pública. Você pode verificar reputação de qualquer agente sem conectar wallet. Apenas para escrever (registrar agente, gravar execuções) é necessária uma wallet.'
+    q: 'Can I use Aegis without connecting a wallet?',
+    a: 'Yes. All reputation data is public. You can browse and verify any agent\'s reputation without connecting a wallet. A wallet is only required for write actions: registering an agent, recording executions, or requesting a badge.'
   },
   {
-    q: 'O que acontece se um agente for flagged?',
-    a: 'Um agent flagged aparece com alerta vermelho no frontend. A flag não pode ser removida manualmente - o agente deve se recuperar com 100 execuções consecutivas bem-sucedidas + 200+ total.'
+    q: 'What happens when an agent is flagged?',
+    a: 'A flagged agent is shown with a red warning in the UI. The flag cannot be removed manually — the agent must recover by completing 100 consecutive successful executions with 200+ total executions overall.'
   },
   {
-    q: 'Aegis dá advice financeiro?',
-    a: 'NÃO. Aegis apenas mostra métricas. É responsabilidade do usuário fazer sua própria pesquisa (DYOR). A reputação é uma ferramenta, não uma garantia.'
+    q: 'Does Aegis provide financial advice?',
+    a: 'No. Aegis displays on-chain metrics only. It is the user\'s responsibility to conduct their own due diligence (DYOR). Reputation is a tool, not a guarantee of future performance.'
   },
   {
-    q: 'Como integrar meu agente com Aegis?',
-    a: 'Use nosso SDK TypeScript! Faça npm i @aegis/sdk, chame registerAgent() para criar seu ReputationObject, e depois recordExecution() após cada operação. Veja /developer para detalhes.'
+    q: 'How do I integrate my agent with Aegis?',
+    a: 'Use the TypeScript SDK. Run npm i @aegis/sdk, call registerAgent() to create a ReputationObject, then call recordExecution() after each operation. After 10+ executions with 80%+ success rate, your agent qualifies for the Bronze badge. See /developer for the full guide.'
   },
   {
-    q: 'Qual a diferença entre Aegis e MemWal?',
-    a: 'MemWal = memória privada para agents (raciocínio, contexto criptografado). Aegis = reputação pública para terceiros (métricas on-chain verificáveis). Quer os dois? Ancore o blob_id do MemWal no ReputationObject do Aegis para auditoria vinculada.'
+    q: 'What is the difference between Aegis and MemWal?',
+    a: 'MemWal provides private memory for agents — encrypted reasoning, context, and decision rationale. Aegis provides public reputation for third parties — verifiable on-chain metrics. Use both together by anchoring the MemWal blob_id inside the ReputationObject for linked, fully auditable intelligence.'
   },
   {
-    q: 'Posso usar MemWal junto com Aegis?',
-    a: 'Sim! Use MemWal para armazenar decisões e raciocínio privado do agente. Aegis registra as métricas públicas no blockchain. Link o blob_id do MemWal no ReputationObject para: (1) rastreabilidade completa, (2) verificação descentralizada, (3) auditoria imutável.'
+    q: 'Can I use MemWal together with Aegis?',
+    a: 'Yes. Use MemWal to store private agent decisions and reasoning. Aegis records the public metrics on-chain. Link the MemWal blob_id in the ReputationObject for: (1) complete traceability, (2) decentralized verification, and (3) immutable audit trail.'
   },
 ];
 

@@ -5,8 +5,6 @@ import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import {
   Shield,
-  Code2,
-  Vote,
   Activity,
   ArrowRight,
   Search,
@@ -15,7 +13,6 @@ import {
   Zap,
   TrendingUp,
   Lock,
-  ChevronRight,
   Cpu,
   Globe,
   BarChart2,
@@ -347,9 +344,11 @@ export default function Home() {
         </div>
       </div>
 
-      {/* ═══════ ON-CHAIN ECOSYSTEM ═══════ */}
+      {/* ═══════ USE CASES ═══════ */}
       <section className="relative py-24 px-6">
         <div className="max-w-7xl mx-auto">
+
+          {/* Section header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -358,136 +357,157 @@ export default function Home() {
             className="mb-16"
           >
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-4">
-              Deep Integration
+              Composable Trust Layer
             </span>
             <h2 className="font-display text-headline-md md:text-[36px] font-bold text-text-primary mb-3">
-              On-Chain Ecosystem
+              Built for Protocols. Trusted by Wallets.
             </h2>
             <p className="text-body-md text-text-secondary max-w-xl">
-              Deep integration with major L1s and L2s, providing unparalleled visibility into capital movement.
+              Aegis is a composable trust layer — integrate once, give users verifiable agent reputation anywhere in your app.
             </p>
           </motion.div>
 
-          {/* Bento grid — 12-col, 8/4 alternating */}
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+          {/* Row 1: Use cases table + Why card */}
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 mb-5">
 
-            {/* Smart Money Flow — col-span-8 */}
+            {/* Who integrates Aegis — col-span-7 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="md:col-span-8 rounded-2xl p-8 relative overflow-hidden group glass-card-heavy"
+              className="md:col-span-7 rounded-2xl glass-card-heavy overflow-hidden"
             >
-              <div className="relative z-10">
-                <span className="text-label-sm font-mono text-cyan-primary mb-4 block uppercase tracking-widest">
-                  Institutional Analytics
-                </span>
-                <h3 className="font-display text-headline-md font-semibold text-text-primary mb-4">
-                  Smart Money Flow Detection
-                </h3>
-                <p className="text-text-secondary max-w-md text-sm leading-relaxed">
-                  Track wallet clusters with high win rates and historical alpha performance. Our proprietary algorithms filter noise from real signal.
-                </p>
-                <Link
-                  href="/agents"
-                  className="mt-8 inline-flex items-center gap-2 text-cyan-primary hover:gap-4 transition-all text-sm font-medium"
-                >
-                  View Intelligence Dashboard
-                  <ArrowRight size={15} className="transition-transform group-hover:translate-x-1" />
-                </Link>
+              <div className="px-6 py-5 border-b border-[rgba(255,255,255,0.06)]">
+                <span className="text-label-sm font-mono text-cyan-primary uppercase tracking-widest">Who Integrates Aegis</span>
               </div>
-              {/* Ambient glow */}
-              <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 smart-money-glow" />
-              {/* Mini chart SVG */}
-              <div className="absolute bottom-4 right-8 opacity-10">
-                <svg width="120" height="80" viewBox="0 0 120 80" fill="none">
-                  <polyline points="0,60 20,40 40,50 60,20 80,35 100,10 120,25" stroke="#00F5FF" strokeWidth="2" fill="none" />
-                  <polyline points="0,60 20,40 40,50 60,20 80,35 100,10 120,25" stroke="#00F5FF" strokeWidth="8" fill="none" strokeOpacity="0.15" />
-                </svg>
+              <div className="divide-y divide-[rgba(255,255,255,0.05)]">
+                {[
+                  { project: 'Wallets', usage: 'Verify agent trust before delegating funds' },
+                  { project: 'DeFi Protocols', usage: 'Trust score for agent-driven trading' },
+                  { project: 'AI Marketplaces', usage: 'Badges as proof of trust for listings' },
+                  { project: 'Fund Managers', usage: 'On-chain audit of contracted agents' },
+                  { project: 'Portfolio Trackers', usage: 'Real-time agent performance metrics' },
+                ].map(({ project, usage }, i) => (
+                  <motion.div
+                    key={project}
+                    initial={{ opacity: 0, x: -10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.07 }}
+                    className="flex items-center gap-4 px-6 py-4 hover:bg-surface-1/40 transition-colors"
+                  >
+                    <span className="font-display font-semibold text-text-primary text-sm min-w-[140px]">{project}</span>
+                    <span className="text-text-secondary text-sm">{usage}</span>
+                  </motion.div>
+                ))}
               </div>
             </motion.div>
 
-            {/* Developer SDK — col-span-4 */}
+            {/* Why build trust yourself — col-span-5 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.08 }}
-              className="md:col-span-4 rounded-2xl p-8 flex flex-col glass-card-matte hover:bg-surface-2/80 transition-colors"
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="md:col-span-5 rounded-2xl p-8 flex flex-col glass-card-matte"
             >
-              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-6 bg-cyan-primary/[0.08] border border-cyan-primary/20">
-                <Code2 size={20} className="text-cyan-primary" />
+              <span className="text-label-sm font-mono text-mint-secondary uppercase tracking-widest mb-4 block">
+                Why Build Trust Yourself?
+              </span>
+              <div className="space-y-4 flex-1">
+                {[
+                  { val: '1,000+', label: 'agents already tracked on-chain' },
+                  { val: 'Verifiable', label: 'badges — no custom scoring needed' },
+                  { val: 'Walrus', label: 'audit trail — full transparency, zero overhead' },
+                ].map(({ val, label }) => (
+                  <div key={val} className="flex items-start gap-3">
+                    <span className="w-1.5 h-1.5 rounded-full bg-mint-secondary mt-2 flex-shrink-0" />
+                    <p className="text-sm text-text-secondary leading-relaxed">
+                      <strong className="text-text-primary">{val}</strong> {label}
+                    </p>
+                  </div>
+                ))}
               </div>
-              <h3 className="font-display text-headline-md font-semibold text-text-primary mb-4">Developer SDK</h3>
-              <p className="text-text-secondary text-sm leading-relaxed flex-1">
-                Stream live on-chain events directly into your trading bots or dApps with &lt;50ms latency.
-              </p>
-              <Link href="/developer" className="mt-6 inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors">
-                Explore SDK <ArrowRight size={13} />
-              </Link>
-            </motion.div>
-
-            {/* DAO Voting — col-span-4 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.14 }}
-              className="md:col-span-4 rounded-2xl p-8 flex flex-col glass-card-matte hover:bg-surface-2/80 transition-colors"
-            >
-              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-6 bg-purple-tertiary/[0.08] border border-purple-tertiary/20">
-                <Vote size={20} className="text-purple-dim" />
+              <div className="mt-8 rounded-xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-4">
+                <p className="font-mono text-[11px] text-text-muted mb-2 uppercase tracking-wider">Instead of building your own scoring...</p>
+                <div className="space-y-1.5">
+                  {[
+                    '✓  Badge type (Bronze / Silver / Gold)',
+                    '✓  Uptime score  (on-chain)',
+                    '✓  Is flagged    (safety check)',
+                    '✓  Total execs   (track record)',
+                  ].map((line) => (
+                    <p key={line} className="font-mono text-xs text-mint-secondary">{line}</p>
+                  ))}
+                </div>
               </div>
-              <h3 className="font-display text-headline-md font-semibold text-text-primary mb-4">DAO Voting</h3>
-              <p className="text-text-secondary text-sm leading-relaxed flex-1">
-                Monitor proposal sentiment and voter participation across the Aegis ecosystem.
-              </p>
-              <Link href="/badges" className="mt-6 inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors">
-                View Governance <ArrowRight size={13} />
-              </Link>
             </motion.div>
+          </div>
 
-            {/* Real-Time Threat Monitoring — col-span-8 */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className="md:col-span-8 rounded-2xl p-8 relative overflow-hidden glass-card-heavy"
-            >
-              <div className="flex flex-col md:flex-row gap-8 items-center">
-                <div className="flex-1">
-                  <span className="text-label-sm font-mono text-cyan-primary mb-4 block uppercase tracking-widest">
-                    Risk Management
-                  </span>
-                  <h3 className="font-display text-headline-md font-semibold text-text-primary mb-4">
-                    Real-Time Threat Monitoring
-                  </h3>
-                  <p className="text-text-secondary text-sm leading-relaxed">
-                    Active defense against rug pulls, reentrancy risks, and malicious contract patterns across 50+ chains.
-                  </p>
-                  <div className="flex gap-4 mt-6">
-                    <div className="px-4 py-2.5 rounded-[10px] bg-white/5 border border-[rgba(255,255,255,0.08)]">
-                      <p className="text-cyan-primary font-bold text-lg font-display">2.4k+</p>
-                      <p className="text-[10px] uppercase text-text-muted font-mono tracking-wider">Protocols Tracked</p>
-                    </div>
-                    <div className="px-4 py-2.5 rounded-[10px] bg-white/5 border border-[rgba(255,255,255,0.08)]">
-                      <p className="text-mint-secondary font-bold text-lg font-display">0ms</p>
-                      <p className="text-[10px] uppercase text-text-muted font-mono tracking-wider">Downtime</p>
+          {/* Row 2: One integration, multiple use cases */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+            className="rounded-2xl glass-card-heavy p-8 relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 smart-money-glow pointer-events-none" />
+            <div className="relative z-10">
+              <span className="text-label-sm font-mono text-cyan-primary uppercase tracking-widest mb-4 block">
+                One Integration, Multiple Use Cases
+              </span>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+                {/* Diagram */}
+                <div className="font-mono text-xs text-text-muted leading-relaxed">
+                  <div className="flex flex-wrap gap-3 mb-4">
+                    {['Wallet', 'Marketplace', 'DeFi'].map((label) => (
+                      <div key={label} className="px-4 py-2.5 rounded-[10px] bg-surface-2/80 border border-[rgba(255,255,255,0.08)] text-text-secondary text-sm font-display font-semibold">
+                        {label}
+                      </div>
+                    ))}
+                  </div>
+                  <div className="flex items-center gap-1 mb-4 pl-2">
+                    <span className="text-cyan-primary/40">└──</span>
+                    <div className="flex-1 h-px bg-gradient-to-r from-cyan-primary/20 to-transparent" />
+                    <span className="text-cyan-primary/40">──┘</span>
+                  </div>
+                  <div className="flex justify-center mb-1">
+                    <div className="px-6 py-3 rounded-[12px] bg-cyan-primary/[0.08] border border-cyan-primary/30 shadow-glow-cyan text-center">
+                      <p className="text-cyan-primary font-bold text-sm">Aegis SDK</p>
+                      <p className="text-text-muted text-[10px]">Single API</p>
                     </div>
                   </div>
                 </div>
-                {/* Shield visual */}
-                <div className="shrink-0 w-40 h-36 rounded-xl flex items-center justify-center bg-gradient-to-br from-cyan-primary/[0.08] to-transparent border border-cyan-primary/[0.15]">
-                  <Shield size={56} className="text-cyan-primary opacity-40" />
+                {/* Use cases */}
+                <div className="space-y-3">
+                  {[
+                    { icon: '🏦', label: 'Wallets', desc: 'Verify agent trust before fund delegation' },
+                    { icon: '🏪', label: 'Marketplaces', desc: 'Display certified badges on listings' },
+                    { icon: '⚡', label: 'DeFi', desc: 'Score agents for automated trading permissions' },
+                    { icon: '📊', label: 'Portfolios', desc: 'Track real-time agent performance' },
+                  ].map(({ icon, label, desc }) => (
+                    <div key={label} className="flex items-center gap-3">
+                      <span className="text-lg">{icon}</span>
+                      <div>
+                        <span className="font-semibold text-text-primary text-sm">{label}: </span>
+                        <span className="text-text-secondary text-sm">{desc}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-              <Link href="/architecture" className="mt-6 inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors">
-                View Architecture <ArrowRight size={13} />
+              <Link
+                href="/developer"
+                className="mt-8 inline-flex items-center gap-2 text-cyan-primary hover:text-mint-secondary transition-all text-sm font-medium group"
+              >
+                View Integration Docs
+                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
               </Link>
-            </motion.div>
-          </div>
+            </div>
+          </motion.div>
+
         </div>
       </section>
 
@@ -548,48 +568,6 @@ export default function Home() {
               );
             })}
           </div>
-        </div>
-      </section>
-
-      {/* ═══════ CTA ═══════ */}
-      <section className="relative py-28 px-6 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none cta-portal-glow" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full pointer-events-none border border-cyan-primary/[0.06]" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full pointer-events-none border border-cyan-primary/[0.08]" />
-
-        <div className="max-w-3xl mx-auto text-center relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-6">
-              Get Started Today
-            </span>
-            <h2 className="font-display text-[28px] md:text-[40px] font-bold text-text-primary mb-4 leading-tight">
-              Ready to upgrade your{' '}
-              <span className="gradient-text-cyan">on-chain intelligence?</span>
-            </h2>
-            <p className="text-body-md text-text-secondary mb-10 max-w-xl mx-auto">
-              Join 50,000+ traders and institutional investors who rely on Aegis for their daily edge.
-            </p>
-            <div className="flex flex-wrap items-center justify-center gap-4">
-              <Link
-                href="/agents"
-                className="group inline-flex items-center gap-2 px-8 py-4 rounded-pill bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all"
-              >
-                Get Access
-                <ChevronRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-              <Link
-                href="/developer"
-                className="inline-flex items-center gap-2 px-8 py-4 rounded-pill border border-[rgba(255,255,255,0.1)] text-text-primary font-display font-semibold text-sm hover:border-cyan-primary/30 hover:bg-surface-1/50 transition-all"
-              >
-                Developer Docs
-              </Link>
-            </div>
-          </motion.div>
         </div>
       </section>
 
