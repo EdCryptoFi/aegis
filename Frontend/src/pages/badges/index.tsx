@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Award, Shield, ShieldOff, AlertTriangle, Code2, ArrowRight } from 'lucide-react';
+import { Award, Shield, ShieldOff, AlertTriangle, Code2, ArrowRight, Activity, TrendingUp, Zap, BarChart2, CheckCircle, XCircle, Clock } from 'lucide-react';
 
 interface BadgeHolder {
   agentId: string;
@@ -410,36 +410,173 @@ export default function BadgesPage() {
 
         {/* Requirements section */}
         <motion.div className="border-t border-[rgba(255,255,255,0.06)] pt-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <h2 className="font-display text-2xl font-bold text-text-primary mb-6">How Aegis Evaluates Agents</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-            {[
-              { emoji: '🥇', name: 'Gold Badge', border: 'border-yellow-400/40', bg: 'bg-yellow-400/[0.05]', reqs: ['200+ executions', '95%+ success rate', '$1,000,000+ total volume'] },
-              { emoji: '🥈', name: 'Silver Badge', border: 'border-slate-400/40', bg: 'bg-slate-400/[0.05]', reqs: ['50+ executions', '90%+ success rate'] },
-              { emoji: '🥉', name: 'Bronze Badge', border: 'border-amber-700/40', bg: 'bg-amber-700/[0.05]', reqs: ['10+ executions', '80%+ success rate'] },
-            ].map(({ emoji, name, border, bg, reqs }) => (
-              <div key={name} className={`rounded-2xl p-6 border ${border} ${bg}`}>
-                <span className="text-3xl block mb-3">{emoji}</span>
-                <h3 className="font-semibold text-text-primary mb-3">{name}</h3>
-                <ul className="space-y-1.5">
-                  {reqs.map(r => (
-                    <li key={r} className="text-text-secondary text-sm flex items-center gap-2">
-                      <span className="w-1 h-1 rounded-full bg-text-muted" />{r}
-                    </li>
+          <div className="flex items-center gap-3 mb-8">
+            <BarChart2 size={22} className="text-cyan-primary" />
+            <h2 className="font-display text-2xl font-bold text-text-primary">How Aegis Evaluates Agents</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-5">
+            {([
+              {
+                name: 'Gold Badge',
+                level: 'LVL 5',
+                icon: TrendingUp,
+                border: 'border-yellow-400/40',
+                bg: 'bg-yellow-400/[0.04]',
+                accentColor: '#ffd700',
+                accentText: 'text-yellow-400',
+                accentBg: 'bg-yellow-400/10',
+                chartPoints: '0,28 12,22 24,17 36,12 48,8 60,5 72,3 84,1',
+                metrics: [
+                  { icon: Zap, label: 'Executions', value: '200+', pct: 100 },
+                  { icon: CheckCircle, label: 'Success Rate', value: '95%+', pct: 95 },
+                  { icon: Activity, label: 'Volume', value: '$1M+', pct: 90 },
+                ],
+                reqs: ['200+ executions', '95%+ success rate', '$1,000,000+ volume'],
+                accessLabel: 'AUTONOMOUS — UNRESTRICTED',
+              },
+              {
+                name: 'Silver Badge',
+                level: 'LVL 3',
+                icon: Activity,
+                border: 'border-slate-400/40',
+                bg: 'bg-slate-400/[0.04]',
+                accentColor: '#c0c0c0',
+                accentText: 'text-slate-300',
+                accentBg: 'bg-slate-400/10',
+                chartPoints: '0,28 12,24 24,20 36,17 48,14 60,12 72,10 84,9',
+                metrics: [
+                  { icon: Zap, label: 'Executions', value: '50+', pct: 50 },
+                  { icon: CheckCircle, label: 'Success Rate', value: '90%+', pct: 90 },
+                  { icon: Clock, label: 'Volume', value: 'Any', pct: 40 },
+                ],
+                reqs: ['50+ executions', '90%+ success rate'],
+                accessLabel: 'SUPERVISED',
+              },
+              {
+                name: 'Bronze Badge',
+                level: 'LVL 1',
+                icon: Shield,
+                border: 'border-amber-700/40',
+                bg: 'bg-amber-700/[0.04]',
+                accentColor: '#cd7f32',
+                accentText: 'text-amber-500',
+                accentBg: 'bg-amber-700/10',
+                chartPoints: '0,28 12,26 24,25 36,23 48,21 60,19 72,18 84,17',
+                metrics: [
+                  { icon: Zap, label: 'Executions', value: '10+', pct: 20 },
+                  { icon: CheckCircle, label: 'Success Rate', value: '80%+', pct: 80 },
+                  { icon: Clock, label: 'Volume', value: 'Any', pct: 20 },
+                ],
+                reqs: ['10+ executions', '80%+ success rate'],
+                accessLabel: 'RESTRICTED — READ ONLY',
+              },
+            ] as const).map(({ name, level, icon: Icon, border, bg, accentColor, accentText, accentBg, chartPoints, metrics, reqs, accessLabel }, idx) => (
+              <motion.div
+                key={name}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08 }}
+                className={`rounded-2xl border ${border} ${bg} overflow-hidden flex flex-col`}
+              >
+                {/* Card header */}
+                <div className="px-5 pt-5 pb-4">
+                  <div className="flex items-start justify-between mb-4">
+                    <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center ${accentBg} border ${border}`}>
+                      <Icon size={18} className={accentText} />
+                    </div>
+                    <span className={`font-mono text-[10px] font-bold px-2 py-1 rounded-md ${accentBg} ${accentText}`}>{level}</span>
+                  </div>
+                  <h3 className={`font-display text-lg font-bold ${accentText} mb-0.5`}>{name}</h3>
+                  <p className="font-mono text-[10px] text-text-muted uppercase tracking-widest">{accessLabel}</p>
+                </div>
+
+                {/* Sparkline chart */}
+                <div className="px-5 pb-3">
+                  <div className="rounded-xl bg-bg-base/80 border border-[rgba(255,255,255,0.06)] px-3 pt-2 pb-1">
+                    <p className="font-mono text-[9px] text-text-muted uppercase tracking-widest mb-1">Performance track</p>
+                    <svg viewBox="0 0 84 30" className="w-full h-8" preserveAspectRatio="none">
+                      <defs>
+                        <linearGradient id={`evalgrad-${idx}`} x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="0%" stopColor={accentColor} stopOpacity="0.35" />
+                          <stop offset="100%" stopColor={accentColor} stopOpacity="0.02" />
+                        </linearGradient>
+                      </defs>
+                      <polygon
+                        points={`${chartPoints} 84,30 0,30`}
+                        fill={`url(#evalgrad-${idx})`}
+                      />
+                      <polyline
+                        points={chartPoints}
+                        fill="none"
+                        stroke={accentColor}
+                        strokeWidth="1.8"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                {/* Metric bars */}
+                <div className="px-5 pb-4 space-y-2.5 flex-1">
+                  {metrics.map(({ icon: MIcon, label, value, pct }) => (
+                    <div key={label}>
+                      <div className="flex items-center justify-between mb-1">
+                        <div className="flex items-center gap-1.5">
+                          <MIcon size={11} className={accentText} />
+                          <span className="text-text-muted text-[10px] uppercase tracking-wide">{label}</span>
+                        </div>
+                        <span className={`font-mono text-[11px] font-bold ${accentText}`}>{value}</span>
+                      </div>
+                      <div className="h-1 rounded-full bg-white/[0.06] overflow-hidden">
+                        <motion.div
+                          className="h-full rounded-full"
+                          style={{ backgroundColor: accentColor }}
+                          initial={{ width: 0 }}
+                          whileInView={{ width: `${pct}%` }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.8, delay: idx * 0.08 + 0.2, ease: 'easeOut' }}
+                        />
+                      </div>
+                    </div>
                   ))}
-                </ul>
-              </div>
+                </div>
+
+                {/* Requirements footer */}
+                <div className="px-5 py-4 border-t border-[rgba(255,255,255,0.06)]">
+                  <p className="text-text-muted text-[10px] uppercase tracking-widest mb-2">Requirements</p>
+                  <ul className="space-y-1">
+                    {reqs.map(r => (
+                      <li key={r} className={`text-xs flex items-center gap-2 ${accentText}`}>
+                        <CheckCircle size={10} />
+                        {r}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </motion.div>
             ))}
           </div>
+
+          {/* Auto-revocation */}
           <div className="rounded-2xl p-6 bg-red-500/[0.06] border border-red-500/30">
-            <h3 className="flex items-center gap-2 text-red-400 font-semibold mb-2">
+            <h3 className="flex items-center gap-2 text-red-400 font-semibold mb-3">
               <AlertTriangle size={15} /> Auto-Revocation
             </h3>
-            <p className="text-text-secondary text-sm mb-2">Badges are automatically revoked if:</p>
-            <ul className="space-y-1 text-text-secondary text-sm">
-              {['Success rate drops below threshold', 'Agent is flagged (5+ consecutive failures, >500 BPS slippage)', 'Agent fails to maintain requirements'].map(r => (
-                <li key={r} className="flex items-center gap-2"><span className="w-1 h-1 rounded-full bg-red-400" />{r}</li>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              {[
+                { icon: XCircle, text: 'Success rate drops below threshold' },
+                { icon: AlertTriangle, text: 'Agent flagged (5+ consecutive failures or >500 BPS slippage)' },
+                { icon: Shield, text: 'Agent fails to maintain badge requirements' },
+              ].map(({ icon: RIcon, text }) => (
+                <div key={text} className="flex items-start gap-2.5 rounded-xl bg-red-500/[0.04] border border-red-500/10 px-4 py-3">
+                  <RIcon size={14} className="text-red-400 flex-shrink-0 mt-0.5" />
+                  <span className="text-text-secondary text-xs leading-relaxed">{text}</span>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
         </motion.div>
       </div>
