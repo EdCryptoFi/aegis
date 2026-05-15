@@ -5,8 +5,18 @@ import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import {
   Shield,
+  Activity,
   ArrowRight,
   Search,
+  Users,
+  Award,
+  Zap,
+  TrendingUp,
+  Lock,
+  Cpu,
+  Globe,
+  BarChart2,
+  Code2,
 } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
@@ -42,37 +52,37 @@ function AnimatedCounter({ value, suffix = '', prefix = '' }: { value: number; s
 
 /* ─── Data ─── */
 const stats = [
-  { label: 'Agents Tracked', sublabel: 'Registered on Sui', value: 1247, prefix: '', suffix: '+', img: '/icons/icon-marketplace.png', delta: '+12.4%', positive: true },
-  { label: 'Avg Success Rate', sublabel: 'All agents avg.', value: 98, prefix: '', suffix: '%', img: '/icons/icon-reputation.png', delta: '+0.3%', positive: true },
-  { label: 'Volume Protected', sublabel: 'Cumulative SUI', value: 2.4, prefix: '$', suffix: 'M', img: '/icons/icon-volume.png', delta: '+18.2%', positive: true },
+  { label: 'Agents Tracked', sublabel: 'Registered on Sui', value: 1247, prefix: '', suffix: '+', icon: Users, delta: '+12.4%', positive: true },
+  { label: 'Avg Success Rate', sublabel: 'All agents avg.', value: 98, prefix: '', suffix: '%', icon: TrendingUp, delta: '+0.3%', positive: true },
+  { label: 'Volume Protected', sublabel: 'Cumulative SUI', value: 2.4, prefix: '$', suffix: 'M', icon: Lock, delta: '+18.2%', positive: true },
 ];
 
 const tickerItems = [
-  { label: 'AGENTS TRACKED', value: '1,247+', img: '/icons/icon-marketplace.png' },
-  { label: 'SUCCESS RATE', value: '98.7%', img: '/icons/icon-reputation.png' },
-  { label: 'VOLUME PROTECTED', value: '$2.4M', img: '/icons/icon-volume.png' },
-  { label: 'NETWORK', value: 'SUI TESTNET', img: '/icons/icon-shield.png' },
-  { label: 'UPTIME', value: '99.9%', img: '/icons/icon-uptime.png' },
-  { label: 'BADGES ISSUED', value: '847', img: '/icons/icon-badge.png' },
-  { label: 'EXECUTIONS', value: '94,231', img: '/icons/icon-brain.png' },
-  { label: 'ACTIVE CONTRACTS', value: '3', img: '/icons/icon-smart-contract.png' },
+  { label: 'AGENTS TRACKED', value: '1,247+', icon: Users },
+  { label: 'SUCCESS RATE', value: '98.7%', icon: TrendingUp },
+  { label: 'VOLUME PROTECTED', value: '$2.4M', icon: Lock },
+  { label: 'NETWORK', value: 'SUI TESTNET', icon: Globe },
+  { label: 'UPTIME', value: '99.9%', icon: Activity },
+  { label: 'BADGES ISSUED', value: '847', icon: Award },
+  { label: 'EXECUTIONS', value: '94,231', icon: Zap },
+  { label: 'ACTIVE CONTRACTS', value: '3', icon: Cpu },
 ];
 
 const steps = [
   {
     title: 'Register Your Agent',
     description: 'Deploy your AI agent and register it on the Aegis smart contract on Sui.',
-    img: '/icons/icon-brain.png',
+    icon: Cpu,
   },
   {
     title: 'Record On-Chain Actions',
     description: 'Every execution is verified and scored in real-time against performance thresholds.',
-    img: '/icons/icon-uptime.png',
+    icon: BarChart2,
   },
   {
     title: 'Earn Trust Badges',
     description: 'Consistent performance automatically unlocks Bronze, Silver, and Gold reputation badges.',
-    img: '/icons/icon-badge.png',
+    icon: Award,
   },
 ];
 
@@ -181,6 +191,7 @@ export default function Home() {
           {/* Floating stat cards */}
           <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
             {stats.map((stat, i) => {
+              const Icon = stat.icon;
               return (
                 <motion.div key={stat.label} variants={itemVariants}>
                   <motion.div
@@ -193,7 +204,7 @@ export default function Home() {
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2.5">
                           <div className="w-9 h-9 rounded-full bg-surface-2/60 flex items-center justify-center">
-                            <img src={stat.img} width={28} height={28} alt="" className="object-contain" />
+                            <Icon size={16} className="text-cyan-primary" />
                           </div>
                           <div>
                             <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>
@@ -306,7 +317,7 @@ export default function Home() {
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-cyan-primary/[0.08] border border-cyan-primary/20">
-                <img src="/icons/icon-shield.png" width={32} height={32} alt="" className="object-contain" />
+                  <Shield size={18} className="text-cyan-primary" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 You Focus on Your Protocol, We Handle Trust
@@ -342,7 +353,7 @@ export default function Home() {
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-mint-secondary/[0.06] border border-mint-secondary/20">
-                <img src="/icons/icon-zero-infra.png" width={32} height={32} alt="" className="object-contain" />
+                  <Zap size={18} className="text-mint-secondary" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 Zero Infrastructure Cost
@@ -373,7 +384,7 @@ export default function Home() {
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-purple-400/[0.06] border border-purple-400/20">
-                <img src="/icons/icon-sdk.png" width={32} height={32} alt="" className="object-contain" />
+                  <Code2 size={18} className="text-purple-400" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 One Integration, Infinite Trust
@@ -489,9 +500,10 @@ export default function Home() {
       <div className="relative overflow-hidden border-y border-[rgba(255,255,255,0.05)] bg-surface-0/60 backdrop-blur-sm">
         <div className="ticker-scroll py-3">
           {[...tickerItems, ...tickerItems].map((item, i) => {
+            const Icon = item.icon;
             return (
               <div key={i} className="flex items-center gap-2.5 px-8 whitespace-nowrap">
-                <img src={item.img} width={18} height={18} alt="" className="object-contain opacity-60 shrink-0" />
+                <Icon size={11} className="text-cyan-primary/50 shrink-0" />
                 <span className="text-label-xs font-mono text-text-muted uppercase tracking-wider">{item.label}</span>
                 <span className="text-label-xs font-mono text-text-secondary font-semibold">{item.value}</span>
                 <span className="w-1 h-1 rounded-full bg-white/15 ml-2 shrink-0" />
@@ -696,6 +708,7 @@ export default function Home() {
             <div className="hidden md:block absolute top-[52px] left-[calc(16.66%+40px)] right-[calc(16.66%+40px)] h-px step-beam opacity-60" />
 
             {steps.map((step, i) => {
+              const StepIcon = step.icon;
               return (
                 <motion.div
                   key={step.title}
@@ -710,7 +723,7 @@ export default function Home() {
                     <div className="absolute inset-0 rounded-full step-ring-outer" />
                     {/* Inner circle */}
                     <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-primary/[0.12] to-mint-secondary/[0.06] border border-cyan-primary/20 shadow-glow-cyan">
-                      <img src={step.img} width={48} height={48} alt="" className="object-contain" />
+                      <StepIcon size={24} className="text-cyan-primary" />
                     </div>
                     {/* Number badge */}
                     <span className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center font-display font-bold text-bg-base text-[11px] bg-gradient-cyan-mint shadow-glow-cyan">

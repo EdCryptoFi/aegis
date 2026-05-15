@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { ChevronLeft, TrendingUp, BarChart2, Layers } from 'lucide-react';
+import { Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight } from 'lucide-react';
 import { config } from '../../config';
 
 interface AgentInfo {
@@ -92,6 +92,7 @@ export default function AgentsPage() {
   const [agents, setAgents] = useState<AgentInfo[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortKey>('uptime');
+  const [limit, setLimit] = useState<10 | 20 | 100>(10);
 
   useEffect(() => {
     loadAgents();
@@ -104,19 +105,27 @@ export default function AgentsPage() {
     setLoading(false);
   }
 
-  const sortedAgents = [...agents].sort((a, b) => {
-    switch (sortBy) {
-      case 'uptime': return b.uptimeScore - a.uptimeScore;
-      case 'volume': return b.totalVolume - a.totalVolume;
-      case 'executions': return b.totalExecutions - a.totalExecutions;
-      default: return 0;
-    }
-  });
+  const sortedAgents = [...agents]
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'uptime': return b.uptimeScore - a.uptimeScore;
+        case 'volume': return b.totalVolume - a.totalVolume;
+        case 'executions': return b.totalExecutions - a.totalExecutions;
+        default: return 0;
+      }
+    })
+    .slice(0, limit);
 
   const SORT_OPTIONS: { key: SortKey; label: string }[] = [
     { key: 'uptime', label: 'Uptime' },
     { key: 'volume', label: 'Volume' },
     { key: 'executions', label: 'Executions' },
+  ];
+
+  const LIMIT_OPTIONS: { value: 10 | 20 | 100; label: string }[] = [
+    { value: 10, label: 'Top 10' },
+    { value: 20, label: 'Top 20' },
+    { value: 100, label: 'Top 100' },
   ];
 
   return (
@@ -129,7 +138,7 @@ export default function AgentsPage() {
             <ChevronLeft size={14} /> Back to Home
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <img src="/icons/icon-marketplace.png" width={52} height={52} alt="" className="object-contain" />
+            <Users size={28} className="text-cyan-primary" />
             <h1 className="font-display text-5xl font-bold gradient-text-cyan">Registered Agents</h1>
           </div>
           <p className="text-text-secondary text-lg">Explore all agents registered on Aegis</p>
@@ -137,30 +146,65 @@ export default function AgentsPage() {
 
         {/* Controls */}
         <motion.div
-          className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-10"
+          className="flex flex-col gap-3 mb-10"
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.1 }}
         >
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-text-muted text-xs uppercase tracking-wider">Sort by:</span>
-            {SORT_OPTIONS.map(({ key, label }) => (
-              <button
-                key={key}
-                onClick={() => setSortBy(key)}
-                className={`
-                  px-4 py-2 rounded-full text-sm font-medium transition-all duration-200
-                  ${sortBy === key
-                    ? 'bg-cyan-primary text-bg-base font-bold shadow-glow-cyan'
-                    : 'bg-surface-1 border border-[rgba(255,255,255,0.08)] text-text-secondary hover:text-text-primary hover:border-cyan-primary/30'
-                  }
-                `}
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            {/* Left: Sort + Limit */}
+            <div className="flex flex-wrap items-center gap-3">
+              <div className="flex items-center gap-2">
+                <span className="text-text-muted text-xs uppercase tracking-wider">Sort by:</span>
+                {SORT_OPTIONS.map(({ key, label }) => (
+                  <button
+                    key={key}
+                    onClick={() => setSortBy(key)}
+                    className={`
+                      px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200
+                      ${sortBy === key
+                        ? 'bg-cyan-primary text-bg-base font-bold shadow-glow-cyan'
+                        : 'bg-surface-1 border border-[rgba(255,255,255,0.08)] text-text-secondary hover:text-text-primary hover:border-cyan-primary/30'
+                      }
+                    `}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <div className="w-px h-5 bg-[rgba(255,255,255,0.08)] hidden sm:block" />
+              <div className="flex items-center gap-2">
+                <span className="text-text-muted text-xs uppercase tracking-wider">Show:</span>
+                {LIMIT_OPTIONS.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => setLimit(value)}
+                    className={`
+                      px-3.5 py-1.5 rounded-full text-sm font-medium transition-all duration-200
+                      ${limit === value
+                        ? 'bg-mint-secondary/20 text-mint-secondary border border-mint-secondary/40 font-bold'
+                        : 'bg-surface-1 border border-[rgba(255,255,255,0.08)] text-text-secondary hover:text-text-primary hover:border-mint-secondary/30'
+                      }
+                    `}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Right: Integrate CTA + count */}
+            <div className="flex items-center gap-4">
+              <span className="text-text-muted text-sm">{sortedAgents.length} of {agents.length} agent{agents.length !== 1 ? 's' : ''}</span>
+              <Link
+                href="/developer"
+                className="group inline-flex items-center gap-2 px-4 py-2 rounded-[10px] bg-gradient-cyan-mint text-bg-base font-display font-semibold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.02] transition-all whitespace-nowrap"
               >
-                {label}
-              </button>
-            ))}
+                Integrate your Agent
+                <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
           </div>
-          <span className="text-text-muted text-sm">{agents.length} agent{agents.length !== 1 ? 's' : ''} found</span>
         </motion.div>
 
         {/* Content */}

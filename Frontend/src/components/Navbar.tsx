@@ -4,15 +4,25 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Search } from 'lucide-react';
+import {
+  Shield,
+  Users,
+  Trophy,
+  Award,
+  Code2,
+  BookOpen,
+  Menu,
+  X,
+  Search,
+} from 'lucide-react';
 import { ConnectButton } from '@mysten/dapp-kit';
 
 const navLinks = [
-  { href: '/agents', label: 'Agents', img: '/icons/icon-marketplace.png' },
-  { href: '/leaderboard', label: 'Leaderboard', img: '/icons/icon-leaderboard.png' },
-  { href: '/badges', label: 'Badges', img: '/icons/icon-badge.png' },
-  { href: '/developer', label: 'Developers', img: '/icons/icon-sdk.png' },
-  { href: '/docs', label: 'Docs', img: '/icons/icon-api.png' },
+  { href: '/agents', label: 'Agents', icon: Users },
+  { href: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+  { href: '/badges', label: 'Badges', icon: Award },
+  { href: '/developer', label: 'Developers', icon: Code2 },
+  { href: '/docs', label: 'Docs', icon: BookOpen },
 ];
 
 export default function Navbar() {
@@ -71,7 +81,7 @@ export default function Navbar() {
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <Link href="/" className="flex items-center gap-2.5 group">
-              <img src="/icons/icon-shield.png" width={36} height={36} alt="" className="object-contain group-hover:drop-shadow-[0_0_8px_rgba(0,245,255,0.4)] transition-all" />
+              <Shield size={22} className="text-cyan-primary group-hover:drop-shadow-[0_0_8px_rgba(0,245,255,0.4)] transition-all" />
               <span className="text-lg font-display font-bold text-text-primary">
                 Aegis
               </span>
@@ -146,6 +156,7 @@ export default function Navbar() {
             >
               <div className="px-6 py-4 space-y-1">
                 {navLinks.map((link, i) => {
+                  const Icon = link.icon;
                   const isActive = router.pathname === link.href;
                   return (
                     <motion.div
@@ -165,7 +176,7 @@ export default function Navbar() {
                           }
                         `}
                       >
-                        <img src={link.img} width={28} height={28} alt="" className="object-contain" />
+                        <Icon size={18} />
                         <span className="font-medium">{link.label}</span>
                       </Link>
                     </motion.div>
