@@ -16,7 +16,6 @@ import {
   Search,
   Workflow,
   Bell,
-  Wallet,
 } from 'lucide-react';
 import { ConnectButton } from '@mysten/dapp-kit';
 
@@ -131,25 +130,6 @@ export default function Navbar() {
               </button>
             </div>
 
-            <style jsx>{`
-              .connect-btn-wrapper :global(button) {
-                background: linear-gradient(135deg, #00F5FF, #00dce5) !important;
-                color: #0c0f11 !important;
-                font-size: 12px !important;
-                font-weight: 700 !important;
-                font-family: 'JetBrains Mono', monospace !important;
-                padding: 8px 20px !important;
-                border-radius: 9999px !important;
-                border: none !important;
-                letter-spacing: 0.03em !important;
-                transition: all 0.2s !important;
-                box-shadow: 0 0 16px rgba(0,245,255,0.2) !important;
-              }
-              .connect-btn-wrapper :global(button:hover) {
-                box-shadow: 0 0 24px rgba(0,245,255,0.4) !important;
-                transform: scale(1.03) !important;
-              }
-            `}</style>
           </div>
         </div>
 

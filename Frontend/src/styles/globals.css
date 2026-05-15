@@ -188,6 +188,85 @@ body {
   --neu-accent: #7000FF;
 }
 
+/* ===== COMPONENT UTILITY CLASSES ===== */
+
+/* Glassmorphism — heavy (blurred backdrop, prominent shadow) */
+.glass-card-heavy {
+  background: rgba(22, 27, 30, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* Glassmorphism — matte (no blur, subtle) */
+.glass-card-matte {
+  background: rgba(22, 27, 30, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Agent lookup card */
+.lookup-card {
+  background: rgba(22, 27, 30, 0.75);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), 0 24px 64px rgba(0, 0, 0, 0.5);
+}
+
+/* Hero ambient radial glow */
+.hero-ambient {
+  background: radial-gradient(ellipse 70% 60% at 50% 40%, rgba(0, 245, 255, 0.05) 0%, rgba(112, 0, 255, 0.03) 50%, transparent 70%);
+}
+
+/* Smart money bento card — background glow */
+.smart-money-glow {
+  background: radial-gradient(ellipse at 80% 50%, rgba(0, 245, 255, 0.25) 0%, transparent 70%);
+}
+
+/* CTA section portal glow */
+.cta-portal-glow {
+  background: radial-gradient(ellipse 70% 60% at 50% 50%, rgba(0, 245, 255, 0.07) 0%, rgba(112, 0, 255, 0.05) 40%, transparent 70%);
+}
+
+/* How-it-works section ambient */
+.section-mint-ambient {
+  background: radial-gradient(ellipse 60% 40% at 50% 50%, rgba(0, 255, 167, 0.04) 0%, transparent 70%);
+}
+
+/* Step icon outer ring */
+.step-ring-outer {
+  background: radial-gradient(circle, rgba(0, 245, 255, 0.06) 0%, transparent 70%);
+  border: 1px solid rgba(0, 245, 255, 0.12);
+}
+
+/* Sparkline gradient bar (hero stat cards) */
+.sparkline-bar {
+  background: linear-gradient(to top, rgba(0, 245, 255, 0.18) 0%, transparent 100%);
+  border-bottom: 2px solid rgba(0, 245, 255, 0.35);
+}
+
+/* Connect wallet button override (dapp-kit ConnectButton) */
+.connect-btn-wrapper button {
+  background: linear-gradient(135deg, #00F5FF, #00dce5) !important;
+  color: #0c0f11 !important;
+  font-size: 12px !important;
+  font-weight: 700 !important;
+  font-family: 'JetBrains Mono', monospace !important;
+  padding: 8px 20px !important;
+  border-radius: 9999px !important;
+  border: none !important;
+  letter-spacing: 0.03em !important;
+  transition: all 0.2s ease !important;
+  box-shadow: 0 0 16px rgba(0, 245, 255, 0.2) !important;
+  cursor: pointer !important;
+}
+
+.connect-btn-wrapper button:hover {
+  box-shadow: 0 0 24px rgba(0, 245, 255, 0.4) !important;
+  transform: scale(1.03) !important;
+}
+
 /* Live ticker marquee */
 @keyframes ticker-scroll {
   from { transform: translateX(0); }
