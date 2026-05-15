@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Award, Shield, ShieldOff, AlertTriangle } from 'lucide-react';
+import { Award, Shield, ShieldOff, AlertTriangle, Code2, ArrowRight } from 'lucide-react';
 
 interface BadgeHolder {
   agentId: string;
@@ -148,7 +148,15 @@ async function getBadgeHolders(): Promise<BadgeHolder[]> {
   return holders;
 }
 
-type FilterType = 'all' | 'gold' | 'silver' | 'bronze';
+/* ─── Mini chart data per tier ─── */
+const MINI_CHARTS: Record<string, { points: string; color: string; label: string }> = {
+  '3': { points: '0,22 10,18 20,14 30,10 40,7 50,5 60,3 70,2 80,1', color: '#ffd700', label: 'Peak performance' },
+  '2': { points: '0,22 10,20 20,17 30,15 40,13 50,11 60,10 70,9 80,8', color: '#c0c0c0', label: 'Steady growth' },
+  '1': { points: '0,22 10,21 20,20 30,19 40,18 50,17 60,16 70,15 80,14', color: '#cd7f32', label: 'Early track record' },
+  revoked: { points: '0,4 10,7 20,10 30,13 40,16 50,18 60,20 70,21 80,22', color: '#ef4444', label: 'Performance violation' },
+};
+
+type FilterType = 'all' | 'gold' | 'silver' | 'bronze' | 'revoked';
 
 const ISSUE_DATES: Record<string, string> = {
   '0x4cd8': '2026-01-15',
@@ -172,9 +180,10 @@ export default function BadgesPage() {
 
   const filtered = holders.filter(h => {
     if (filter === 'all') return true;
-    if (filter === 'gold') return h.badgeType === 3;
-    if (filter === 'silver') return h.badgeType === 2;
-    if (filter === 'bronze') return h.badgeType === 1;
+    if (filter === 'gold') return h.badgeType === 3 && h.isValid;
+    if (filter === 'silver') return h.badgeType === 2 && h.isValid;
+    if (filter === 'bronze') return h.badgeType === 1 && h.isValid;
+    if (filter === 'revoked') return !h.isValid;
     return true;
   });
 
@@ -185,6 +194,7 @@ export default function BadgesPage() {
     { key: 'gold', label: '🥇 Gold' },
     { key: 'silver', label: '🥈 Silver' },
     { key: 'bronze', label: '🥉 Bronze' },
+    { key: 'revoked', label: '🚫 Revoked' },
   ];
 
   return (
@@ -196,9 +206,19 @@ export default function BadgesPage() {
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors mb-6">
             ← Back to Home
           </Link>
-          <div className="flex items-center gap-3 mb-2">
-            <Award size={28} className="text-cyan-primary" />
-            <h1 className="font-display text-5xl font-bold gradient-text-cyan">Badge Registry</h1>
+          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
+            <div className="flex items-center gap-3">
+              <Award size={28} className="text-cyan-primary" />
+              <h1 className="font-display text-5xl font-bold gradient-text-cyan">Badge Registry</h1>
+            </div>
+            <Link
+              href="/developer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[12px] bg-cyan-primary/[0.08] border border-cyan-primary/30 text-cyan-primary font-display font-semibold text-sm hover:bg-cyan-primary/[0.14] hover:shadow-glow-cyan transition-all whitespace-nowrap self-start sm:self-auto"
+            >
+              <Code2 size={14} />
+              Integrate your Agent
+              <ArrowRight size={12} />
+            </Link>
           </div>
           <p className="text-text-secondary text-lg">Certified agent trust badges on Sui</p>
         </motion.div>
@@ -326,7 +346,7 @@ export default function BadgesPage() {
                       </div>
 
                       {/* Metrics bar */}
-                      <div className="mx-4 mb-3 grid grid-cols-2 gap-2">
+                      <div className="mx-4 mb-2 grid grid-cols-2 gap-2">
                         <div className="rounded-lg bg-white/[0.04] px-3 py-2">
                           <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
                           <p className={`font-mono text-sm font-bold ${info.accentText}`}>{holder.uptimeScore}%</p>
@@ -336,6 +356,37 @@ export default function BadgesPage() {
                           <p className={`font-mono text-sm font-bold ${info.accentText}`}>{holder.successRate}%</p>
                         </div>
                       </div>
+
+                      {/* Mini chart */}
+                      {(() => {
+                        const chartKey = holder.isValid ? String(holder.badgeType) : 'revoked';
+                        const chart = MINI_CHARTS[chartKey];
+                        return (
+                          <div className="mx-4 mb-3 rounded-lg bg-white/[0.03] px-3 py-2">
+                            <p className="text-text-muted text-[9px] uppercase tracking-widest mb-1.5">{chart.label}</p>
+                            <svg viewBox="0 0 80 24" className="w-full h-6" preserveAspectRatio="none">
+                              <defs>
+                                <linearGradient id={`grad-${holder.objectId.slice(2,8)}`} x1="0" y1="0" x2="0" y2="1">
+                                  <stop offset="0%" stopColor={chart.color} stopOpacity="0.3" />
+                                  <stop offset="100%" stopColor={chart.color} stopOpacity="0" />
+                                </linearGradient>
+                              </defs>
+                              <polyline
+                                points={chart.points}
+                                fill="none"
+                                stroke={chart.color}
+                                strokeWidth="1.5"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                              <polygon
+                                points={`${chart.points} 80,24 0,24`}
+                                fill={`url(#grad-${holder.objectId.slice(2,8)})`}
+                              />
+                            </svg>
+                          </div>
+                        );
+                      })()}
 
                       {/* Bottom footer */}
                       <div className="mt-auto mx-4 mb-4 flex items-end justify-between border-t border-white/[0.06] pt-3">
@@ -359,7 +410,7 @@ export default function BadgesPage() {
 
         {/* Requirements section */}
         <motion.div className="border-t border-[rgba(255,255,255,0.06)] pt-12" initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}>
-          <h2 className="font-display text-2xl font-bold text-text-primary mb-6">How to Earn Badges</h2>
+          <h2 className="font-display text-2xl font-bold text-text-primary mb-6">How Aegis Evaluates Agents</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
             {[
               { emoji: '🥇', name: 'Gold Badge', border: 'border-yellow-400/40', bg: 'bg-yellow-400/[0.05]', reqs: ['200+ executions', '95%+ success rate', '$1,000,000+ total volume'] },

@@ -16,6 +16,7 @@ import {
   Cpu,
   Globe,
   BarChart2,
+  Code2,
 } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
@@ -256,6 +257,152 @@ export default function Home() {
           </motion.div>
 
         </motion.div>
+      </section>
+
+      {/* ═══════ WHY INTEGRATE AEGIS ═══════ */}
+      <section className="relative py-20 px-6">
+        <div className="max-w-5xl mx-auto">
+
+          {/* Header */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-12"
+          >
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-4">
+              For Protocols & Builders
+            </span>
+            <h2 className="font-display text-[32px] md:text-[40px] font-bold text-text-primary mb-3 leading-tight">
+              Don&apos;t verify agents yourself.<br />
+              <span className="gradient-text-cyan">Let Aegis do it.</span>
+            </h2>
+            <p className="text-text-secondary text-base max-w-lg mx-auto">
+              Trust is hard to build. Easy to verify with Aegis.
+            </p>
+          </motion.div>
+
+          {/* 3 argument cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+
+            {/* Card 1 */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="rounded-2xl glass-card-heavy p-6"
+            >
+              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-cyan-primary/[0.08] border border-cyan-primary/20">
+                <Shield size={18} className="text-cyan-primary" />
+              </div>
+              <h3 className="font-display font-bold text-text-primary text-base mb-4">
+                You Focus on Your Protocol, We Handle Trust
+              </h3>
+              <div className="rounded-xl bg-bg-base border border-[rgba(255,255,255,0.06)] p-4 space-y-3">
+                <div>
+                  <p className="font-mono text-[10px] text-text-muted uppercase tracking-wider mb-1.5">You build:</p>
+                  {['Your DeFi logic', 'Your user experience', 'Your trading engine'].map(item => (
+                    <div key={item} className="flex items-center gap-2 py-0.5">
+                      <span className="w-1 h-1 rounded-full bg-cyan-primary/40" />
+                      <span className="text-text-secondary text-xs">{item}</span>
+                    </div>
+                  ))}
+                </div>
+                <div className="border-t border-[rgba(255,255,255,0.06)] pt-3">
+                  <p className="font-mono text-[10px] text-mint-secondary uppercase tracking-wider mb-1.5">Aegis handles:</p>
+                  {['Agent reputation', 'Badge verification', 'Audit trail'].map(item => (
+                    <div key={item} className="flex items-center gap-2 py-0.5">
+                      <span className="w-1 h-1 rounded-full bg-mint-secondary" />
+                      <span className="text-text-secondary text-xs">{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Card 2 */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.08 }}
+              className="rounded-2xl glass-card-heavy p-6"
+            >
+              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-mint-secondary/[0.06] border border-mint-secondary/20">
+                <Zap size={18} className="text-mint-secondary" />
+              </div>
+              <h3 className="font-display font-bold text-text-primary text-base mb-4">
+                Zero Infrastructure Cost
+              </h3>
+              <div className="space-y-3">
+                {[
+                  'No reputation database to maintain',
+                  'No badge system to create',
+                  'No Walrus integration needed yourself',
+                  'Reputation is on-chain and verifiable by anyone',
+                ].map(item => (
+                  <div key={item} className="flex items-start gap-3">
+                    <span className="w-4 h-4 rounded-full bg-mint-secondary/10 border border-mint-secondary/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-mint-secondary text-[8px] font-bold">✓</span>
+                    </span>
+                    <span className="text-text-secondary text-sm leading-relaxed">{item}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+
+            {/* Card 3 */}
+            <motion.div
+              initial={{ opacity: 0, y: 16 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5, delay: 0.16 }}
+              className="rounded-2xl glass-card-heavy p-6 flex flex-col"
+            >
+              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-purple-400/[0.06] border border-purple-400/20">
+                <Code2 size={18} className="text-purple-400" />
+              </div>
+              <h3 className="font-display font-bold text-text-primary text-base mb-4">
+                One Integration, Infinite Trust
+              </h3>
+              <div className="rounded-xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-4 font-mono text-xs leading-relaxed flex-1">
+                <p className="text-text-muted mb-2">// Single API call</p>
+                <p className="text-cyan-primary">const rep = await aegis</p>
+                <p className="text-cyan-primary pl-2">.getReputation(</p>
+                <p className="text-mint-secondary pl-4">agentAddress</p>
+                <p className="text-cyan-primary pl-2">);</p>
+                <div className="mt-3 pt-3 border-t border-[rgba(255,255,255,0.06)] space-y-1">
+                  <p className="text-text-muted">{'// Returns:'}</p>
+                  <p className="text-text-secondary">{'{ badge, successRate,'}</p>
+                  <p className="text-text-secondary pl-2">{'isFlagged, uptime }'}</p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
+
+          {/* Bottom CTA strip */}
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="rounded-2xl glass-card-matte p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
+          >
+            <div>
+              <p className="font-display font-bold text-text-primary mb-1">Ready to integrate?</p>
+              <p className="text-text-secondary text-sm">One SDK call. Full agent trust. Zero overhead.</p>
+            </div>
+            <Link
+              href="/developer"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan hover:scale-[1.02] transition-all whitespace-nowrap flex-shrink-0"
+            >
+              View Integration Docs <ArrowRight size={14} />
+            </Link>
+          </motion.div>
+
+        </div>
       </section>
 
       {/* ═══════ AGENT LOOKUP ═══════ */}
