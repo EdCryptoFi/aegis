@@ -21,6 +21,7 @@ import {
 import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
 import Footer from '@/components/Footer';
+import DecryptedText from '@/components/DecryptedText';
 
 /* ─── Animated Counter ─── */
 function AnimatedCounter({ value, suffix = '', prefix = '' }: { value: number; suffix?: string; prefix?: string }) {
@@ -149,8 +150,16 @@ export default function Home() {
             variants={itemVariants}
             className="font-display text-display-lg-mobile md:text-display-lg text-text-primary mb-6 leading-tight"
           >
-            Trust isn&apos;t asked for —{' '}
-            <span className="gradient-text-cyan">it&apos;s proven.</span>
+            <DecryptedText
+              text="Trust isn't asked for — it's proven."
+              animateOn="view"
+              sequential={true}
+              revealDirection="start"
+              speed={35}
+              characters="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()"
+              className="gradient-text-cyan"
+              encryptedClassName="text-text-muted opacity-40"
+            />
           </motion.h1>
 
           {/* Subtitle */}
@@ -297,7 +306,7 @@ export default function Home() {
           </motion.div>
 
           {/* 3 argument cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8 md:items-stretch">
 
             {/* Card 1 */}
             <motion.div
@@ -305,7 +314,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="rounded-2xl glass-card-heavy p-6"
+              className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-cyan-primary/[0.08] border border-cyan-primary/20">
                 <Shield size={18} className="text-cyan-primary" />
@@ -313,7 +322,7 @@ export default function Home() {
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 You Focus on Your Protocol, We Handle Trust
               </h3>
-              <div className="rounded-xl bg-bg-base border border-[rgba(255,255,255,0.06)] p-4 space-y-3">
+              <div className="rounded-xl bg-bg-base border border-[rgba(255,255,255,0.06)] p-4 space-y-3 flex-1">
                 <div>
                   <p className="font-mono text-[10px] text-text-muted uppercase tracking-wider mb-1.5">You build:</p>
                   {['Your DeFi logic', 'Your user experience', 'Your trading engine'].map(item => (
@@ -341,7 +350,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.08 }}
-              className="rounded-2xl glass-card-heavy p-6"
+              className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-mint-secondary/[0.06] border border-mint-secondary/20">
                 <Zap size={18} className="text-mint-secondary" />
@@ -349,7 +358,7 @@ export default function Home() {
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 Zero Infrastructure Cost
               </h3>
-              <div className="space-y-3">
+              <div className="space-y-3 flex-1">
                 {[
                   'No reputation database to maintain',
                   'No badge system to create',
@@ -372,7 +381,7 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.16 }}
-              className="rounded-2xl glass-card-heavy p-6 flex flex-col"
+              className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-purple-400/[0.06] border border-purple-400/20">
                 <Code2 size={18} className="text-purple-400" />
