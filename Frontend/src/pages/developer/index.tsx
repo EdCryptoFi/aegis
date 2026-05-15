@@ -5,8 +5,8 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Code2, Copy, Check, Terminal, Zap, BookOpen, BarChart2, AlertTriangle,
-  Workflow, Database, Trophy, ArrowRight, Play, RefreshCw, CheckCircle2,
-  XCircle, Award, ChevronRight,
+  Workflow, ArrowRight, Play, RefreshCw, CheckCircle2,
+  XCircle, Award,
 } from 'lucide-react';
 import { config } from '../../config';
 
@@ -37,7 +37,7 @@ const components = [
   {
     name: 'Reputation Object',
     desc: 'On-chain metrics tracked in Move smart contracts — executions, volume, slippage, uptime.',
-    icon: Database,
+    emoji: '🛡️',
     accent: 'text-cyan-primary',
     bg: 'bg-cyan-primary/[0.06]',
     border: 'border-cyan-primary/20',
@@ -45,7 +45,7 @@ const components = [
   {
     name: 'Walrus Memory',
     desc: 'Persistent execution history stored off-chain in Walrus decentralized storage, anchored on-chain.',
-    icon: Workflow,
+    emoji: '🧠',
     accent: 'text-mint-secondary',
     bg: 'bg-mint-secondary/[0.06]',
     border: 'border-mint-secondary/20',
@@ -53,7 +53,7 @@ const components = [
   {
     name: 'Badge Registry',
     desc: 'NFT certificates issued as Kiosk objects on Sui — Bronze, Silver, Gold tiers with auto-revocation.',
-    icon: Trophy,
+    emoji: '⭐',
     accent: 'text-yellow-400',
     bg: 'bg-yellow-400/[0.06]',
     border: 'border-yellow-400/20',
@@ -61,7 +61,7 @@ const components = [
   {
     name: 'SDK & API',
     desc: 'TypeScript SDK for seamless integration — register, record, check eligibility, mint badges.',
-    icon: Code2,
+    emoji: '🔌',
     accent: 'text-purple-400',
     bg: 'bg-purple-400/[0.06]',
     border: 'border-purple-400/20',
@@ -76,10 +76,10 @@ const flow = [
 ];
 
 const techStack = [
-  { tech: 'Move', desc: 'Smart Contracts', icon: '⛓️', color: 'text-cyan-primary' },
+  { tech: 'Move', desc: 'Smart Contracts', icon: '⚡', color: 'text-cyan-primary' },
   { tech: 'Sui SDK', desc: 'Blockchain Integration', icon: '🔗', color: 'text-mint-secondary' },
-  { tech: 'TypeScript', desc: 'Backend & SDK', icon: '📝', color: 'text-purple-400' },
-  { tech: 'Next.js', desc: 'Frontend', icon: '⚛️', color: 'text-text-primary' },
+  { tech: 'TypeScript', desc: 'Backend & SDK', icon: '📘', color: 'text-purple-400' },
+  { tech: 'Next.js', desc: 'Frontend', icon: '▲', color: 'text-text-primary' },
 ];
 
 /* ─── Live Demo terminal lines ─── */
@@ -616,32 +616,133 @@ sui client call \\
               transition={{ duration: 0.25 }}
               className="space-y-10"
             >
-              {/* Core Components */}
+
+              {/* Section 1 — For Protocols, Trust is One API Call */}
               <section>
-                <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Core Components</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {components.map((comp, i) => {
-                    const Icon = comp.icon;
-                    return (
-                      <motion.div
-                        key={comp.name}
-                        className={`rounded-2xl p-7 border ${comp.border} ${comp.bg} hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300`}
-                        initial={{ opacity: 0, y: 16 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: i * 0.08 }}
-                      >
-                        <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center mb-5 ${comp.bg} border ${comp.border}`}>
-                          <Icon size={20} className={comp.accent} />
-                        </div>
-                        <h3 className={`font-display text-xl font-bold mb-2 ${comp.accent}`}>{comp.name}</h3>
-                        <p className="text-text-secondary text-sm leading-relaxed">{comp.desc}</p>
-                      </motion.div>
-                    );
-                  })}
+                <h2 className="font-display text-2xl font-bold text-text-primary mb-2">For Protocols, Trust is One API Call</h2>
+                <p className="text-text-secondary text-sm mb-6">No infrastructure to build. No scoring system to maintain. One integration gives you full agent trust data.</p>
+                <div className="rounded-2xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-6 overflow-x-auto">
+                  <pre className="font-mono text-sm text-cyan-primary leading-relaxed whitespace-pre">{`import { getReputation } from '@aegis/sdk';
+
+// Single call returns everything you need
+const rep = await getReputation(agentAddress);
+
+// rep.badge        → 'bronze' | 'silver' | 'gold' | null
+// rep.successRate  → 86.7
+// rep.isFlagged    → false
+// rep.uptime       → 99.1
+// rep.totalExecs   → 247
+
+if (rep.badge === 'gold' && !rep.isFlagged) {
+  // Safe to delegate funds to this agent
+}`}</pre>
                 </div>
               </section>
 
-              {/* Data Flow */}
+              {/* Section 2 — Core Components */}
+              <section>
+                <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Core Components</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {components.map((comp, i) => (
+                    <motion.div
+                      key={comp.name}
+                      className={`rounded-2xl p-7 border ${comp.border} ${comp.bg} hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300`}
+                      initial={{ opacity: 0, y: 16 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.08 }}
+                    >
+                      <span className="text-4xl block mb-4">{comp.emoji}</span>
+                      <h3 className={`font-display text-xl font-bold mb-2 ${comp.accent}`}>{comp.name}</h3>
+                      <p className="text-text-secondary text-sm leading-relaxed">{comp.desc}</p>
+                    </motion.div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Section 3 — Integration Flow */}
+              <section>
+                <h2 className="font-display text-2xl font-bold text-text-primary mb-6">How Protocols Use Aegis</h2>
+                {/* Top row: AI Agent → Execute → DeepBook */}
+                <div className="rounded-2xl glass-card-heavy p-8">
+                  <div className="space-y-6">
+                    {/* Flow diagram row 1 */}
+                    <div className="flex flex-wrap items-center gap-3 justify-center">
+                      {[
+                        { label: 'AI Agent', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]' },
+                        { label: '→', color: 'text-text-muted border-transparent bg-transparent' },
+                        { label: 'Execute', color: 'border-mint-secondary/30 text-mint-secondary bg-mint-secondary/[0.06]' },
+                        { label: '→', color: 'text-text-muted border-transparent bg-transparent' },
+                        { label: 'DeepBook', color: 'border-purple-400/30 text-purple-400 bg-purple-400/[0.06]' },
+                      ].map(({ label, color }, i) => (
+                        <div key={i} className={`px-4 py-2 rounded-[10px] border font-mono text-xs font-semibold ${color}`}>
+                          {label}
+                        </div>
+                      ))}
+                    </div>
+                    {/* Connectors going down */}
+                    <div className="flex justify-center gap-32">
+                      <div className="w-px h-6 bg-gradient-to-b from-mint-secondary/30 to-transparent" />
+                      <div className="w-px h-6 bg-gradient-to-b from-purple-400/30 to-transparent" />
+                    </div>
+                    {/* Flow diagram row 2 */}
+                    <div className="flex flex-wrap items-center gap-3 justify-center">
+                      {[
+                        { label: 'ReputationObject', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]' },
+                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent' },
+                        { label: 'Walrus Storage', color: 'border-mint-secondary/30 text-mint-secondary bg-mint-secondary/[0.06]' },
+                      ].map(({ label, color }, i) => (
+                        <div key={i} className={`px-4 py-2 rounded-[10px] border font-mono text-xs font-semibold ${color}`}>
+                          {label}
+                        </div>
+                      ))}
+                    </div>
+                    {/* Connectors */}
+                    <div className="flex justify-center">
+                      <div className="w-px h-6 bg-gradient-to-b from-cyan-primary/30 to-transparent" />
+                    </div>
+                    {/* Flow diagram row 3 */}
+                    <div className="flex flex-wrap items-center gap-3 justify-center">
+                      {[
+                        { label: 'Protocol / Wallet', color: 'border-yellow-400/30 text-yellow-400 bg-yellow-400/[0.06]' },
+                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent' },
+                        { label: 'Query API', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]' },
+                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent' },
+                        { label: 'Badge Registry', color: 'border-yellow-400/30 text-yellow-400 bg-yellow-400/[0.06]' },
+                      ].map(({ label, color }, i) => (
+                        <div key={i} className={`px-4 py-2 rounded-[10px] border font-mono text-xs font-semibold ${color}`}>
+                          {label}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              {/* Section 3b — Why Protocols Choose Aegis */}
+              <section>
+                <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Why Protocols Choose Aegis</h2>
+                <div className="rounded-2xl glass-card-heavy overflow-hidden">
+                  <div className="grid grid-cols-3 px-6 py-3 bg-surface-0 border-b border-[rgba(255,255,255,0.06)]">
+                    {['Stakeholder', 'Benefit', ''].map((h, i) => (
+                      <span key={i} className="text-text-muted text-[11px] font-semibold uppercase tracking-wider">{h}</span>
+                    ))}
+                  </div>
+                  {[
+                    { who: 'Wallets', benefit: 'Verify before delegating funds', icon: '🏦' },
+                    { who: 'DeFi Protocols', benefit: 'Score agents for trading permissions', icon: '⚡' },
+                    { who: 'AI Marketplaces', benefit: 'Badges as proof of trust for listings', icon: '🏪' },
+                    { who: 'Audit Tools', benefit: 'Full immutable audit trail on-chain', icon: '🔍' },
+                  ].map(({ who, benefit, icon }) => (
+                    <div key={who} className="grid grid-cols-3 px-6 py-4 border-b border-[rgba(255,255,255,0.04)] last:border-0 hover:bg-surface-1/40 transition-colors items-center">
+                      <span className="font-display font-semibold text-text-primary text-sm">{who}</span>
+                      <span className="text-text-secondary text-sm">{benefit}</span>
+                      <span className="text-xl text-right">{icon}</span>
+                    </div>
+                  ))}
+                </div>
+              </section>
+
+              {/* Section 4 — Data Flow */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Data Flow</h2>
                 <div className="rounded-2xl glass-card-heavy p-8">
@@ -672,7 +773,7 @@ sui client call \\
                 </div>
               </section>
 
-              {/* Tech Stack */}
+              {/* Section 5 — Tech Stack */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Tech Stack</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -692,19 +793,6 @@ sui client call \\
                 </div>
               </section>
 
-              {/* Full architecture diagram link */}
-              <div className="rounded-2xl glass-card-matte p-6 flex items-center justify-between">
-                <div>
-                  <p className="font-display font-bold text-text-primary mb-1">Full Architecture Diagram</p>
-                  <p className="text-text-secondary text-xs">Detailed system overview with all integrations</p>
-                </div>
-                <Link
-                  href="/architecture"
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[12px] bg-surface-2 border border-[rgba(255,255,255,0.08)] hover:border-cyan-primary/30 hover:text-cyan-primary text-text-secondary text-sm font-medium transition-all"
-                >
-                  View <ArrowRight size={14} />
-                </Link>
-              </div>
             </motion.div>
           )}
 

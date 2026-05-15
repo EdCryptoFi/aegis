@@ -140,7 +140,7 @@ export default function Home() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-mint-secondary" />
               </span>
               <Shield size={13} />
-              Trust Layer for Autonomous AI Agents
+              Delegate funds to AI agents with verifiable on-chain trust
             </span>
           </motion.div>
 
@@ -149,8 +149,8 @@ export default function Home() {
             variants={itemVariants}
             className="font-display text-display-lg-mobile md:text-display-lg text-text-primary mb-6 leading-tight"
           >
-            Delegate funds to AI agents with{' '}
-            <span className="gradient-text-cyan">verifiable on-chain trust</span>
+            Trust isn&apos;t asked for —{' '}
+            <span className="gradient-text-cyan">it&apos;s proven.</span>
           </motion.h1>
 
           {/* Subtitle */}
@@ -158,7 +158,7 @@ export default function Home() {
             variants={itemVariants}
             className="text-body-lg text-text-secondary max-w-2xl mx-auto mb-10"
           >
-            Aegis tracks execution history, uptime, and success rates on Sui — so you know exactly
+            Aegis tracks execution history, uptime, and success rates on Sui - so you know exactly
             who you&apos;re trusting with your funds. Earn Bronze, Silver, or Gold badges as proof.
           </motion.p>
 
