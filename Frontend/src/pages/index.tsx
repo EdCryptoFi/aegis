@@ -254,6 +254,75 @@ export default function Home() {
         </motion.div>
       </section>
 
+      {/* ═══════ AGENT LOOKUP ═══════ */}
+      <section className="relative py-16 px-6">
+        <div className="max-w-2xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="relative rounded-[28px] overflow-hidden lookup-card">
+              {/* Top glow line */}
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-cyan-primary/30 to-transparent" />
+
+              <div className="p-8 md:p-10">
+                <div className="text-center mb-8">
+                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-[14px] mb-4 bg-cyan-primary/[0.08] border border-cyan-primary/20 shadow-glow-cyan">
+                    <Search size={20} className="text-cyan-primary" />
+                  </div>
+                  <h2 className="font-display text-headline-md font-bold text-text-primary mb-2">
+                    Check Agent Reputation
+                  </h2>
+                  <p className="text-sm text-text-secondary">
+                    Enter an agent address to check their on-chain reputation score
+                  </p>
+                </div>
+
+                <div className="flex gap-3">
+                  <input
+                    type="text"
+                    placeholder="0x..."
+                    value={agentAddress}
+                    onChange={(e) => setAgentAddress(e.target.value)}
+                    onKeyDown={(e) => e.key === 'Enter' && handleCheckReputation()}
+                    className="flex-1 px-4 py-3 rounded-input bg-bg-base border border-[rgba(255,255,255,0.08)] shadow-neu-inset text-text-primary font-mono text-sm placeholder-text-muted focus:outline-none focus:border-cyan-primary/30 focus:ring-2 focus:ring-cyan-primary/10 transition-all"
+                  />
+                  <button
+                    onClick={handleCheckReputation}
+                    className="px-6 py-3 rounded-input bg-gradient-cyan-mint text-bg-base font-display font-semibold text-sm hover:shadow-glow-cyan hover:scale-[1.02] transition-all whitespace-nowrap"
+                  >
+                    Check
+                  </button>
+                </div>
+
+                <div className="mt-6 flex flex-wrap items-center gap-2">
+                  <span className="text-label-xs font-mono text-text-muted uppercase tracking-wider">Try demo agents:</span>
+                  {[
+                    { name: 'AlphaTrader', address: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', type: 'success' },
+                    { name: 'BetaBot', address: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', type: 'info' },
+                    { name: 'GammaScam', address: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', type: 'danger' },
+                  ].map((demo) => (
+                    <button
+                      key={demo.name}
+                      onClick={() => { window.location.href = `/agent/${demo.address}`; }}
+                      className={`px-3 py-1.5 rounded-[8px] font-mono text-xs font-medium transition-all border ${
+                        demo.type === 'danger'
+                          ? 'border-error/30 text-error hover:bg-error/10'
+                          : 'border-[rgba(255,255,255,0.08)] text-text-secondary hover:border-cyan-primary/30 hover:text-cyan-primary hover:bg-cyan-primary/5'
+                      }`}
+                    >
+                      {demo.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
       {/* ═══════ LIVE TICKER STRIP ═══════ */}
       <div className="relative overflow-hidden border-y border-[rgba(255,255,255,0.05)] bg-surface-0/60 backdrop-blur-sm">
         <div className="ticker-scroll py-3">
@@ -472,75 +541,6 @@ export default function Home() {
               );
             })}
           </div>
-        </div>
-      </section>
-
-      {/* ═══════ AGENT LOOKUP ═══════ */}
-      <section className="relative py-24 px-6">
-        <div className="max-w-2xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-          >
-            <div className="relative rounded-[28px] overflow-hidden lookup-card">
-              {/* Top glow line */}
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-48 h-px bg-gradient-to-r from-transparent via-cyan-primary/30 to-transparent" />
-
-              <div className="p-8 md:p-10">
-                <div className="text-center mb-8">
-                  <div className="inline-flex items-center justify-center w-12 h-12 rounded-[14px] mb-4 bg-cyan-primary/[0.08] border border-cyan-primary/20 shadow-glow-cyan">
-                    <Search size={20} className="text-cyan-primary" />
-                  </div>
-                  <h2 className="font-display text-headline-md font-bold text-text-primary mb-2">
-                    Check Agent Reputation
-                  </h2>
-                  <p className="text-sm text-text-secondary">
-                    Enter an agent address to check their on-chain reputation score
-                  </p>
-                </div>
-
-                <div className="flex gap-3">
-                  <input
-                    type="text"
-                    placeholder="0x..."
-                    value={agentAddress}
-                    onChange={(e) => setAgentAddress(e.target.value)}
-                    onKeyDown={(e) => e.key === 'Enter' && handleCheckReputation()}
-                    className="flex-1 px-4 py-3 rounded-input bg-bg-base border border-[rgba(255,255,255,0.08)] shadow-neu-inset text-text-primary font-mono text-sm placeholder-text-muted focus:outline-none focus:border-cyan-primary/30 focus:ring-2 focus:ring-cyan-primary/10 transition-all"
-                  />
-                  <button
-                    onClick={handleCheckReputation}
-                    className="px-6 py-3 rounded-input bg-gradient-cyan-mint text-bg-base font-display font-semibold text-sm hover:shadow-glow-cyan hover:scale-[1.02] transition-all whitespace-nowrap"
-                  >
-                    Check
-                  </button>
-                </div>
-
-                <div className="mt-6 flex flex-wrap items-center gap-2">
-                  <span className="text-label-xs font-mono text-text-muted uppercase tracking-wider">Try demo agents:</span>
-                  {[
-                    { name: 'AlphaTrader', address: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', type: 'success' },
-                    { name: 'BetaBot', address: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', type: 'info' },
-                    { name: 'GammaScam', address: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', type: 'danger' },
-                  ].map((demo) => (
-                    <button
-                      key={demo.name}
-                      onClick={() => { window.location.href = `/agent/${demo.address}`; }}
-                      className={`px-3 py-1.5 rounded-[8px] font-mono text-xs font-medium transition-all border ${
-                        demo.type === 'danger'
-                          ? 'border-error/30 text-error hover:bg-error/10'
-                          : 'border-[rgba(255,255,255,0.08)] text-text-secondary hover:border-cyan-primary/30 hover:text-cyan-primary hover:bg-cyan-primary/5'
-                      }`}
-                    >
-                      {demo.name}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </section>
 

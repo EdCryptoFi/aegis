@@ -19,12 +19,12 @@ interface BadgeHolder {
 
 const BADGE_INFO = {
   3: {
-    name: 'NÍVEL OURO',
+    name: 'GOLD LEVEL',
     shortName: 'Gold',
     emoji: '⭐',
     description: '200+ execs, 95%+ success, $1M+ volume',
-    accessLabel: 'AUTÔNOMO — IRRESTRITO',
-    accessDesc: 'Permissão total para execução autônoma de tarefas críticas e acesso a sistemas de produção.',
+    accessLabel: 'AUTONOMOUS — UNRESTRICTED',
+    accessDesc: 'Full permission for autonomous execution of critical tasks and access to production systems.',
     level: 'LVL 5',
     border: 'border-yellow-400/60',
     glow: 'shadow-[0_0_40px_rgba(255,215,0,0.2),0_0_1px_rgba(255,215,0,0.6)]',
@@ -40,12 +40,12 @@ const BADGE_INFO = {
     accessText: 'text-yellow-300',
   },
   2: {
-    name: 'NÍVEL PRATA',
+    name: 'SILVER LEVEL',
     shortName: 'Silver',
     emoji: '🏅',
     description: '50+ execs, 90%+ success',
-    accessLabel: 'SUPERVISIONADO',
-    accessDesc: 'Execução de tarefas sob supervisão. Requer aprovação humana para ações destrutivas ou de produção.',
+    accessLabel: 'SUPERVISED',
+    accessDesc: 'Task execution under supervision. Requires human approval for destructive or production-level actions.',
     level: 'LVL 3',
     border: 'border-slate-400/60',
     glow: 'shadow-[0_0_40px_rgba(192,192,192,0.2),0_0_1px_rgba(192,192,192,0.5)]',
@@ -61,12 +61,12 @@ const BADGE_INFO = {
     accessText: 'text-slate-200',
   },
   1: {
-    name: 'NÍVEL BRONZE',
+    name: 'BRONZE LEVEL',
     shortName: 'Bronze',
     emoji: '🛡️',
     description: '10+ execs, 80%+ success',
-    accessLabel: 'RESTRITO — LEITURA',
-    accessDesc: 'Acesso restrito apenas para leitura e processamento de dados não sensíveis em ambiente de sandbox.',
+    accessLabel: 'RESTRICTED — READ ONLY',
+    accessDesc: 'Restricted access for read-only operations and non-sensitive data processing in a sandbox environment.',
     level: 'LVL 1',
     border: 'border-amber-600/60',
     glow: 'shadow-[0_0_40px_rgba(180,83,9,0.25),0_0_1px_rgba(205,127,50,0.5)]',
@@ -84,12 +84,12 @@ const BADGE_INFO = {
 };
 
 const REVOKED_INFO = {
-  name: 'REVOGADO',
+  name: 'REVOKED',
   shortName: 'Revoked',
   emoji: '🚫',
-  description: 'Credenciais revogadas',
-  accessLabel: 'DESATIVADO / QUARENTENA',
-  accessDesc: 'Credenciais revogadas devido a violação de segurança ou comportamento anômalo. Acesso bloqueado.',
+  description: 'Credentials revoked',
+  accessLabel: 'DISABLED / QUARANTINE',
+  accessDesc: 'Credentials revoked due to security violation or anomalous behavior. Access blocked.',
   level: 'LVL 0',
   border: 'border-red-600/60',
   glow: 'shadow-[0_0_40px_rgba(239,68,68,0.2),0_0_1px_rgba(239,68,68,0.5)]',
@@ -340,11 +340,11 @@ export default function BadgesPage() {
                       {/* Bottom footer */}
                       <div className="mt-auto mx-4 mb-4 flex items-end justify-between border-t border-white/[0.06] pt-3">
                         <div>
-                          <p className="text-text-muted text-[9px] uppercase tracking-widest mb-0.5">EMITIDO</p>
+                          <p className="text-text-muted text-[9px] uppercase tracking-widest mb-0.5">ISSUED</p>
                           <p className="font-mono text-xs text-text-secondary">{issueDate}</p>
                         </div>
                         <div className="text-right">
-                          <p className="text-text-muted text-[9px] uppercase tracking-widest mb-0.5">LIM. LIBERAÇÃO</p>
+                          <p className="text-text-muted text-[9px] uppercase tracking-widest mb-0.5">ACCESS LEVEL</p>
                           <p className={`font-mono text-sm font-bold ${info.labelColor}`}>{info.level}</p>
                         </div>
                       </div>

@@ -15,7 +15,6 @@ import {
   X,
   Search,
   Workflow,
-  Bell,
 } from 'lucide-react';
 import { ConnectButton } from '@mysten/dapp-kit';
 
@@ -33,7 +32,20 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [hidden, setHidden] = useState(false);
   const [lastScroll, setLastScroll] = useState(0);
+  const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
+
+  function handleSearch(e: React.FormEvent) {
+    e.preventDefault();
+    const q = searchQuery.trim();
+    if (!q) return;
+    if (q.startsWith('0x')) {
+      router.push(`/agent/${q}`);
+    } else {
+      router.push(`/agents`);
+    }
+    setSearchQuery('');
+  }
 
   useEffect(() => {
     const handleScroll = () => {
@@ -106,15 +118,16 @@ export default function Navbar() {
             {/* Right side */}
             <div className="flex items-center gap-3">
               {/* Search */}
-              <div className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full bg-surface-0 border border-[rgba(255,255,255,0.06)] text-text-muted text-xs w-56">
-                <Search size={13} />
-                <span className="font-mono text-[12px] tracking-wide">Search protocol...</span>
-              </div>
-
-              {/* Bell */}
-              <button className="hidden md:flex items-center justify-center w-8 h-8 text-text-muted hover:text-cyan-primary transition-colors">
-                <Bell size={17} />
-              </button>
+              <form onSubmit={handleSearch} className="hidden lg:flex items-center gap-2 px-4 py-2 rounded-full bg-surface-0 border border-[rgba(255,255,255,0.06)] w-56 focus-within:border-cyan-primary/30 transition-colors">
+                <Search size={13} className="text-text-muted flex-shrink-0" />
+                <input
+                  type="text"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search agents 0x..."
+                  className="bg-transparent outline-none font-mono text-[12px] tracking-wide text-text-primary placeholder-text-muted w-full"
+                />
+              </form>
 
               {/* Connect Wallet — styled as cyan pill */}
               <div className="hidden md:block connect-btn-wrapper">
