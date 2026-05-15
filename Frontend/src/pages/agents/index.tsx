@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Users, ChevronLeft, TrendingUp, BarChart2, Layers } from 'lucide-react';
+import { ChevronLeft, TrendingUp, BarChart2, Layers } from 'lucide-react';
 import { config } from '../../config';
 
 interface AgentInfo {
@@ -129,7 +129,7 @@ export default function AgentsPage() {
             <ChevronLeft size={14} /> Back to Home
           </Link>
           <div className="flex items-center gap-3 mb-2">
-            <Users size={28} className="text-cyan-primary" />
+            <img src="/icons/icon-marketplace.png" width={52} height={52} alt="" className="object-contain" />
             <h1 className="font-display text-5xl font-bold gradient-text-cyan">Registered Agents</h1>
           </div>
           <p className="text-text-secondary text-lg">Explore all agents registered on Aegis</p>

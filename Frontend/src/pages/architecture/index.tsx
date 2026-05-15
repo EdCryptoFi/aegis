@@ -1,13 +1,13 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Workflow, Database, Trophy, Code2, ArrowRight } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 
 const components = [
   {
     name: 'Reputation Object',
     desc: 'On-chain metrics tracked in Move smart contracts — executions, volume, slippage, uptime.',
-    icon: Database,
+    img: '/icons/icon-smart-contract.png',
     accent: 'text-cyan-primary',
     bg: 'bg-cyan-primary/[0.06]',
     border: 'border-cyan-primary/20',
@@ -15,7 +15,7 @@ const components = [
   {
     name: 'Walrus Memory',
     desc: 'Persistent execution history stored off-chain in Walrus decentralized storage, anchored on-chain.',
-    icon: Workflow,
+    img: '/icons/icon-walrus.png',
     accent: 'text-mint-secondary',
     bg: 'bg-mint-secondary/[0.06]',
     border: 'border-mint-secondary/20',
@@ -23,7 +23,7 @@ const components = [
   {
     name: 'Badge Registry',
     desc: 'NFT certificates issued as Kiosk objects on Sui — Bronze, Silver, Gold tiers with auto-revocation.',
-    icon: Trophy,
+    img: '/icons/icon-badge.png',
     accent: 'text-yellow-400',
     bg: 'bg-yellow-400/[0.06]',
     border: 'border-yellow-400/20',
@@ -31,7 +31,7 @@ const components = [
   {
     name: 'SDK & API',
     desc: 'TypeScript SDK for seamless integration — register, record, check eligibility, mint badges.',
-    icon: Code2,
+    img: '/icons/icon-sdk.png',
     accent: 'text-purple-400',
     bg: 'bg-purple-400/[0.06]',
     border: 'border-purple-400/20',
@@ -85,7 +85,6 @@ export default function ArchitecturePage() {
           <h2 className="font-display text-2xl font-bold text-text-primary text-center mb-10">Core Components</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             {components.map((comp, i) => {
-              const Icon = comp.icon;
               return (
                 <motion.div
                   key={comp.name}
@@ -96,7 +95,7 @@ export default function ArchitecturePage() {
                   transition={{ delay: i * 0.08 }}
                 >
                   <div className={`w-11 h-11 rounded-[14px] flex items-center justify-center mb-5 ${comp.bg} border ${comp.border}`}>
-                    <Icon size={20} className={comp.accent} />
+                    <img src={comp.img} width={40} height={40} alt="" className="object-contain" />
                   </div>
                   <h3 className={`font-display text-xl font-bold mb-2 ${comp.accent}`}>{comp.name}</h3>
                   <p className="text-text-secondary text-sm leading-relaxed">{comp.desc}</p>

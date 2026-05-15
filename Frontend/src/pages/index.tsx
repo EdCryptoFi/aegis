@@ -193,7 +193,7 @@ export default function Home() {
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2.5">
                           <div className="w-9 h-9 rounded-full bg-surface-2/60 flex items-center justify-center">
-                            <img src={stat.img} width={22} height={22} alt="" className="object-contain" />
+                            <img src={stat.img} width={28} height={28} alt="" className="object-contain" />
                           </div>
                           <div>
                             <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>
@@ -306,7 +306,7 @@ export default function Home() {
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-cyan-primary/[0.08] border border-cyan-primary/20">
-                <img src="/icons/icon-shield.png" width={24} height={24} alt="" className="object-contain" />
+                <img src="/icons/icon-shield.png" width={32} height={32} alt="" className="object-contain" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 You Focus on Your Protocol, We Handle Trust
@@ -342,7 +342,7 @@ export default function Home() {
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-mint-secondary/[0.06] border border-mint-secondary/20">
-                <img src="/icons/icon-zero-infra.png" width={24} height={24} alt="" className="object-contain" />
+                <img src="/icons/icon-zero-infra.png" width={32} height={32} alt="" className="object-contain" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 Zero Infrastructure Cost
@@ -373,7 +373,7 @@ export default function Home() {
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
               <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-purple-400/[0.06] border border-purple-400/20">
-                <img src="/icons/icon-sdk.png" width={24} height={24} alt="" className="object-contain" />
+                <img src="/icons/icon-sdk.png" width={32} height={32} alt="" className="object-contain" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 One Integration, Infinite Trust
@@ -491,7 +491,7 @@ export default function Home() {
           {[...tickerItems, ...tickerItems].map((item, i) => {
             return (
               <div key={i} className="flex items-center gap-2.5 px-8 whitespace-nowrap">
-                <img src={item.img} width={14} height={14} alt="" className="object-contain opacity-60 shrink-0" />
+                <img src={item.img} width={18} height={18} alt="" className="object-contain opacity-60 shrink-0" />
                 <span className="text-label-xs font-mono text-text-muted uppercase tracking-wider">{item.label}</span>
                 <span className="text-label-xs font-mono text-text-secondary font-semibold">{item.value}</span>
                 <span className="w-1 h-1 rounded-full bg-white/15 ml-2 shrink-0" />
@@ -710,7 +710,7 @@ export default function Home() {
                     <div className="absolute inset-0 rounded-full step-ring-outer" />
                     {/* Inner circle */}
                     <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-primary/[0.12] to-mint-secondary/[0.06] border border-cyan-primary/20 shadow-glow-cyan">
-                      <img src={step.img} width={36} height={36} alt="" className="object-contain" />
+                      <img src={step.img} width={48} height={48} alt="" className="object-contain" />
                     </div>
                     {/* Number badge */}
                     <span className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center font-display font-bold text-bg-base text-[11px] bg-gradient-cyan-mint shadow-glow-cyan">

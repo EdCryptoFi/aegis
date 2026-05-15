@@ -227,7 +227,7 @@ export default function BadgesPage() {
           </Link>
           <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-2">
             <div className="flex items-center gap-3">
-              <img src="/icons/icon-badge.png" width={32} height={32} alt="" className="object-contain" />
+              <img src="/icons/icon-badge.png" width={40} height={40} alt="" className="object-contain" />
               <h1 className="font-display text-5xl font-bold gradient-text-cyan">Badge Registry</h1>
             </div>
             <Link
@@ -539,7 +539,7 @@ export default function BadgesPage() {
                 <div className="px-5 pt-5 pb-4">
                   <div className="flex items-start justify-between mb-4">
                     <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center ${accentBg} border ${border}`}>
-                      <img src={img} width={24} height={24} alt="" className="object-contain" />
+                      <img src={img} width={32} height={32} alt="" className="object-contain" />
                     </div>
                     <span className={`font-mono text-[10px] font-bold px-2 py-1 rounded-md ${accentBg} ${accentText}`}>{level}</span>
                   </div>
