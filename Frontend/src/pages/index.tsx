@@ -52,8 +52,8 @@ function AnimatedCounter({ value, suffix = '', prefix = '' }: { value: number; s
 /* ─── Data ─── */
 const stats = [
   { label: 'Agents Tracked', sublabel: 'Registered on Sui', value: 1247, prefix: '', suffix: '+', icon: Users, delta: '+12.4%', positive: true },
-  { label: 'Avg Success Rate', sublabel: 'All agents avg.', value: 98, prefix: '', suffix: '.7%', icon: TrendingUp, delta: '+0.3%', positive: true },
-  { label: 'Volume Protected', sublabel: 'Cumulative SUI', value: 2, prefix: '$', suffix: '.4M', icon: Lock, delta: '+18.2%', positive: true },
+  { label: 'Avg Success Rate', sublabel: 'All agents avg.', value: 98, prefix: '', suffix: '%', icon: TrendingUp, delta: '+0.3%', positive: true },
+  { label: 'Volume Protected', sublabel: 'Cumulative SUI', value: 2.4, prefix: '$', suffix: 'M', icon: Lock, delta: '+18.2%', positive: true },
 ];
 
 const tickerItems = [
