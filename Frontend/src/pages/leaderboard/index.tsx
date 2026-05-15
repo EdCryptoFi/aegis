@@ -16,6 +16,25 @@ interface LeaderboardEntry {
   totalVolume: number;
   isFlagged: boolean;
   badge: string;
+  aegisScore: number;
+  status: 'Active' | 'Supervised' | 'Read Only' | 'Quarantined';
+}
+
+function computeScore(entry: Omit<LeaderboardEntry, 'rank' | 'aegisScore' | 'status'>): number {
+  if (entry.isFlagged) return Math.round(Math.max(5, entry.successRate * 0.12) * 10) / 10;
+  const perf = (entry.successRate / 100) * 42;
+  const rel = (entry.uptimeScore / 100) * 28;
+  const execMat = Math.min(entry.totalExecutions / 200, 1) * 15;
+  const volSUI = entry.totalVolume / 1_000_000_000;
+  const vol = Math.min(volSUI / 500, 1) * 15;
+  return Math.round(Math.min(100, perf + rel + execMat + vol) * 10) / 10;
+}
+
+function deriveStatus(badge: string, isFlagged: boolean): LeaderboardEntry['status'] {
+  if (isFlagged || badge === 'revoked') return 'Quarantined';
+  if (badge === 'gold') return 'Active';
+  if (badge === 'silver') return 'Supervised';
+  return 'Read Only';
 }
 
 async function getLeaderboard(): Promise<LeaderboardEntry[]> {
@@ -44,7 +63,7 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
         const fields = data.result.data.content.fields;
         const totalEx = Number(fields.total_executions);
         const successEx = Number(fields.successful_executions);
-        agents.push({
+        const entry = {
           rank: 0,
           objectId: demo.objectId,
           agentId: fields.agent_id,
@@ -55,7 +74,12 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
           totalVolume: Number(fields.total_volume),
           isFlagged: fields.is_flagged,
           badge: demo.badge,
-        });
+          aegisScore: 0,
+          status: 'Active' as LeaderboardEntry['status'],
+        };
+        entry.aegisScore = computeScore(entry);
+        entry.status = deriveStatus(entry.badge, entry.isFlagged);
+        agents.push(entry);
       }
     } catch (e) {
       console.error('Failed to fetch agent:', e);
@@ -63,9 +87,9 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   }
 
   const list = agents.length > 0 ? agents : [
-    { rank: 0, objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 99, successRate: 99, totalExecutions: 247, totalVolume: 1_450_000_000_000, isFlagged: false, badge: 'gold' },
-    { rank: 0, objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 95, successRate: 93, totalExecutions: 67, totalVolume: 320_000_000_000, isFlagged: false, badge: 'silver' },
-    { rank: 0, objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 78, successRate: 41, totalExecutions: 34, totalVolume: 45_000_000_000, isFlagged: true, badge: 'revoked' },
+    { rank: 0, objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 100, successRate: 100, totalExecutions: 247, totalVolume: 2_100_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
+    { rank: 0, objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 80, successRate: 91, totalExecutions: 67, totalVolume: 450_000_000_000, isFlagged: false, badge: 'silver', aegisScore: 82.1, status: 'Supervised' as const },
+    { rank: 0, objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 0, successRate: 0, totalExecutions: 34, totalVolume: 0, isFlagged: true, badge: 'revoked', aegisScore: 12.0, status: 'Quarantined' as const },
   ];
 
   return list.sort((a, b) => {
@@ -165,8 +189,8 @@ export default function LeaderboardPage() {
             transition={{ delay: 0.2 }}
           >
             {/* Header row */}
-            <div className="grid grid-cols-[48px_1fr_80px_80px_80px_100px_90px] gap-3 px-5 py-3 bg-surface-0 border-b border-[rgba(255,255,255,0.06)]">
-              {['#', 'Agent', 'Badge', 'Uptime', 'Success', 'Execs', 'Volume'].map((col) => (
+            <div className="grid grid-cols-[40px_1fr_70px_80px_72px_96px_72px_96px] gap-2 px-5 py-3 bg-surface-0 border-b border-[rgba(255,255,255,0.06)]">
+              {['#', 'Agent', 'Badge', 'Score', 'Success', 'Volume', 'Uptime', 'Status'].map((col) => (
                 <span key={col} className="text-text-muted text-[11px] font-semibold uppercase tracking-wider flex items-center">
                   {col}
                 </span>
@@ -176,13 +200,21 @@ export default function LeaderboardPage() {
             {leaderboard.map((agent, i) => {
               const rankStyle = RANK_STYLES[agent.rank];
               const badgeColor = BADGE_COLORS[agent.badge] || BADGE_COLORS.none;
+              const statusStyle =
+                agent.status === 'Active' ? 'text-mint-secondary' :
+                agent.status === 'Supervised' ? 'text-yellow-400' :
+                agent.status === 'Read Only' ? 'text-orange-400' : 'text-red-400';
+              const statusIcon =
+                agent.status === 'Active' ? '✅' :
+                agent.status === 'Supervised' ? '⚠️' :
+                agent.status === 'Read Only' ? '🔒' : '❌';
 
               return (
                 <Link
                   href={`/agent/${agent.objectId}`}
                   key={agent.objectId}
                   className={`
-                    grid grid-cols-[48px_1fr_80px_80px_80px_100px_90px] gap-3 px-5 py-4
+                    grid grid-cols-[40px_1fr_70px_80px_72px_96px_72px_96px] gap-2 px-5 py-4
                     border-b border-[rgba(255,255,255,0.04)] last:border-0
                     bg-surface-1 hover:bg-surface-2/60 transition-colors duration-150
                     ${agent.isFlagged ? 'opacity-50 border-l-2 border-l-red-500' : ''}
@@ -206,9 +238,9 @@ export default function LeaderboardPage() {
                     </span>
                   </span>
 
-                  {/* Uptime */}
-                  <span className="flex items-center font-mono text-sm text-cyan-primary font-semibold">
-                    {agent.uptimeScore}%
+                  {/* Aegis Score */}
+                  <span className="flex items-center">
+                    <span className="font-mono text-sm font-bold text-cyan-primary">{agent.aegisScore}</span>
                   </span>
 
                   {/* Success */}
@@ -216,14 +248,20 @@ export default function LeaderboardPage() {
                     {agent.successRate}%
                   </span>
 
-                  {/* Executions */}
-                  <span className="flex items-center font-mono text-sm text-text-primary">
-                    {agent.totalExecutions}
-                  </span>
-
                   {/* Volume */}
                   <span className="flex items-center font-mono text-sm text-text-secondary">
-                    {formatVolume(agent.totalVolume)} SUI
+                    {formatVolume(agent.totalVolume)}
+                  </span>
+
+                  {/* Uptime */}
+                  <span className="flex items-center font-mono text-sm text-cyan-primary font-semibold">
+                    {agent.uptimeScore}%
+                  </span>
+
+                  {/* Status */}
+                  <span className={`flex items-center gap-1 text-[11px] font-semibold ${statusStyle}`}>
+                    <span>{statusIcon}</span>
+                    <span>{agent.status}</span>
                   </span>
                 </Link>
               );

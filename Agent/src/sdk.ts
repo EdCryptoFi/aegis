@@ -1,6 +1,6 @@
 import { SuiClient, getFullNodeUrl } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
-import type { ReputationData, AgentStats, AgentLog } from './types';
+import type { ReputationData, AgentStats, AgentLog, AegisScoreResult } from './types';
 
 const client = new SuiClient({ url: getFullNodeUrl('testnet') });
 
@@ -266,4 +266,61 @@ export function getBadgeEmoji(badgeType: number): string {
     case 3: return '🥇';
     default: return '❌';
   }
+}
+
+/**
+ * Computes the multi-dimensional Aegis Score for an agent.
+ * Score = Performance (0-42) + Reliability (0-28) - RiskPenalty (0-30) + Contribution (0-10)
+ * All inputs are derived from on-chain ReputationData — no off-chain data required.
+ */
+export function computeAegisScore(data: ReputationData): AegisScoreResult {
+  const totalEx = data.totalExecutions;
+  const successRate = totalEx > 0 ? (data.successfulExecutions / totalEx) * 100 : 0;
+
+  // Performance (0-42): success rate weighted by execution maturity
+  const execMaturity = Math.min(totalEx / 200, 1);
+  const performance = Math.round(((successRate / 100) * 37 + execMaturity * 5) * 10) / 10;
+
+  // Reliability (0-28): uptime + execution stability
+  const uptimeComponent = ((data.uptimeScore ?? 0) / 100) * 18;
+  const consecutiveFails = data.consecutiveFailures ?? 0;
+  const stabilityComponent = consecutiveFails === 0 ? 10 : Math.max(0, 10 - consecutiveFails * 2);
+  const reliability = Math.round((uptimeComponent + stabilityComponent) * 10) / 10;
+
+  // Risk penalty (0-30): flags, slippage, consecutive failures
+  const avgSlippage = totalEx > 0 ? (data.totalSlippage / totalEx) : 0;
+  const slippagePenalty = avgSlippage > 500 ? 15 : avgSlippage > 200 ? 8 : 0;
+  const flagPenalty = data.isFlagged ? 30 : 0;
+  const failurePenalty = Math.min(consecutiveFails * 3, 12);
+  const riskPenalty = Math.min(flagPenalty + slippagePenalty + failurePenalty, 30);
+
+  // Contribution (0-10): protocol volume
+  const volumeSUI = data.totalVolume / 1_000_000_000;
+  const contribution = Math.round(Math.min(volumeSUI / 100, 10) * 10) / 10;
+
+  const raw = performance + reliability - riskPenalty + contribution;
+  const score = Math.round(Math.max(0, Math.min(100, raw)) * 10) / 10;
+
+  const tier: AegisScoreResult['tier'] =
+    score >= 95 && !data.isFlagged ? 'Platinum'
+    : score >= 85 ? 'Gold'
+    : score >= 70 ? 'Silver'
+    : score >= 50 ? 'Bronze'
+    : 'Unranked';
+
+  const status: AegisScoreResult['status'] =
+    data.isFlagged ? 'Quarantined'
+    : score >= 70 ? 'Active'
+    : score >= 50 ? 'Supervised'
+    : 'Under Review';
+
+  return { score, tier, status, breakdown: { performance, reliability, riskPenalty, contribution } };
+}
+
+export function getAgentTier(score: number, isFlagged: boolean): AegisScoreResult['tier'] {
+  if (isFlagged || score < 50) return 'Unranked';
+  if (score >= 95) return 'Platinum';
+  if (score >= 85) return 'Gold';
+  if (score >= 70) return 'Silver';
+  return 'Bronze';
 }

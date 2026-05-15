@@ -236,6 +236,19 @@ export default function Home() {
 
               <span className="w-px h-5 bg-[rgba(255,255,255,0.08)]" />
 
+              {/* DeepBook */}
+              <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
+                <svg width="22" height="17" viewBox="0 0 110 80" fill="none">
+                  <rect x="0" y="0" width="28" height="80" rx="5" fill="#2563EB"/>
+                  <rect x="0" y="0" width="85" height="22" rx="5" fill="#2563EB"/>
+                  <rect x="0" y="58" width="85" height="22" rx="5" fill="#2563EB"/>
+                  <rect x="78" y="22" width="32" height="36" rx="5" fill="#2563EB"/>
+                </svg>
+                <span className="font-display font-bold text-text-secondary text-base tracking-wide">DeepBook</span>
+              </div>
+
+              <span className="w-px h-5 bg-[rgba(255,255,255,0.08)]" />
+
               {/* MemWal */}
               <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
                 <div className="w-6 h-6 rounded-md bg-white flex items-center justify-center">

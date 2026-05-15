@@ -13,6 +13,8 @@ interface BadgeHolder {
   agentName: string;
   uptimeScore: number;
   successRate: number;
+  totalExecutions: number;
+  totalVolume: number;
   isValid: boolean;
   revokedReason?: string;
 }
@@ -138,6 +140,8 @@ async function getBadgeHolders(): Promise<BadgeHolder[]> {
           agentName: agent.name,
           uptimeScore: Number(fields.uptime_score),
           successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
+          totalExecutions: totalEx,
+          totalVolume: Number(fields.total_volume),
           isValid: agent.isValid,
         });
       }
@@ -147,9 +151,9 @@ async function getBadgeHolders(): Promise<BadgeHolder[]> {
   }
   if (holders.length === 0) {
     return [
-      { agentId: '0x8c8598ab', objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', badgeType: 3, badgeName: 'Gold', agentName: 'AlphaTrader', uptimeScore: 99, successRate: 99, isValid: true },
-      { agentId: '0x8c8598ab', objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', badgeType: 2, badgeName: 'Silver', agentName: 'BetaBot', uptimeScore: 95, successRate: 93, isValid: true },
-      { agentId: '0x8c8598ab', objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', badgeType: 1, badgeName: 'Bronze', agentName: 'GammaScam', uptimeScore: 78, successRate: 41, isValid: false, revokedReason: 'Success rate dropped below 50%' },
+      { agentId: '0x8c8598ab', objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', badgeType: 3, badgeName: 'Gold', agentName: 'AlphaTrader', uptimeScore: 100, successRate: 100, totalExecutions: 247, totalVolume: 2_100_000_000_000, isValid: true },
+      { agentId: '0x8c8598ab', objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', badgeType: 2, badgeName: 'Silver', agentName: 'BetaBot', uptimeScore: 80, successRate: 91, totalExecutions: 67, totalVolume: 450_000_000_000, isValid: true },
+      { agentId: '0x8c8598ab', objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', badgeType: 1, badgeName: 'Bronze', agentName: 'GammaScam', uptimeScore: 0, successRate: 0, totalExecutions: 34, totalVolume: 0, isValid: false, revokedReason: 'Success rate dropped below 50%' },
     ];
   }
   return holders;
@@ -170,6 +174,14 @@ const ISSUE_DATES: Record<string, string> = {
   '0xabed': '2026-03-22',
   '0xb3fa': '2026-05-10',
 };
+
+function formatVol(mist: number): string {
+  const sui = mist / 1_000_000_000;
+  if (sui >= 1_000_000) return `$${(sui / 1_000_000).toFixed(1)}M`;
+  if (sui >= 1_000) return `$${(sui / 1_000).toFixed(0)}K`;
+  if (sui === 0) return '$0';
+  return `${sui.toFixed(1)} SUI`;
+}
 
 export default function BadgesPage() {
   const [holders, setHolders] = useState<BadgeHolder[]>([]);
@@ -228,6 +240,34 @@ export default function BadgesPage() {
             </Link>
           </div>
           <p className="text-text-secondary text-lg">Certified agent trust badges on Sui</p>
+        </motion.div>
+
+        {/* Registry Explanation */}
+        <motion.div
+          className="mb-10 rounded-2xl border border-cyan-primary/20 bg-cyan-primary/[0.04] overflow-hidden"
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.05 }}
+        >
+          <div className="px-6 py-5 border-b border-cyan-primary/10">
+            <p className="text-text-secondary text-sm leading-relaxed">
+              The <span className="text-cyan-primary font-semibold">Badge Registry</span> is Aegis&apos;s trust certification system for autonomous agents on Sui. It evaluates real-world performance — success rate, processed volume, uptime — and assigns verification badges (Gold, Silver, Bronze) that determine access levels and permissions. The registry updates in real-time and is integrated on-chain for full public auditability. Performance drops or violations trigger <span className="text-red-400 font-semibold">automatic revocation</span>, instantly removing agent privileges.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(255,255,255,0.06)]">
+            {[
+              { text: 'Evaluates agents via objective on-chain metrics (executions, success rate, volume)' },
+              { text: 'Classifies into 3 tiers: Gold (LVL 5), Silver (LVL 3), Bronze (LVL 1)' },
+              { text: 'Controls access permissions automatically based on tier classification' },
+              { text: 'Monitors continuously and revokes credentials on failure or violation' },
+              { text: 'Records everything on-chain for full transparency and public audit' },
+            ].map(({ text }, i) => (
+              <div key={i} className="flex items-start gap-2.5 px-4 py-3">
+                <span className="text-cyan-primary text-xs font-mono font-bold mt-0.5 flex-shrink-0">{i + 1}.</span>
+                <span className="text-text-muted text-xs leading-relaxed">{text}</span>
+              </div>
+            ))}
+          </div>
         </motion.div>
 
         {/* Stats row */}
@@ -352,15 +392,23 @@ export default function BadgesPage() {
                         <p className="text-text-muted text-xs leading-relaxed">{info.accessDesc}</p>
                       </div>
 
-                      {/* Metrics bar */}
-                      <div className="mx-4 mb-2 grid grid-cols-2 gap-2">
+                      {/* Metrics bar — 4 metrics */}
+                      <div className="mx-4 mb-2 grid grid-cols-2 gap-1.5">
                         <div className="rounded-lg bg-white/[0.04] px-3 py-2">
-                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
+                          <p className="text-text-muted text-[9px] uppercase tracking-wide">Uptime</p>
                           <p className={`font-mono text-sm font-bold ${info.accentText}`}>{holder.uptimeScore}%</p>
                         </div>
                         <div className="rounded-lg bg-white/[0.04] px-3 py-2">
-                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
+                          <p className="text-text-muted text-[9px] uppercase tracking-wide">Success</p>
                           <p className={`font-mono text-sm font-bold ${info.accentText}`}>{holder.successRate}%</p>
+                        </div>
+                        <div className="rounded-lg bg-white/[0.04] px-3 py-2">
+                          <p className="text-text-muted text-[9px] uppercase tracking-wide">Executions</p>
+                          <p className={`font-mono text-sm font-bold ${info.accentText}`}>{holder.totalExecutions}</p>
+                        </div>
+                        <div className="rounded-lg bg-white/[0.04] px-3 py-2">
+                          <p className="text-text-muted text-[9px] uppercase tracking-wide">Volume</p>
+                          <p className={`font-mono text-sm font-bold ${info.accentText}`}>{formatVol(holder.totalVolume)}</p>
                         </div>
                       </div>
 
@@ -567,20 +615,44 @@ export default function BadgesPage() {
             ))}
           </div>
 
-          {/* Auto-revocation */}
-          <div className="rounded-2xl p-6 bg-red-500/[0.06] border border-red-500/30">
-            <h3 className="flex items-center gap-2 text-red-400 font-semibold mb-3">
-              <AlertTriangle size={15} /> Auto-Revocation
-            </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Auto-revocation — Complete Process */}
+          <div className="rounded-2xl border border-red-500/30 bg-red-500/[0.04] overflow-hidden">
+            <div className="flex items-center gap-2.5 px-6 py-4 border-b border-red-500/20">
+              <AlertTriangle size={16} className="text-red-400" />
+              <h3 className="text-red-400 font-display font-semibold text-base">Complete Auto-Revocation Process</h3>
+              <span className="ml-auto font-mono text-[10px] text-red-400/60 uppercase tracking-widest">On-Chain Enforcement</span>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-red-500/10">
               {[
-                { icon: XCircle, text: 'Success rate drops below threshold' },
-                { icon: AlertTriangle, text: 'Agent flagged (5+ consecutive failures or >500 BPS slippage)' },
-                { icon: Shield, text: 'Agent fails to maintain badge requirements' },
-              ].map(({ icon: RIcon, text }) => (
-                <div key={text} className="flex items-start gap-2.5 rounded-xl bg-red-500/[0.04] border border-red-500/10 px-4 py-3">
-                  <RIcon size={14} className="text-red-400 flex-shrink-0 mt-0.5" />
-                  <span className="text-text-secondary text-xs leading-relaxed">{text}</span>
+                { step: '1', icon: XCircle, title: 'Trigger Detection', text: 'Success rate drops below threshold (<95% Gold, <90% Silver), 5+ consecutive failures, slippage >500 BPS, or suspicious behavior detected.' },
+                { step: '2', icon: ShieldOff, title: 'On-Chain Invalidation', text: 'Agent credentials marked "Revoked" in the smart contract. New privileged executions are blocked at the protocol level.' },
+                { step: '3', icon: AlertTriangle, title: 'Access Downgrade', text: 'Access level immediately downgraded to LVL 0. No write or production permissions remain active for the agent.' },
+                { step: '4', icon: Shield, title: 'Operational Block', text: 'Agent quarantined. Critical autonomous tasks paused pending manual review and resolution of the incident.' },
+              ].map(({ step, icon: RIcon, title, text }) => (
+                <div key={step} className="flex flex-col gap-2 px-5 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] font-bold text-red-400/50">{step}.</span>
+                    <RIcon size={13} className="text-red-400" />
+                    <span className="text-red-300 font-semibold text-xs">{title}</span>
+                  </div>
+                  <p className="text-text-muted text-[11px] leading-relaxed">{text}</p>
+                </div>
+              ))}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-red-500/10 border-t border-red-500/10">
+              {[
+                { step: '5', icon: Activity, title: 'Public Registry Update', text: 'Registry status updates in real-time, displaying a 🚫 Revoked badge for full community transparency.' },
+                { step: '6', icon: BarChart2, title: 'Audit Logging', text: 'Event logged with timestamp, revocation reason, and incident metrics. Permanent on-chain record for post-analysis.' },
+                { step: '7', icon: Zap, title: 'Stakeholder Alert', text: 'Relevant stakeholders and the agent operator are notified of the status change via on-chain events.' },
+                { step: '8', icon: CheckCircle, title: 'Conditional Reinstatement', text: 'Agent may reapply for certification only after resolving issues and passing manual review. No automatic reinstatement.' },
+              ].map(({ step, icon: RIcon, title, text }) => (
+                <div key={step} className="flex flex-col gap-2 px-5 py-4">
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-[10px] font-bold text-red-400/50">{step}.</span>
+                    <RIcon size={13} className="text-red-400" />
+                    <span className="text-red-300 font-semibold text-xs">{title}</span>
+                  </div>
+                  <p className="text-text-muted text-[11px] leading-relaxed">{text}</p>
                 </div>
               ))}
             </div>

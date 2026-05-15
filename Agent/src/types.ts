@@ -46,5 +46,17 @@ export interface ExecutionRecord {
   timestamp: number;
 }
 
+export interface AegisScoreResult {
+  score: number;
+  tier: 'Platinum' | 'Gold' | 'Silver' | 'Bronze' | 'Unranked';
+  status: 'Active' | 'Supervised' | 'Under Review' | 'Quarantined';
+  breakdown: {
+    performance: number;
+    reliability: number;
+    riskPenalty: number;
+    contribution: number;
+  };
+}
+
 export const PACKAGE_ID = '0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d';
 export const NETWORK = 'testnet';
