@@ -646,27 +646,35 @@ export default function Home() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-3 gap-5">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
                 {[
-                  { Icon: Wallet, label: 'Wallets', desc: 'Verify agent trust before fund delegation', colorClass: 'text-cyan-primary', bgClass: 'bg-cyan-primary/10 border-cyan-primary/20' },
-                  { Icon: ShoppingBag, label: 'Marketplaces', desc: 'Display certified badges on listings', colorClass: 'text-mint-secondary', bgClass: 'bg-mint-secondary/10 border-mint-secondary/20' },
-                  { Icon: Zap, label: 'DeFi', desc: 'Score agents for automated trading permissions', colorClass: 'text-purple-dim', bgClass: 'bg-purple-tertiary/10 border-purple-tertiary/20' },
-                ].map(({ Icon, label, desc, colorClass, bgClass }, i) => (
+                  { Icon: Wallet, label: 'Wallets', desc: 'Verify agent trust before fund delegation' },
+                  { Icon: ShoppingBag, label: 'Marketplaces', desc: 'Display certified badges on listings' },
+                  { Icon: Zap, label: 'DeFi', desc: 'Score agents for automated trading permissions' },
+                  { Icon: BarChart2, label: 'Portfolios', desc: 'Track real-time agent performance' },
+                ].map(({ Icon, label, desc }, i) => (
                   <motion.div
                     key={label}
                     initial={{ opacity: 0, y: 18 }}
                     whileInView={{ opacity: 1, y: 0 }}
                     viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.12 }}
-                    className="flex flex-col items-center text-center p-5 rounded-xl bg-surface-1/60 border border-[rgba(255,255,255,0.06)] hover:border-cyan-primary/20 transition-colors"
+                    transition={{ duration: 0.4, delay: i * 0.1 }}
+                    className="flex flex-col items-center text-center p-5 rounded-xl bg-surface-1/60 border border-[rgba(255,255,255,0.06)] hover:border-cyan-primary/30 transition-colors"
                   >
-                    <div className={`mb-3 p-2.5 rounded-xl border ${bgClass} ${colorClass}`}>
+                    <div className="mb-3 p-2.5 rounded-xl border bg-cyan-primary/10 border-cyan-primary/20 text-cyan-primary">
                       <Icon size={22} />
                     </div>
-                    <p className={`font-display font-bold text-sm mb-1.5 ${colorClass}`}>{label}</p>
+                    <p className="font-display font-bold text-sm mb-1.5 text-cyan-primary">{label}</p>
                     <p className="text-text-muted text-xs leading-relaxed">{desc}</p>
                   </motion.div>
                 ))}
+              </div>
+
+              <div className="mt-5 rounded-xl bg-bg-base border border-cyan-primary/15 px-6 py-4 font-mono text-xs leading-relaxed">
+                <span className="text-text-muted select-none mr-2">$</span>
+                <span className="text-cyan-primary">{'const score = await aegis.getScore(agentAddress);'}</span>
+                <br />
+                <span className="text-text-muted">{'// → { badge: "Gold", uptime: 98.4, isFlagged: false }'}</span>
               </div>
 
               <div className="mt-6 flex justify-end">
