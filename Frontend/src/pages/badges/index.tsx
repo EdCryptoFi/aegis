@@ -107,56 +107,65 @@ const REVOKED_INFO = {
   accessText: 'text-red-300',
 };
 
-async function getBadgeHolders(): Promise<BadgeHolder[]> {
-  const agents = [
-    { objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', name: 'AlphaTrader', badge: 3, isValid: true },
-    { objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', name: 'BetaBot', badge: 2, isValid: true },
-    { objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', name: 'GammaScam', badge: 1, isValid: false },
-  ];
+const DEMO_HOLDERS: BadgeHolder[] = [
+  { agentId: '0x8c8598ab', objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', badgeType: 3, badgeName: 'Gold', agentName: 'AlphaTrader', uptimeScore: 99, successRate: 99, totalExecutions: 247, totalVolume: 2_100_000_000_000, isValid: true },
+  { agentId: '0x8c8598ab', objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', badgeType: 2, badgeName: 'Silver', agentName: 'BetaBot', uptimeScore: 95, successRate: 91, totalExecutions: 67, totalVolume: 450_000_000_000, isValid: true },
+  { agentId: '0x8c8598ab', objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', badgeType: 1, badgeName: 'Bronze', agentName: 'GammaScam', uptimeScore: 41, successRate: 41, totalExecutions: 34, totalVolume: 45_000_000_000, isValid: false, revokedReason: 'Success rate dropped below 50%' },
+];
 
-  const holders: BadgeHolder[] = [];
-  for (const agent of agents) {
-    try {
-      const response = await fetch('https://fullnode.testnet.sui.io:443', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'sui_getObject',
-          params: [agent.objectId, { showContent: true }],
-        }),
-      });
-      const data = await response.json();
-      if (data.result?.data?.content?.dataType === 'moveObject') {
-        const fields = data.result.data.content.fields;
-        const totalEx = Number(fields.total_executions);
-        const successEx = Number(fields.successful_executions);
-        holders.push({
-          agentId: fields.agent_id,
-          objectId: agent.objectId,
-          badgeType: agent.badge,
-          badgeName: BADGE_INFO[agent.badge as keyof typeof BADGE_INFO]?.shortName || 'Unknown',
-          agentName: agent.name,
-          uptimeScore: Number(fields.uptime_score),
-          successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
-          totalExecutions: totalEx,
-          totalVolume: Number(fields.total_volume),
-          isValid: agent.isValid,
+async function getBadgeHolders(): Promise<BadgeHolder[]> {
+  // Try to fetch from blockchain first
+  try {
+    const response = await fetch('https://fullnode.testnet.sui.io:443', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'sui_getObject',
+        params: [DEMO_HOLDERS[0].objectId, { showContent: true }],
+      }),
+    });
+    const data = await response.json();
+    if (data.result?.data?.content?.dataType === 'moveObject') {
+      const holders: BadgeHolder[] = [];
+      for (const demo of DEMO_HOLDERS) {
+        const res = await fetch('https://fullnode.testnet.sui.io:443', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'sui_getObject',
+            params: [demo.objectId, { showContent: true }],
+          }),
         });
+        const d = await res.json();
+        if (d.result?.data?.content?.dataType === 'moveObject') {
+          const fields = d.result.data.content.fields;
+          const totalEx = Number(fields.total_executions);
+          const successEx = Number(fields.successful_executions);
+          holders.push({
+            agentId: fields.agent_id,
+            objectId: demo.objectId,
+            badgeType: demo.badgeType,
+            badgeName: BADGE_INFO[demo.badgeType as keyof typeof BADGE_INFO]?.shortName || 'Unknown',
+            agentName: demo.agentName,
+            uptimeScore: Number(fields.uptime_score),
+            successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
+            totalExecutions: totalEx,
+            totalVolume: Number(fields.total_volume),
+            isValid: demo.isValid,
+          });
+        }
       }
-    } catch (e) {
-      console.error('Failed to fetch:', e);
+      if (holders.length > 0) return holders;
     }
+  } catch (e) {
+    console.log('Using demo data (fetch failed):', e);
   }
-  if (holders.length === 0) {
-    return [
-      { agentId: '0x8c8598ab', objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', badgeType: 3, badgeName: 'Gold', agentName: 'AlphaTrader', uptimeScore: 100, successRate: 100, totalExecutions: 247, totalVolume: 2_100_000_000_000, isValid: true },
-      { agentId: '0x8c8598ab', objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', badgeType: 2, badgeName: 'Silver', agentName: 'BetaBot', uptimeScore: 80, successRate: 91, totalExecutions: 67, totalVolume: 450_000_000_000, isValid: true },
-      { agentId: '0x8c8598ab', objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', badgeType: 1, badgeName: 'Bronze', agentName: 'GammaScam', uptimeScore: 0, successRate: 0, totalExecutions: 34, totalVolume: 0, isValid: false, revokedReason: 'Success rate dropped below 50%' },
-    ];
-  }
-  return holders;
+  // Return demo data
+  return DEMO_HOLDERS;
 }
 
 /* ─── Mini chart data per tier ─── */

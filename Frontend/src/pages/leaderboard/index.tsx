@@ -37,62 +37,76 @@ function deriveStatus(badge: string, isFlagged: boolean): LeaderboardEntry['stat
   return 'Read Only';
 }
 
+const DEMO_LEADERBOARD: LeaderboardEntry[] = [
+  { rank: 0, objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 99, successRate: 99, totalExecutions: 247, totalVolume: 2_100_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
+  { rank: 0, objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 95, successRate: 91, totalExecutions: 67, totalVolume: 450_000_000_000, isFlagged: false, badge: 'silver', aegisScore: 82.1, status: 'Supervised' as const },
+  { rank: 0, objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 41, successRate: 41, totalExecutions: 34, totalVolume: 45_000_000_000, isFlagged: true, badge: 'revoked', aegisScore: 12.0, status: 'Quarantined' as const },
+];
+
 async function getLeaderboard(): Promise<LeaderboardEntry[]> {
-  const demoAgents = [
-    { objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', name: 'AlphaTrader', badge: 'gold' },
-    { objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', name: 'BetaBot', badge: 'silver' },
-    { objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', name: 'GammaScam', badge: 'revoked' },
-  ];
-
-  const agents: LeaderboardEntry[] = [];
-  for (let i = 0; i < demoAgents.length; i++) {
-    const demo = demoAgents[i];
-    try {
-      const response = await fetch('https://fullnode.testnet.sui.io:443', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: i,
-          method: 'sui_getObject',
-          params: [demo.objectId, { showContent: true }],
-        }),
-      });
-      const data = await response.json();
-      if (data.result?.data?.content?.dataType === 'moveObject') {
-        const fields = data.result.data.content.fields;
-        const totalEx = Number(fields.total_executions);
-        const successEx = Number(fields.successful_executions);
-        const entry = {
-          rank: 0,
-          objectId: demo.objectId,
-          agentId: fields.agent_id,
-          name: demo.name,
-          uptimeScore: Number(fields.uptime_score),
-          successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
-          totalExecutions: totalEx,
-          totalVolume: Number(fields.total_volume),
-          isFlagged: fields.is_flagged,
-          badge: demo.badge,
-          aegisScore: 0,
-          status: 'Active' as LeaderboardEntry['status'],
-        };
-        entry.aegisScore = computeScore(entry);
-        entry.status = deriveStatus(entry.badge, entry.isFlagged);
-        agents.push(entry);
+  // Try to fetch from blockchain first
+  try {
+    const response = await fetch('https://fullnode.testnet.sui.io:443', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'sui_getObject',
+        params: [DEMO_LEADERBOARD[0].objectId, { showContent: true }],
+      }),
+    });
+    const data = await response.json();
+    if (data.result?.data?.content?.dataType === 'moveObject') {
+      const agents: LeaderboardEntry[] = [];
+      for (const demo of DEMO_LEADERBOARD) {
+        const res = await fetch('https://fullnode.testnet.sui.io:443', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'sui_getObject',
+            params: [demo.objectId, { showContent: true }],
+          }),
+        });
+        const d = await res.json();
+        if (d.result?.data?.content?.dataType === 'moveObject') {
+          const fields = d.result.data.content.fields;
+          const totalEx = Number(fields.total_executions);
+          const successEx = Number(fields.successful_executions);
+          const entry: LeaderboardEntry = {
+            rank: 0,
+            objectId: demo.objectId,
+            agentId: fields.agent_id,
+            name: demo.name,
+            uptimeScore: Number(fields.uptime_score),
+            successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
+            totalExecutions: totalEx,
+            totalVolume: Number(fields.total_volume),
+            isFlagged: fields.is_flagged,
+            badge: demo.badge,
+            aegisScore: 0,
+            status: 'Active',
+          };
+          entry.aegisScore = computeScore(entry);
+          entry.status = deriveStatus(entry.badge, entry.isFlagged);
+          agents.push(entry);
+        }
       }
-    } catch (e) {
-      console.error('Failed to fetch agent:', e);
+      if (agents.length > 0) {
+        return agents.sort((a, b) => {
+          if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
+          if (b.uptimeScore !== a.uptimeScore) return b.uptimeScore - a.uptimeScore;
+          return b.totalExecutions - a.totalExecutions;
+        }).map((agent, i) => ({ ...agent, rank: i + 1 }));
+      }
     }
+  } catch (e) {
+    console.log('Using demo data (fetch failed):', e);
   }
-
-  const list = agents.length > 0 ? agents : [
-    { rank: 0, objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 100, successRate: 100, totalExecutions: 247, totalVolume: 2_100_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
-    { rank: 0, objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 80, successRate: 91, totalExecutions: 67, totalVolume: 450_000_000_000, isFlagged: false, badge: 'silver', aegisScore: 82.1, status: 'Supervised' as const },
-    { rank: 0, objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 0, successRate: 0, totalExecutions: 34, totalVolume: 0, isFlagged: true, badge: 'revoked', aegisScore: 12.0, status: 'Quarantined' as const },
-  ];
-
-  return list.sort((a, b) => {
+  // Return demo data sorted
+  return DEMO_LEADERBOARD.sort((a, b) => {
     if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
     if (b.uptimeScore !== a.uptimeScore) return b.uptimeScore - a.uptimeScore;
     return b.totalExecutions - a.totalExecutions;

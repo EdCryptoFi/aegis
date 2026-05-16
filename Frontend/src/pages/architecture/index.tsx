@@ -75,6 +75,48 @@ export default function ArchitecturePage() {
           <p className="text-text-secondary text-lg max-w-xl mx-auto">How Aegis works under the hood - from execution to reputation to badge.</p>
         </motion.div>
 
+        {/* For Protocols Section */}
+        <motion.div
+          className="mb-20 rounded-2xl bg-gradient-to-r from-cyan-primary/[0.06] to-mint-secondary/[0.04] border border-cyan-primary/20 p-8"
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+        >
+          <div className="text-center mb-6">
+            <h2 className="font-display text-2xl font-bold text-text-primary mb-2">For Protocols & Builders</h2>
+            <p className="text-text-secondary max-w-xl mx-auto">
+              Don't verify agents yourself. Let Aegis do it. One API call gives you verified agent trust — zero infrastructure cost.
+            </p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+            <div className="rounded-xl bg-bg-base/50 p-4 border border-[rgba(255,255,255,0.06)] text-center">
+              <p className="text-cyan-primary font-bold text-lg mb-1">🏦</p>
+              <p className="text-text-primary font-semibold text-sm">Wallets</p>
+              <p className="text-text-muted text-xs mt-1">Verify agent trust before fund delegation</p>
+            </div>
+            <div className="rounded-xl bg-bg-base/50 p-4 border border-[rgba(255,255,255,0.06)] text-center">
+              <p className="text-mint-secondary font-bold text-lg mb-1">🏪</p>
+              <p className="text-text-primary font-semibold text-sm">Marketplaces</p>
+              <p className="text-text-muted text-xs mt-1">Display certified badges on listings</p>
+            </div>
+            <div className="rounded-xl bg-bg-base/50 p-4 border border-[rgba(255,255,255,0.06)] text-center">
+              <p className="text-yellow-400 font-bold text-lg mb-1">⚡</p>
+              <p className="text-text-primary font-semibold text-sm">DeFi</p>
+              <p className="text-text-muted text-xs mt-1">Score agents for automated trading</p>
+            </div>
+          </div>
+          <div className="text-center pt-4 border-t border-[rgba(255,255,255,0.06)]">
+            <code className="text-sm text-cyan-primary font-mono">
+              const rep = await aegis.getReputation(agentAddress); // Returns: {'{'} badge, successRate, isFlagged {'}'}
+            </code>
+            <div className="mt-3">
+              <a href="/developer" className="inline-flex items-center gap-2 px-5 py-2 rounded-[10px] bg-cyan-primary/10 border border-cyan-primary/30 text-cyan-primary text-sm font-semibold hover:bg-cyan-primary/20 transition-all">
+                View Integration Docs <ArrowRight size={14} />
+              </a>
+            </div>
+          </div>
+        </motion.div>
+
         {/* Core Components */}
         <motion.section
           className="mb-20"

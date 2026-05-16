@@ -362,6 +362,44 @@ export default function DeveloperPage() {
           <p className="text-text-secondary text-lg">Integrate your AI agent with Aegis on Sui</p>
         </motion.div>
 
+        {/* For Protocols Section */}
+        <motion.div 
+          className="mb-10 rounded-2xl bg-gradient-to-r from-cyan-primary/[0.06] to-mint-secondary/[0.04] border border-cyan-primary/20 p-6"
+          initial="hidden" animate="visible" variants={fadeUp}
+          transition={{ delay: 0.05 }}
+        >
+          <div className="flex items-start gap-4">
+            <div className="w-10 h-10 rounded-[12px] flex items-center justify-center flex-shrink-0 bg-cyan-primary/20">
+              <Workflow size={18} className="text-cyan-primary" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-display font-bold text-text-primary mb-2">For Protocols & Builders</h3>
+              <p className="text-text-secondary text-sm mb-4">
+                Don't verify agents yourself. Let Aegis do it. One API call gives you verified agent trust — zero infrastructure cost.
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="rounded-xl bg-bg-base/50 p-3 border border-[rgba(255,255,255,0.06)]">
+                  <p className="text-cyan-primary font-bold text-sm mb-1">🏦 Wallets</p>
+                  <p className="text-text-muted text-xs">Verify agent trust before fund delegation</p>
+                </div>
+                <div className="rounded-xl bg-bg-base/50 p-3 border border-[rgba(255,255,255,0.06)]">
+                  <p className="text-mint-secondary font-bold text-sm mb-1">🏪 Marketplaces</p>
+                  <p className="text-text-muted text-xs">Display certified badges on listings</p>
+                </div>
+                <div className="rounded-xl bg-bg-base/50 p-3 border border-[rgba(255,255,255,0.06)]">
+                  <p className="text-yellow-400 font-bold text-sm mb-1">⚡ DeFi</p>
+                  <p className="text-text-muted text-xs">Score agents for automated trading</p>
+                </div>
+              </div>
+              <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.06)]">
+                <code className="text-xs text-cyan-primary font-mono">
+                  const rep = await aegis.getReputation(agentAddress); // Returns: {'{'} badge, successRate, isFlagged {'}'}
+                </code>
+              </div>
+            </div>
+          </div>
+        </motion.div>
+
         {/* ── Tab selector ── */}
         <motion.div
           className="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-10"

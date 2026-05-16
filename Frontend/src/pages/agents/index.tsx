@@ -16,51 +16,61 @@ interface AgentInfo {
   isFlagged: boolean;
 }
 
-async function getAllAgents(): Promise<AgentInfo[]> {
-  const demoAgents = [
-    { objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1', name: 'AlphaTrader', badge: 'gold' },
-    { objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1', name: 'BetaBot', badge: 'silver' },
-    { objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1', name: 'GammaScam', badge: 'revoked' },
-  ];
+const DEMO_AGENTS: AgentInfo[] = [
+  { objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', totalExecutions: 247, successfulExecutions: 244, uptimeScore: 99, totalVolume: 1_450_000_000_000, isFlagged: false },
+  { objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', totalExecutions: 67, successfulExecutions: 62, uptimeScore: 95, totalVolume: 320_000_000_000, isFlagged: false },
+  { objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', totalExecutions: 34, successfulExecutions: 14, uptimeScore: 41, totalVolume: 45_000_000_000, isFlagged: true },
+];
 
-  const agents: AgentInfo[] = [];
-  for (const demo of demoAgents) {
-    try {
-      const response = await fetch('https://fullnode.testnet.sui.io:443', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'sui_getObject',
-          params: [demo.objectId, { showContent: true }],
-        }),
-      });
-      const data = await response.json();
-      if (data.result?.data?.content?.dataType === 'moveObject') {
-        const fields = data.result.data.content.fields;
-        agents.push({
-          objectId: demo.objectId,
-          agentId: fields.agent_id,
-          totalExecutions: Number(fields.total_executions),
-          successfulExecutions: Number(fields.successful_executions),
-          uptimeScore: Number(fields.uptime_score),
-          totalVolume: Number(fields.total_volume),
-          isFlagged: fields.is_flagged,
+async function getAllAgents(): Promise<AgentInfo[]> {
+  // Try to fetch from blockchain first
+  try {
+    const response = await fetch('https://fullnode.testnet.sui.io:443', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        jsonrpc: '2.0',
+        id: 1,
+        method: 'sui_getObject',
+        params: [DEMO_AGENTS[0].objectId, { showContent: true }],
+      }),
+    });
+    const data = await response.json();
+    // If we get valid data, use it; otherwise fall back to demo data
+    if (data.result?.data?.content?.dataType === 'moveObject') {
+      const agents: AgentInfo[] = [];
+      for (const demo of DEMO_AGENTS) {
+        const res = await fetch('https://fullnode.testnet.sui.io:443', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'sui_getObject',
+            params: [demo.objectId, { showContent: true }],
+          }),
         });
+        const d = await res.json();
+        if (d.result?.data?.content?.dataType === 'moveObject') {
+          const fields = d.result.data.content.fields;
+          agents.push({
+            objectId: demo.objectId,
+            agentId: fields.agent_id,
+            totalExecutions: Number(fields.total_executions),
+            successfulExecutions: Number(fields.successful_executions),
+            uptimeScore: Number(fields.uptime_score),
+            totalVolume: Number(fields.total_volume),
+            isFlagged: fields.is_flagged,
+          });
+        }
       }
-    } catch (e) {
-      console.error('Failed to fetch agent:', e);
+      if (agents.length > 0) return agents;
     }
+  } catch (e) {
+    console.log('Using demo data (fetch failed):', e);
   }
-  if (agents.length === 0) {
-    return [
-      { objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', totalExecutions: 247, successfulExecutions: 244, uptimeScore: 99, totalVolume: 1_450_000_000_000, isFlagged: false },
-      { objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', totalExecutions: 67, successfulExecutions: 62, uptimeScore: 95, totalVolume: 320_000_000_000, isFlagged: false },
-      { objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', totalExecutions: 34, successfulExecutions: 14, uptimeScore: 78, totalVolume: 45_000_000_000, isFlagged: true },
-    ];
-  }
-  return agents;
+  // Return demo data
+  return DEMO_AGENTS;
 }
 
 function formatVolume(mist: number): string {
