@@ -137,7 +137,7 @@ export default function Home() {
         >
           {/* Logo */}
           <motion.div variants={itemVariants} className="flex justify-center mb-6">
-            <AegisLogo className="w-36 h-36" />
+            <AegisLogo className="w-[172px] h-[172px]" />
           </motion.div>
 
           {/* Headline */}
@@ -207,27 +207,29 @@ export default function Home() {
                     whileHover={{ y: -10, transition: { duration: 0.25 } }}
                     className="rounded-xl overflow-hidden cursor-default glass-card-heavy"
                   >
-                    <div className="p-5">
-                      <div className="flex justify-between items-start mb-3">
-                        <div className="flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-full bg-surface-2/60 flex items-center justify-center overflow-hidden">
-                            <img src={iconInfo.src} alt={stat.label} className={`w-7 h-7 object-contain${iconInfo.blend ? ' mix-blend-screen' : ''}`} />
-                          </div>
-                          <div>
-                            <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>
-                            <p className="text-[10px] font-mono text-text-muted">{stat.sublabel}</p>
-                          </div>
+                    <div className="p-5 pb-3">
+                      {/* Top row: icon + label */}
+                      <div className="flex items-start gap-3 mb-4">
+                        <div className="w-14 h-14 rounded-2xl bg-surface-2/60 flex items-center justify-center overflow-hidden flex-shrink-0">
+                          <img src={iconInfo.src} alt={stat.label} className={`w-11 h-11 object-contain${iconInfo.blend ? ' mix-blend-screen' : ''}`} />
                         </div>
-                        <span className={`text-[11px] font-mono px-1.5 py-0.5 rounded ${stat.positive ? 'text-mint-secondary bg-mint-secondary/10' : 'text-error bg-error/10'}`}>
+                        <div className="mt-1">
+                          <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>
+                          <p className="text-[10px] font-mono text-text-muted">{stat.sublabel}</p>
+                        </div>
+                      </div>
+                      {/* Number + delta */}
+                      <div className="flex items-end justify-between">
+                        <p className="text-4xl font-display font-black text-text-primary leading-none">
+                          <AnimatedCounter value={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
+                        </p>
+                        <span className={`text-[11px] font-mono px-1.5 py-0.5 rounded mb-0.5 ${stat.positive ? 'text-mint-secondary bg-mint-secondary/10' : 'text-error bg-error/10'}`}>
                           {stat.delta}
                         </span>
                       </div>
-                      <p className="text-2xl font-display font-bold text-text-primary">
-                        <AnimatedCounter value={stat.value} prefix={stat.prefix} suffix={stat.suffix} />
-                      </p>
                     </div>
                     {/* Sparkline bar */}
-                    <div className="h-14 w-full sparkline-bar" />
+                    <div className="h-10 w-full sparkline-bar mt-3" />
                   </motion.div>
                 </motion.div>
               );

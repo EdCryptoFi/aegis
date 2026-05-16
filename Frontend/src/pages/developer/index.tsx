@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import {
   Code2, Copy, Check, Terminal, Zap, BookOpen, BarChart2, AlertTriangle,
   Workflow, ArrowRight, Play, RefreshCw, CheckCircle2,
@@ -335,6 +335,8 @@ function LiveDemo() {
 export default function DeveloperPage() {
   const [tab, setTab] = useState<'hub' | 'pipeline' | 'demo'>('hub');
   const [copied, setCopied] = useState<string | null>(null);
+  const flowRef = useRef<HTMLDivElement>(null);
+  const flowInView = useInView(flowRef, { once: true, margin: '-60px' });
 
   function copyToClipboard(text: string, id: string) {
     navigator.clipboard.writeText(text);
@@ -662,58 +664,95 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
               {/* Section 3 - Integration Flow */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-6">How Protocols Use Aegis</h2>
-                {/* Top row: AI Agent → Execute → DeepBook */}
-                <div className="rounded-2xl glass-card-heavy p-8">
+                <div ref={flowRef} className="rounded-2xl glass-card-heavy p-8">
                   <div className="space-y-6">
-                    {/* Flow diagram row 1 */}
+
+                    {/* Row 1: AI Agent → Execute → DeepBook */}
                     <div className="flex flex-wrap items-center gap-3 justify-center">
                       {[
-                        { label: 'AI Agent', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]' },
-                        { label: '→', color: 'text-text-muted border-transparent bg-transparent' },
-                        { label: 'Execute', color: 'border-mint-secondary/30 text-mint-secondary bg-mint-secondary/[0.06]' },
-                        { label: '→', color: 'text-text-muted border-transparent bg-transparent' },
-                        { label: 'DeepBook', color: 'border-purple-400/30 text-purple-400 bg-purple-400/[0.06]' },
-                      ].map(({ label, color }, i) => (
-                        <div key={i} className={`px-4 py-2 rounded-[10px] border font-mono text-xs font-semibold ${color}`}>
+                        { label: 'AI Agent', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]', delay: 0 },
+                        { label: '→', color: 'text-text-muted border-transparent bg-transparent', delay: 0.15 },
+                        { label: 'Execute', color: 'border-mint-secondary/30 text-mint-secondary bg-mint-secondary/[0.06]', delay: 0.3 },
+                        { label: '→', color: 'text-text-muted border-transparent bg-transparent', delay: 0.45 },
+                        { label: 'DeepBook', color: 'border-purple-400/30 text-purple-400 bg-purple-400/[0.06]', delay: 0.6 },
+                      ].map(({ label, color, delay }, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={flowInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                          transition={{ duration: 0.4, delay }}
+                          className={`px-5 py-3 rounded-[10px] border font-mono text-[18px] font-semibold ${color}`}
+                        >
                           {label}
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
-                    {/* Connectors going down */}
+
+                    {/* Connectors down */}
                     <div className="flex justify-center gap-32">
-                      <div className="w-px h-6 bg-gradient-to-b from-mint-secondary/30 to-transparent" />
-                      <div className="w-px h-6 bg-gradient-to-b from-purple-400/30 to-transparent" />
-                    </div>
-                    {/* Flow diagram row 2 */}
-                    <div className="flex flex-wrap items-center gap-3 justify-center">
-                      {[
-                        { label: 'ReputationObject', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]' },
-                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent' },
-                        { label: 'Walrus Storage', color: 'border-mint-secondary/30 text-mint-secondary bg-mint-secondary/[0.06]' },
-                      ].map(({ label, color }, i) => (
-                        <div key={i} className={`px-4 py-2 rounded-[10px] border font-mono text-xs font-semibold ${color}`}>
-                          {label}
-                        </div>
+                      {[{ color: 'from-mint-secondary/40', delay: 0.8 }, { color: 'from-purple-400/40', delay: 0.9 }].map(({ color, delay }, i) => (
+                        <motion.div
+                          key={i}
+                          className={`w-px h-6 bg-gradient-to-b ${color} to-transparent`}
+                          initial={{ scaleY: 0, opacity: 0 }}
+                          animate={flowInView ? { scaleY: 1, opacity: 1 } : { scaleY: 0, opacity: 0 }}
+                          style={{ transformOrigin: 'top' }}
+                          transition={{ duration: 0.3, delay }}
+                        />
                       ))}
                     </div>
-                    {/* Connectors */}
+
+                    {/* Row 2: ReputationObject ◄── Walrus Storage */}
+                    <div className="flex flex-wrap items-center gap-3 justify-center">
+                      {[
+                        { label: 'ReputationObject', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]', delay: 1.0 },
+                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent', delay: 1.1 },
+                        { label: 'Walrus Storage', color: 'border-mint-secondary/30 text-mint-secondary bg-mint-secondary/[0.06]', delay: 1.2 },
+                      ].map(({ label, color, delay }, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={flowInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                          transition={{ duration: 0.4, delay }}
+                          className={`px-5 py-3 rounded-[10px] border font-mono text-[18px] font-semibold ${color}`}
+                        >
+                          {label}
+                        </motion.div>
+                      ))}
+                    </div>
+
+                    {/* Connector down */}
                     <div className="flex justify-center">
-                      <div className="w-px h-6 bg-gradient-to-b from-cyan-primary/30 to-transparent" />
+                      <motion.div
+                        className="w-px h-6 bg-gradient-to-b from-cyan-primary/40 to-transparent"
+                        initial={{ scaleY: 0, opacity: 0 }}
+                        animate={flowInView ? { scaleY: 1, opacity: 1 } : { scaleY: 0, opacity: 0 }}
+                        style={{ transformOrigin: 'top' }}
+                        transition={{ duration: 0.3, delay: 1.35 }}
+                      />
                     </div>
-                    {/* Flow diagram row 3 */}
+
+                    {/* Row 3: Protocol / Wallet ◄── Query API ◄── Badge Registry */}
                     <div className="flex flex-wrap items-center gap-3 justify-center">
                       {[
-                        { label: 'Protocol / Wallet', color: 'border-yellow-400/30 text-yellow-400 bg-yellow-400/[0.06]' },
-                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent' },
-                        { label: 'Query API', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]' },
-                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent' },
-                        { label: 'Badge Registry', color: 'border-yellow-400/30 text-yellow-400 bg-yellow-400/[0.06]' },
-                      ].map(({ label, color }, i) => (
-                        <div key={i} className={`px-4 py-2 rounded-[10px] border font-mono text-xs font-semibold ${color}`}>
+                        { label: 'Protocol / Wallet', color: 'border-yellow-400/30 text-yellow-400 bg-yellow-400/[0.06]', delay: 1.5 },
+                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent', delay: 1.6 },
+                        { label: 'Query API', color: 'border-cyan-primary/30 text-cyan-primary bg-cyan-primary/[0.06]', delay: 1.7 },
+                        { label: '◄──', color: 'text-text-muted border-transparent bg-transparent', delay: 1.8 },
+                        { label: 'Badge Registry', color: 'border-yellow-400/30 text-yellow-400 bg-yellow-400/[0.06]', delay: 1.9 },
+                      ].map(({ label, color, delay }, i) => (
+                        <motion.div
+                          key={i}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={flowInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                          transition={{ duration: 0.4, delay }}
+                          className={`px-5 py-3 rounded-[10px] border font-mono text-[18px] font-semibold ${color}`}
+                        >
                           {label}
-                        </div>
+                        </motion.div>
                       ))}
                     </div>
+
                   </div>
                 </div>
               </section>

@@ -23,8 +23,8 @@ module.exports = {
 
         'cyan-primary': '#00F5FF',
         'cyan-dim': '#00dce5',
-        'mint-secondary': '#00FFA7',
-        'mint-dim': '#00e294',
+        'mint-secondary': '#00EED4',
+        'mint-dim': '#00ccb8',
         'purple-tertiary': '#7000FF',
         'purple-dim': '#d1bcff',
 
@@ -35,14 +35,14 @@ module.exports = {
         'glow-purple': 'rgba(112, 0, 255, 0.15)',
 
         // Semantic
-        success: '#00FFA7',
+        success: '#00EED4',
         warning: '#f59e0b',
         error: '#ef4444',
         danger: '#ef4444',
 
         // Legacy compat
         primary: '#00F5FF',
-        secondary: '#00FFA7',
+        secondary: '#00EED4',
         dark: '#0c0f11',
         darker: '#080a0c',
       },
@@ -78,7 +78,7 @@ module.exports = {
         'glow-inner-cyan': 'inset 0 0 10px rgba(0, 245, 255, 0.1)',
       },
       backgroundImage: {
-        'gradient-cyan-mint': 'linear-gradient(135deg, #00F5FF, #00FFA7)',
+        'gradient-cyan-mint': 'linear-gradient(135deg, #00F5FF, #00EED4)',
         'gradient-cyan-purple': 'linear-gradient(135deg, #00F5FF, #7000FF)',
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-dark': 'linear-gradient(180deg, #0c0f11 0%, #111416 100%)',

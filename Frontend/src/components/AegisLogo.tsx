@@ -39,12 +39,12 @@ export default function AegisLogo({ className = '' }: { className?: string }) {
       <svg
         viewBox="0 0 500 500"
         className="w-full h-full overflow-visible"
-        style={{ filter: 'drop-shadow(0 0 8px rgba(0,255,167,0.5))' }}
+        style={{ filter: 'drop-shadow(0 0 8px rgba(0,245,255,0.5))' }}
       >
         <defs>
           <linearGradient id="al-neonCyan" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" stopColor="#00FFA7" />
-            <stop offset="100%" stopColor="#00F5FF" />
+            <stop offset="0%" stopColor="#00ffff" />
+            <stop offset="100%" stopColor="#2563eb" />
           </linearGradient>
           <linearGradient id="al-neonBlue" x1="100%" y1="100%" x2="0%" y2="0%">
             <stop offset="0%" stopColor="#3b82f6" />
@@ -65,11 +65,11 @@ export default function AegisLogo({ className = '' }: { className?: string }) {
         <motion.circle cx="250" cy="250" r="235" fill="none" stroke="#1e40af" strokeWidth="16" strokeDasharray="339 30" strokeDashoffset="15" strokeLinecap="round" variants={pathVariants} custom={0.5} />
         <motion.circle cx="250" cy="250" r="225" fill="none" stroke="#3b82f6" strokeWidth="3" strokeDasharray="339 30" strokeDashoffset="15" strokeLinecap="round" variants={pathVariants} custom={1} />
         <motion.circle cx="250" cy="250" r="200" fill="none" stroke="url(#al-neonBlue)" strokeWidth="6" filter="url(#al-glow)" variants={pathVariants} custom={1.5} />
-        <motion.circle cx="250" cy="250" r="185" fill="none" stroke="#00FFA7" strokeWidth="1" strokeDasharray="4 6" opacity="0.6" variants={pathVariants} custom={2} />
+        <motion.circle cx="250" cy="250" r="185" fill="none" stroke="#00ffff" strokeWidth="1" strokeDasharray="4 6" opacity="0.6" variants={pathVariants} custom={2} />
         <motion.circle cx="250" cy="250" r="175" fill="none" stroke="#3b82f6" strokeWidth="2" strokeDasharray="40 60" strokeLinecap="round" variants={pathVariants} custom={2.2} />
 
         {/* Circuit traces */}
-        <g stroke="#00C896" strokeWidth="1.5" fill="none" opacity="0.6">
+        <g stroke="#0ea5e9" strokeWidth="1.5" fill="none" opacity="0.6">
           <motion.path d="M 220 70 L 220 90 L 240 110" variants={pathVariants} custom={2.5} />
           <motion.path d="M 280 70 L 280 90 L 260 110" variants={pathVariants} custom={2.5} />
           <motion.path d="M 220 430 L 220 410 L 240 390" variants={pathVariants} custom={2.5} />
@@ -83,7 +83,7 @@ export default function AegisLogo({ className = '' }: { className?: string }) {
         </g>
 
         {/* Circuit nodes */}
-        <g fill="#00FFA7" filter="url(#al-glow)">
+        <g fill="#00ffff" filter="url(#al-glow)">
           {[[220,70],[280,70],[220,430],[280,430],[70,220],[430,220],[70,280],[430,280]].map(([cx,cy]) => (
             <motion.circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="2.5" variants={glowVariants} custom={2} />
           ))}
@@ -91,12 +91,12 @@ export default function AegisLogo({ className = '' }: { className?: string }) {
 
         {/* A letterform */}
         <motion.path d="M 100 370 L 250 70 L 400 370" fill="none" stroke="#1d4ed8" strokeWidth="38" strokeLinejoin="miter" strokeMiterlimit="10" strokeLinecap="round" variants={pathVariants} custom={3} />
-        <motion.path d="M 86 385 L 250 56 L 414 385" fill="none" stroke="#00FFA7" strokeWidth="4" strokeLinejoin="miter" strokeMiterlimit="5" strokeLinecap="round" filter="url(#al-glowStrong)" variants={pathVariants} custom={4} />
+        <motion.path d="M 86 385 L 250 56 L 414 385" fill="none" stroke="#00ffff" strokeWidth="4" strokeLinejoin="miter" strokeMiterlimit="5" strokeLinecap="round" filter="url(#al-glowStrong)" variants={pathVariants} custom={4} />
         <motion.path d="M 120 350 L 250 90 L 380 350" fill="none" stroke="url(#al-neonCyan)" strokeWidth="18" strokeLinejoin="miter" strokeMiterlimit="4" strokeLinecap="square" filter="url(#al-glow)" variants={pathVariants} custom={5} />
         <motion.path d="M 155 315 L 250 120 L 345 315" fill="none" stroke="#e0e7ff" strokeWidth="2" strokeLinejoin="miter" variants={pathVariants} custom={5.5} />
 
         {/* Star / astroid */}
-        <motion.path d="M 250 200 Q 250 290 330 290 Q 250 290 250 380 Q 250 290 170 290 Q 250 290 250 200 Z" fill="none" stroke="#00FFA7" strokeWidth="5" strokeLinejoin="round" filter="url(#al-glowStrong)" variants={pathVariants} custom={6} />
+        <motion.path d="M 250 200 Q 250 290 330 290 Q 250 290 250 380 Q 250 290 170 290 Q 250 290 250 200 Z" fill="none" stroke="#00ffff" strokeWidth="5" strokeLinejoin="round" filter="url(#al-glowStrong)" variants={pathVariants} custom={6} />
         <motion.circle cx="250" cy="290" r="8" fill="#ffffff" filter="url(#al-glowStrong)" variants={glowVariants} custom={6} />
       </svg>
     </motion.div>
