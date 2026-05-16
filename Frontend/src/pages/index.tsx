@@ -17,6 +17,8 @@ import {
   Globe,
   BarChart2,
   Code2,
+  Wallet,
+  ShoppingBag,
 } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
@@ -210,8 +212,8 @@ export default function Home() {
                     <div className="p-5 pb-3">
                       {/* Top row: icon + label */}
                       <div className="flex items-start gap-3 mb-4">
-                        <div className="w-14 h-14 rounded-2xl bg-surface-2/60 flex items-center justify-center overflow-hidden flex-shrink-0">
-                          <img src={iconInfo.src} alt={stat.label} className={`w-11 h-11 object-contain${iconInfo.blend ? ' mix-blend-screen' : ''}`} />
+                        <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
+                          <img src={iconInfo.src} alt={stat.label} className={`w-[53px] h-[53px] object-contain${iconInfo.blend ? ' mix-blend-screen' : ''}`} />
                         </div>
                         <div className="mt-1">
                           <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>
@@ -629,56 +631,53 @@ export default function Home() {
           >
             <div className="absolute top-0 right-0 w-1/2 h-full opacity-20 smart-money-glow pointer-events-none" />
             <div className="relative z-10">
-              <span className="text-label-sm font-mono text-cyan-primary uppercase tracking-widest mb-4 block">
-                One Integration, Multiple Use Cases
-              </span>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                {/* Diagram */}
-                <div className="font-mono text-xs text-text-muted leading-relaxed">
-                  <div className="flex flex-wrap gap-3 mb-4">
-                    {['Wallet', 'Marketplace', 'DeFi'].map((label) => (
-                      <div key={label} className="px-4 py-2.5 rounded-[10px] bg-surface-2/80 border border-[rgba(255,255,255,0.08)] text-text-secondary text-sm font-display font-semibold">
-                        {label}
-                      </div>
-                    ))}
-                  </div>
-                  <div className="flex items-center gap-1 mb-4 pl-2">
-                    <span className="text-cyan-primary/40">└──</span>
-                    <div className="flex-1 h-px bg-gradient-to-r from-cyan-primary/20 to-transparent" />
-                    <span className="text-cyan-primary/40">──┘</span>
-                  </div>
-                  <div className="flex justify-center mb-1">
-                    <div className="px-6 py-3 rounded-[12px] bg-cyan-primary/[0.08] border border-cyan-primary/30 shadow-glow-cyan text-center">
-                      <p className="text-cyan-primary font-bold text-sm">Aegis SDK</p>
-                      <p className="text-text-muted text-[10px]">Single API</p>
-                    </div>
-                  </div>
+              <div className="flex flex-col items-center mb-8">
+                <span className="text-label-sm font-mono text-cyan-primary uppercase tracking-widest mb-5 block">
+                  One Integration, Multiple Use Cases
+                </span>
+                <div className="px-6 py-3 rounded-[12px] bg-cyan-primary/[0.08] border border-cyan-primary/30 shadow-glow-cyan text-center">
+                  <p className="text-cyan-primary font-bold text-sm">Aegis SDK</p>
+                  <p className="text-text-muted text-[10px]">Single API</p>
                 </div>
-                {/* Use cases */}
-                <div className="space-y-3">
-                  {[
-                    { icon: '🏦', label: 'Wallets', desc: 'Verify agent trust before fund delegation' },
-                    { icon: '🏪', label: 'Marketplaces', desc: 'Display certified badges on listings' },
-                    { icon: '⚡', label: 'DeFi', desc: 'Score agents for automated trading permissions' },
-                    { icon: '📊', label: 'Portfolios', desc: 'Track real-time agent performance' },
-                  ].map(({ icon, label, desc }) => (
-                    <div key={label} className="flex items-center gap-3">
-                      <span className="text-lg">{icon}</span>
-                      <div>
-                        <span className="font-semibold text-text-primary text-sm">{label}: </span>
-                        <span className="text-text-secondary text-sm">{desc}</span>
-                      </div>
-                    </div>
-                  ))}
+                <div className="flex items-center gap-1 mt-3 w-full max-w-xs">
+                  <span className="text-cyan-primary/30">└──</span>
+                  <div className="flex-1 h-px bg-gradient-to-r from-cyan-primary/20 via-cyan-primary/10 to-cyan-primary/20" />
+                  <span className="text-cyan-primary/30">──┘</span>
                 </div>
               </div>
-              <Link
-                href="/developer"
-                className="mt-8 inline-flex items-center gap-2 text-cyan-primary hover:text-mint-secondary transition-all text-sm font-medium group"
-              >
-                View Integration Docs
-                <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
-              </Link>
+
+              <div className="grid grid-cols-3 gap-5">
+                {[
+                  { Icon: Wallet, label: 'Wallets', desc: 'Verify agent trust before fund delegation', colorClass: 'text-cyan-primary', bgClass: 'bg-cyan-primary/10 border-cyan-primary/20' },
+                  { Icon: ShoppingBag, label: 'Marketplaces', desc: 'Display certified badges on listings', colorClass: 'text-mint-secondary', bgClass: 'bg-mint-secondary/10 border-mint-secondary/20' },
+                  { Icon: Zap, label: 'DeFi', desc: 'Score agents for automated trading permissions', colorClass: 'text-purple-dim', bgClass: 'bg-purple-tertiary/10 border-purple-tertiary/20' },
+                ].map(({ Icon, label, desc, colorClass, bgClass }, i) => (
+                  <motion.div
+                    key={label}
+                    initial={{ opacity: 0, y: 18 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.12 }}
+                    className="flex flex-col items-center text-center p-5 rounded-xl bg-surface-1/60 border border-[rgba(255,255,255,0.06)] hover:border-cyan-primary/20 transition-colors"
+                  >
+                    <div className={`mb-3 p-2.5 rounded-xl border ${bgClass} ${colorClass}`}>
+                      <Icon size={22} />
+                    </div>
+                    <p className={`font-display font-bold text-sm mb-1.5 ${colorClass}`}>{label}</p>
+                    <p className="text-text-muted text-xs leading-relaxed">{desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <Link
+                  href="/developer"
+                  className="inline-flex items-center gap-2 text-cyan-primary hover:text-mint-secondary transition-all text-sm font-medium group"
+                >
+                  View Integration Docs
+                  <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
             </div>
           </motion.div>
 
