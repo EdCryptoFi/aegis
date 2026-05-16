@@ -6,7 +6,7 @@ import { Workflow, Database, Trophy, Code2, ArrowRight } from 'lucide-react';
 const components = [
   {
     name: 'Reputation Object',
-    desc: 'On-chain metrics tracked in Move smart contracts — executions, volume, slippage, uptime.',
+    desc: 'On-chain metrics tracked in Move smart contracts - executions, volume, slippage, uptime.',
     icon: Database,
     accent: 'text-cyan-primary',
     bg: 'bg-cyan-primary/[0.06]',
@@ -22,7 +22,7 @@ const components = [
   },
   {
     name: 'Badge Registry',
-    desc: 'NFT certificates issued as Kiosk objects on Sui — Bronze, Silver, Gold tiers with auto-revocation.',
+    desc: 'NFT certificates issued as Kiosk objects on Sui - Bronze, Silver, Gold tiers with auto-revocation.',
     icon: Trophy,
     accent: 'text-yellow-400',
     bg: 'bg-yellow-400/[0.06]',
@@ -30,7 +30,7 @@ const components = [
   },
   {
     name: 'SDK & API',
-    desc: 'TypeScript SDK for seamless integration — register, record, check eligibility, mint badges.',
+    desc: 'TypeScript SDK for seamless integration - register, record, check eligibility, mint badges.',
     icon: Code2,
     accent: 'text-purple-400',
     bg: 'bg-purple-400/[0.06]',
@@ -72,7 +72,7 @@ export default function ArchitecturePage() {
         >
           <p className="font-mono text-xs text-text-muted uppercase tracking-widest mb-4">System Design</p>
           <h1 className="font-display text-6xl md:text-7xl font-black mb-4 gradient-text-cyan">Architecture</h1>
-          <p className="text-text-secondary text-lg max-w-xl mx-auto">How Aegis works under the hood — from execution to reputation to badge.</p>
+          <p className="text-text-secondary text-lg max-w-xl mx-auto">How Aegis works under the hood - from execution to reputation to badge.</p>
         </motion.div>
 
         {/* Core Components */}

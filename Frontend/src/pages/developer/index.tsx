@@ -36,7 +36,7 @@ const TABS = [
 const components = [
   {
     name: 'Reputation Object',
-    desc: 'On-chain metrics tracked in Move smart contracts — executions, volume, slippage, uptime.',
+    desc: 'On-chain metrics tracked in Move smart contracts - executions, volume, slippage, uptime.',
     emoji: '🛡️',
     accent: 'text-cyan-primary',
     bg: 'bg-cyan-primary/[0.06]',
@@ -52,7 +52,7 @@ const components = [
   },
   {
     name: 'Badge Registry',
-    desc: 'NFT certificates issued as Kiosk objects on Sui — Bronze, Silver, Gold tiers with auto-revocation.',
+    desc: 'NFT certificates issued as Kiosk objects on Sui - Bronze, Silver, Gold tiers with auto-revocation.',
     emoji: '⭐',
     accent: 'text-yellow-400',
     bg: 'bg-yellow-400/[0.06]',
@@ -60,7 +60,7 @@ const components = [
   },
   {
     name: 'SDK & API',
-    desc: 'TypeScript SDK for seamless integration — register, record, check eligibility, mint badges.',
+    desc: 'TypeScript SDK for seamless integration - register, record, check eligibility, mint badges.',
     emoji: '🔌',
     accent: 'text-purple-400',
     bg: 'bg-purple-400/[0.06]',
@@ -149,7 +149,7 @@ const DEMO_LINES: TerminalLine[] = [
   { text: 'Minting badge NFT in Kiosk registry...', type: 'output', delay: 12600 },
   { text: 'Transaction Digest: Bm3nQ9pL...9pLk', type: 'output', delay: 13400 },
   { text: '🥉  Bronze Badge minted!  Token: 0xBRONZE...5E91', type: 'success', delay: 14000 },
-  { text: '    Agent is now certified as BRONZE — RESTRICTED READ ONLY', type: 'success', delay: 14400 },
+  { text: '    Agent is now certified as BRONZE - RESTRICTED READ ONLY', type: 'success', delay: 14400 },
 ];
 
 /* ─── Live Demo Component ─── */
@@ -205,7 +205,7 @@ function LiveDemo() {
             <h3 className="font-display font-bold text-text-primary mb-1">Interactive CLI Simulation</h3>
             <p className="text-text-secondary text-sm leading-relaxed">
               Watch real Sui CLI commands register an AI agent, record 15 executions, evaluate badge
-              eligibility, and mint a Bronze badge — all on Sui testnet with real contract calls.
+              eligibility, and mint a Bronze badge - all on Sui testnet with real contract calls.
             </p>
           </div>
         </div>
@@ -218,7 +218,7 @@ function LiveDemo() {
           <span className="w-3 h-3 rounded-full bg-red-500/70" />
           <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
           <span className="w-3 h-3 rounded-full bg-green-500/70" />
-          <span className="ml-3 font-mono text-xs text-text-muted">aegis — sui testnet terminal</span>
+          <span className="ml-3 font-mono text-xs text-text-muted">aegis - sui testnet terminal</span>
           <div className="ml-auto flex items-center gap-2">
             {running && (
               <span className="flex items-center gap-1.5 text-[10px] font-mono text-mint-secondary">
@@ -296,7 +296,7 @@ function LiveDemo() {
             <span className="text-2xl">🥉</span>
             <div>
               <p className="text-yellow-400 font-bold text-sm">Bronze Badge Minted</p>
-              <p className="text-text-muted text-xs">Agent certified — 86.7% success rate</p>
+              <p className="text-text-muted text-xs">Agent certified - 86.7% success rate</p>
             </div>
           </motion.div>
         )}
@@ -476,7 +476,7 @@ await aegis.grantBadge({
                     { name: 'isEligibleForBadge()', desc: 'Check if agent meets badge requirements', tag: 'Params', code: 'badgeType: 1|2|3 (Bronze|Silver|Gold)' },
                     { name: 'grantBadge()', desc: 'Request a badge from the registry', tag: 'Params', code: 'agentId, badgeType' },
                     { name: 'getAgentReputation()', desc: 'Fetch agent metrics from blockchain', tag: 'Returns', code: 'ReputationData' },
-                    { name: 'checkAndRevokeInvalid()', desc: 'Trigger auto-revocation check — anyone can call', tag: null, code: null },
+                    { name: 'checkAndRevokeInvalid()', desc: 'Trigger auto-revocation check - anyone can call', tag: null, code: null },
                   ].map(({ name, desc, tag, code }) => (
                     <div key={name} className="rounded-2xl p-5 glass-card-matte hover:bg-surface-2/60 transition-colors">
                       <p className="font-mono text-sm font-semibold text-cyan-primary mb-1">{name}</p>
@@ -617,7 +617,7 @@ sui client call \\
               className="space-y-10"
             >
 
-              {/* Section 1 — For Protocols, Trust is One API Call */}
+              {/* Section 1 - For Protocols, Trust is One API Call */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-2">For Protocols, Trust is One API Call</h2>
                 <p className="text-text-secondary text-sm mb-6">No infrastructure to build. No scoring system to maintain. One integration gives you full agent trust data.</p>
@@ -639,7 +639,7 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                 </div>
               </section>
 
-              {/* Section 2 — Core Components */}
+              {/* Section 2 - Core Components */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Core Components</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
@@ -659,7 +659,7 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                 </div>
               </section>
 
-              {/* Section 3 — Integration Flow */}
+              {/* Section 3 - Integration Flow */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-6">How Protocols Use Aegis</h2>
                 {/* Top row: AI Agent → Execute → DeepBook */}
@@ -718,7 +718,7 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                 </div>
               </section>
 
-              {/* Section 3b — Why Protocols Choose Aegis */}
+              {/* Section 3b - Why Protocols Choose Aegis */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Why Protocols Choose Aegis</h2>
                 <div className="rounded-2xl glass-card-heavy overflow-hidden">
@@ -742,7 +742,7 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                 </div>
               </section>
 
-              {/* Section 4 — Data Flow */}
+              {/* Section 4 - Data Flow */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Data Flow</h2>
                 <div className="rounded-2xl glass-card-heavy p-8">
@@ -773,7 +773,7 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                 </div>
               </section>
 
-              {/* Section 5 — Tech Stack */}
+              {/* Section 5 - Tech Stack */}
               <section>
                 <h2 className="font-display text-2xl font-bold text-text-primary mb-6">Tech Stack</h2>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4">

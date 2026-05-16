@@ -25,7 +25,7 @@ const BADGE_INFO = {
     shortName: 'Gold',
     emoji: '⭐',
     description: '200+ execs, 95%+ success, $1M+ volume',
-    accessLabel: 'AUTONOMOUS — UNRESTRICTED',
+    accessLabel: 'AUTONOMOUS - UNRESTRICTED',
     accessDesc: 'Full permission for autonomous execution of critical tasks and access to production systems.',
     level: 'LVL 5',
     border: 'border-yellow-400/60',
@@ -67,7 +67,7 @@ const BADGE_INFO = {
     shortName: 'Bronze',
     emoji: '🛡️',
     description: '10+ execs, 80%+ success',
-    accessLabel: 'RESTRICTED — READ ONLY',
+    accessLabel: 'RESTRICTED - READ ONLY',
     accessDesc: 'Restricted access for read-only operations and non-sensitive data processing in a sandbox environment.',
     level: 'LVL 1',
     border: 'border-amber-600/60',
@@ -251,7 +251,7 @@ export default function BadgesPage() {
         >
           <div className="px-6 py-5 border-b border-cyan-primary/10">
             <p className="text-text-secondary text-sm leading-relaxed">
-              The <span className="text-cyan-primary font-semibold">Badge Registry</span> is Aegis&apos;s trust certification system for autonomous agents on Sui. It evaluates real-world performance — success rate, processed volume, uptime — and assigns verification badges (Gold, Silver, Bronze) that determine access levels and permissions. The registry updates in real-time and is integrated on-chain for full public auditability. Performance drops or violations trigger <span className="text-red-400 font-semibold">automatic revocation</span>, instantly removing agent privileges.
+              The <span className="text-cyan-primary font-semibold">Badge Registry</span> is Aegis&apos;s trust certification system for autonomous agents on Sui. It evaluates real-world performance - success rate, processed volume, uptime - and assigns verification badges (Gold, Silver, Bronze) that determine access levels and permissions. The registry updates in real-time and is integrated on-chain for full public auditability. Performance drops or violations trigger <span className="text-red-400 font-semibold">automatic revocation</span>, instantly removing agent privileges.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(255,255,255,0.06)]">
@@ -305,7 +305,7 @@ export default function BadgesPage() {
           ))}
         </motion.div>
 
-        {/* Badge cards — image 1 style */}
+        {/* Badge cards - image 1 style */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
             <div className="w-10 h-10 border-2 border-[rgba(255,255,255,0.08)] border-t-cyan-primary rounded-full animate-spin" />
@@ -392,7 +392,7 @@ export default function BadgesPage() {
                         <p className="text-text-muted text-xs leading-relaxed">{info.accessDesc}</p>
                       </div>
 
-                      {/* Metrics bar — 4 metrics */}
+                      {/* Metrics bar - 4 metrics */}
                       <div className="mx-4 mb-2 grid grid-cols-2 gap-1.5">
                         <div className="rounded-lg bg-white/[0.04] px-3 py-2">
                           <p className="text-text-muted text-[9px] uppercase tracking-wide">Uptime</p>
@@ -488,7 +488,7 @@ export default function BadgesPage() {
                   { icon: Activity, label: 'Volume', value: '$1M+', pct: 90 },
                 ],
                 reqs: ['200+ executions', '95%+ success rate', '$1,000,000+ volume'],
-                accessLabel: 'AUTONOMOUS — UNRESTRICTED',
+                accessLabel: 'AUTONOMOUS - UNRESTRICTED',
               },
               {
                 name: 'Silver Badge',
@@ -524,7 +524,7 @@ export default function BadgesPage() {
                   { icon: Clock, label: 'Volume', value: 'Any', pct: 20 },
                 ],
                 reqs: ['10+ executions', '80%+ success rate'],
-                accessLabel: 'RESTRICTED — READ ONLY',
+                accessLabel: 'RESTRICTED - READ ONLY',
               },
             ] as const).map(({ name, level, icon: Icon, border, bg, accentColor, accentText, accentBg, chartPoints, metrics, reqs, accessLabel }, idx) => (
               <motion.div
@@ -615,7 +615,7 @@ export default function BadgesPage() {
             ))}
           </div>
 
-          {/* Auto-revocation — Complete Process */}
+          {/* Auto-revocation - Complete Process */}
           <div className="rounded-2xl border border-red-500/30 bg-red-500/[0.04] overflow-hidden">
             <div className="flex items-center gap-2.5 px-6 py-4 border-b border-red-500/20">
               <AlertTriangle size={16} className="text-red-400" />

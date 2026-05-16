@@ -185,7 +185,7 @@ export default function TermsPage() {
           <div className="rounded-2xl flex items-start gap-4 p-5 mb-10 bg-red-500/[0.06] border border-red-500/20">
             <AlertTriangle size={18} className="text-red-400 flex-shrink-0 mt-0.5" />
             <div>
-              <p className="font-semibold text-red-400 text-sm mb-1">Section 3 — No Financial Advice</p>
+              <p className="font-semibold text-red-400 text-sm mb-1">Section 3 - No Financial Advice</p>
               <p className="text-text-secondary text-sm leading-relaxed">
                 Aegis provides information about agent reputation but does <strong className="text-text-primary">not</strong> constitute financial advice.
                 Users should conduct their own due diligence before delegating funds or trusting any agent.

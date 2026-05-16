@@ -24,11 +24,11 @@ const FAQS = [
   },
   {
     q: 'How does an agent get "flagged"?',
-    a: 'Flagging is automatic. When an agent records executions, the smart contract checks: success rate < 50%, 5+ consecutive failures, or slippage > 5%. If any condition is met, the agent is automatically marked as flagged — no manual intervention required.'
+    a: 'Flagging is automatic. When an agent records executions, the smart contract checks: success rate < 50%, 5+ consecutive failures, or slippage > 5%. If any condition is met, the agent is automatically marked as flagged - no manual intervention required.'
   },
   {
     q: 'Who can call record_execution()?',
-    a: 'Anyone. The system is permissionless — any address can record an execution for any agent. This creates a decentralized watchdog mechanism where failures cannot be hidden or omitted.'
+    a: 'Anyone. The system is permissionless - any address can record an execution for any agent. This creates a decentralized watchdog mechanism where failures cannot be hidden or omitted.'
   },
   {
     q: 'How do badges work?',
@@ -40,7 +40,7 @@ const FAQS = [
   },
   {
     q: 'What is Walrus and why is it used?',
-    a: 'Walrus is a decentralized storage system by Mysten Labs. Aegis uses Walrus to store detailed execution logs that are too large to fit on-chain, while anchoring the blob_id in the ReputationObject — creating a complete, verifiable audit trail.'
+    a: 'Walrus is a decentralized storage system by Mysten Labs. Aegis uses Walrus to store detailed execution logs that are too large to fit on-chain, while anchoring the blob_id in the ReputationObject - creating a complete, verifiable audit trail.'
   },
   {
     q: 'Can I use Aegis without connecting a wallet?',
@@ -48,7 +48,7 @@ const FAQS = [
   },
   {
     q: 'What happens when an agent is flagged?',
-    a: 'A flagged agent is shown with a red warning in the UI. The flag cannot be removed manually — the agent must recover by completing 100 consecutive successful executions with 200+ total executions overall.'
+    a: 'A flagged agent is shown with a red warning in the UI. The flag cannot be removed manually - the agent must recover by completing 100 consecutive successful executions with 200+ total executions overall.'
   },
   {
     q: 'Does Aegis provide financial advice?',
@@ -60,7 +60,7 @@ const FAQS = [
   },
   {
     q: 'What is the difference between Aegis and MemWal?',
-    a: 'MemWal provides private memory for agents — encrypted reasoning, context, and decision rationale. Aegis provides public reputation for third parties — verifiable on-chain metrics. Use both together by anchoring the MemWal blob_id inside the ReputationObject for linked, fully auditable intelligence.'
+    a: 'MemWal provides private memory for agents - encrypted reasoning, context, and decision rationale. Aegis provides public reputation for third parties - verifiable on-chain metrics. Use both together by anchoring the MemWal blob_id inside the ReputationObject for linked, fully auditable intelligence.'
   },
   {
     q: 'Can I use MemWal together with Aegis?',

@@ -22,6 +22,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
 import Footer from '@/components/Footer';
 import DecryptedText from '@/components/DecryptedText';
+import AegisLogo from '@/components/AegisLogo';
 import { SuiIcon, DeepBookIcon, MemWalIcon, WalrusIcon } from '@/components/EcosystemIcons';
 
 /* ─── Animated Counter ─── */
@@ -87,6 +88,12 @@ const steps = [
   },
 ];
 
+const statsIconMap: Record<string, { src: string; blend?: boolean }> = {
+  'Agents Tracked': { src: '/icons/stat-agents.png' },
+  'Avg Success Rate': { src: '/icons/stat-success.png', blend: true },
+  'Volume Protected': { src: '/icons/stat-volume.png' },
+};
+
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: { opacity: 1, transition: { staggerChildren: 0.1, delayChildren: 0.1 } },
@@ -126,24 +133,9 @@ export default function Home() {
           animate="visible"
           variants={containerVariants}
         >
-          {/* Pre-hero label */}
-          <motion.div variants={itemVariants} className="mb-5">
-            <p className="font-mono text-xs text-text-muted uppercase tracking-widest leading-relaxed">
-              On-chain reputation oracle for AI agents on Sui.<br />
-              <span className="text-cyan-primary">Trust isn&apos;t asked for — it&apos;s proven.</span>
-            </p>
-          </motion.div>
-
-          {/* Live tag */}
-          <motion.div variants={itemVariants} className="mb-6">
-            <span className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-pill bg-cyan-primary/10 border border-cyan-primary/20 text-cyan-primary text-label-sm font-mono uppercase tracking-wider">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-secondary opacity-75" />
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-mint-secondary" />
-              </span>
-              <Shield size={13} />
-              Delegate funds to AI agents with verifiable on-chain trust
-            </span>
+          {/* Logo */}
+          <motion.div variants={itemVariants} className="flex justify-center mb-6">
+            <AegisLogo className="w-36 h-36" />
           </motion.div>
 
           {/* Headline */}
@@ -152,7 +144,7 @@ export default function Home() {
             className="font-display text-display-lg-mobile md:text-display-lg text-text-primary mb-6 leading-tight"
           >
             <DecryptedText
-              text="Trust isn't asked for — it's proven."
+              text="Trust isn't asked for - it's proven."
               animateOn="view"
               sequential={true}
               revealDirection="start"
@@ -162,6 +154,18 @@ export default function Home() {
               encryptedClassName="text-text-muted opacity-40"
             />
           </motion.h1>
+
+          {/* Live tag */}
+          <motion.div variants={itemVariants} className="mb-8">
+            <span className="inline-flex items-center gap-2.5 px-4 py-1.5 rounded-pill bg-cyan-primary/10 border border-cyan-primary/20 text-cyan-primary text-label-sm font-mono uppercase tracking-wider">
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-secondary opacity-75" />
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-mint-secondary" />
+              </span>
+              <Shield size={13} />
+              On-chain reputation oracle for AI agents on Sui.
+            </span>
+          </motion.div>
 
           {/* Subtitle */}
           <motion.p
@@ -192,7 +196,7 @@ export default function Home() {
           {/* Floating stat cards */}
           <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {stats.map((stat, i) => {
-              const Icon = stat.icon;
+              const iconInfo = statsIconMap[stat.label];
               return (
                 <motion.div key={stat.label} variants={itemVariants}>
                   <motion.div
@@ -204,8 +208,8 @@ export default function Home() {
                     <div className="p-5">
                       <div className="flex justify-between items-start mb-3">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-9 h-9 rounded-full bg-surface-2/60 flex items-center justify-center">
-                            <Icon size={16} className="text-cyan-primary" />
+                          <div className="w-9 h-9 rounded-full bg-surface-2/60 flex items-center justify-center overflow-hidden">
+                            <img src={iconInfo.src} alt={stat.label} className={`w-7 h-7 object-contain${iconInfo.blend ? ' mix-blend-screen' : ''}`} />
                           </div>
                           <div>
                             <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>
@@ -236,8 +240,8 @@ export default function Home() {
             <p className="text-text-muted text-xs font-mono uppercase tracking-widest">Integrated with</p>
             <div className="flex flex-wrap items-center justify-center gap-10 px-8 py-5 rounded-2xl border border-[rgba(255,255,255,0.06)] bg-surface-0/40 backdrop-blur-sm">
               {/* Sui */}
-              <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
-                <div className="w-14 h-14 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-[72px] h-[72px] flex-shrink-0">
                   <SuiIcon />
                 </div>
                 <span className="font-display font-bold text-text-secondary text-lg tracking-wide">Sui</span>
@@ -246,8 +250,8 @@ export default function Home() {
               <span className="w-px h-8 bg-[rgba(255,255,255,0.08)]" />
 
               {/* DeepBook */}
-              <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
-                <div className="w-14 h-14 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-[72px] h-[72px] flex-shrink-0">
                   <DeepBookIcon />
                 </div>
                 <span className="font-display font-bold text-text-secondary text-lg tracking-wide">DeepBook</span>
@@ -256,8 +260,8 @@ export default function Home() {
               <span className="w-px h-8 bg-[rgba(255,255,255,0.08)]" />
 
               {/* MemWal */}
-              <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
-                <div className="w-14 h-14 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-[72px] h-[72px] flex-shrink-0">
                   <MemWalIcon />
                 </div>
                 <span className="font-display font-bold text-text-secondary text-lg tracking-wide">MemWal</span>
@@ -266,8 +270,8 @@ export default function Home() {
               <span className="w-px h-8 bg-[rgba(255,255,255,0.08)]" />
 
               {/* Walrus */}
-              <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
-                <div className="w-14 h-14 flex-shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="w-[72px] h-[72px] flex-shrink-0">
                   <WalrusIcon />
                 </div>
                 <span className="font-display font-bold text-text-secondary text-lg tracking-wide">Walrus</span>
@@ -313,8 +317,8 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
-              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-cyan-primary/[0.08] border border-cyan-primary/20">
-                  <Shield size={18} className="text-cyan-primary" />
+              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-cyan-primary/[0.08] border border-cyan-primary/20 overflow-hidden">
+                  <img src="/icons/card-protocol.png" alt="Protocol" className="w-8 h-8 object-contain mix-blend-screen" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 You Focus on Your Protocol, We Handle Trust
@@ -349,8 +353,8 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.08 }}
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
-              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-mint-secondary/[0.06] border border-mint-secondary/20">
-                  <Zap size={18} className="text-mint-secondary" />
+              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-mint-secondary/[0.06] border border-mint-secondary/20 overflow-hidden">
+                  <img src="/icons/card-zero-infra.png" alt="Zero Infrastructure" className="w-8 h-8 object-contain" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 Zero Infrastructure Cost
@@ -380,8 +384,8 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.16 }}
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
-              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-purple-400/[0.06] border border-purple-400/20">
-                  <Code2 size={18} className="text-purple-400" />
+              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-purple-400/[0.06] border border-purple-400/20 overflow-hidden">
+                  <img src="/icons/card-integration.png" alt="Integration" className="w-8 h-8 object-contain" />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 One Integration, Infinite Trust
@@ -529,14 +533,14 @@ export default function Home() {
               Built for Protocols. Trusted by Wallets.
             </h2>
             <p className="text-body-md text-text-secondary max-w-xl">
-              Aegis is a composable trust layer — integrate once, give users verifiable agent reputation anywhere in your app.
+              Aegis is a composable trust layer - integrate once, give users verifiable agent reputation anywhere in your app.
             </p>
           </motion.div>
 
           {/* Row 1: Use cases table + Why card */}
           <div className="grid grid-cols-1 md:grid-cols-12 gap-5 mb-5">
 
-            {/* Who integrates Aegis — col-span-7 */}
+            {/* Who integrates Aegis - col-span-7 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -570,7 +574,7 @@ export default function Home() {
               </div>
             </motion.div>
 
-            {/* Why build trust yourself — col-span-5 */}
+            {/* Why build trust yourself - col-span-5 */}
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -584,8 +588,8 @@ export default function Home() {
               <div className="space-y-4 flex-1">
                 {[
                   { val: '1,000+', label: 'agents already tracked on-chain' },
-                  { val: 'Verifiable', label: 'badges — no custom scoring needed' },
-                  { val: 'Walrus', label: 'audit trail — full transparency, zero overhead' },
+                  { val: 'Verifiable', label: 'badges - no custom scoring needed' },
+                  { val: 'Walrus', label: 'audit trail - full transparency, zero overhead' },
                 ].map(({ val, label }) => (
                   <div key={val} className="flex items-start gap-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-mint-secondary mt-2 flex-shrink-0" />

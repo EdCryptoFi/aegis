@@ -42,7 +42,7 @@ const AGENT_META: Record<string, {
     protocol: 'DeepBook v2',
     pool: 'SUI/USDC',
     network: 'Sui Testnet',
-    description: 'High-frequency arbitrage and liquidity provision agent operating on DeepBook DEX. Fully autonomous — executes trades without human intervention, optimizing for slippage minimization and capital efficiency.',
+    description: 'High-frequency arbitrage and liquidity provision agent operating on DeepBook DEX. Fully autonomous - executes trades without human intervention, optimizing for slippage minimization and capital efficiency.',
     createdAt: '2026-01-15',
     model: 'GPT-4 Opus + Logic Engine',
     tags: ['Autonomous', 'DeFi', 'Arbitrage', 'High-Frequency'],
@@ -60,7 +60,7 @@ const AGENT_META: Record<string, {
   },
   '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6': {
     name: 'GammaScam',
-    type: 'Restricted — Read Only',
+    type: 'Restricted - Read Only',
     protocol: 'Unknown Protocol',
     pool: 'Isolated Sandbox',
     network: 'Sui Testnet',
@@ -224,7 +224,7 @@ export default function AgentPage() {
   const avgSlippage = rep && rep.totalExecutions > 0
     ? rep.totalSlippage / rep.totalExecutions : 0;
 
-  const trust = rep ? trustLevel(rep) : { label: '—', pill: '' };
+  const trust = rep ? trustLevel(rep) : { label: '-', pill: '' };
 
   return (
     <main className="min-h-screen bg-bg-base px-4 py-12">
@@ -298,7 +298,7 @@ export default function AgentPage() {
                 {/* Created date */}
                 <div className="flex-shrink-0 text-right">
                   <p className="text-text-muted text-[10px] uppercase tracking-widest mb-1">Created</p>
-                  <p className="font-mono text-sm text-text-secondary">{meta?.createdAt || '—'}</p>
+                  <p className="font-mono text-sm text-text-secondary">{meta?.createdAt || '-'}</p>
                 </div>
               </div>
             </div>
@@ -380,7 +380,7 @@ export default function AgentPage() {
                 {[
                   { icon: Globe, label: 'Network', value: meta?.network || 'Sui Testnet' },
                   { icon: Cpu, label: 'Protocol', value: meta?.protocol || 'Aegis SDK' },
-                  { icon: Activity, label: 'Pool', value: meta?.pool || '—' },
+                  { icon: Activity, label: 'Pool', value: meta?.pool || '-' },
                   { icon: Zap, label: 'Model', value: meta?.model || 'Unknown' },
                   { icon: Clock, label: 'Type', value: meta?.type || 'Unknown' },
                 ].map(({ icon: Icon, label, value }) => (

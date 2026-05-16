@@ -6,7 +6,7 @@ import {
   BookOpen, Zap, HelpCircle, FileText, ExternalLink, Shield, Lock,
   AlertTriangle, CheckCircle, Code2, GitBranch, Activity, Map,
   ChevronRight, ArrowRight, Database, Cpu, Globe, BarChart2,
-  XCircle, Clock, Terminal, Layers,
+  XCircle, Clock, Terminal, Layers, TrendingUp, Award, Coins, Trophy,
 } from 'lucide-react';
 
 const SIDEBAR = [
@@ -26,6 +26,9 @@ const SIDEBAR = [
   ]},
   { title: 'Roadmap', items: [
     { name: 'Phase 2 Roadmap', href: '#roadmap', anchor: true, highlight: true },
+  ]},
+  { title: 'Business Model', items: [
+    { name: 'Sustainability & Incentives', href: '#sustainability', anchor: true },
   ]},
   { title: 'Resources', items: [
     { name: 'Terms & Privacy', href: '/docs/terms', anchor: false },
@@ -116,7 +119,7 @@ export default function DocsPage() {
             </div>
             <h1 className="font-display text-4xl font-bold text-text-primary mb-4">Welcome to Aegis Documentation</h1>
             <p className="text-text-secondary text-lg leading-relaxed mb-6">
-              Aegis is a decentralized trust layer for autonomous AI agents on Sui. It tracks on-chain metrics — success rate, volume, uptime — and issues verifiable badges that control access permissions for protocols integrating AI agents.
+              Aegis is a decentralized trust layer for autonomous AI agents on Sui. It tracks on-chain metrics - success rate, volume, uptime - and issues verifiable badges that control access permissions for protocols integrating AI agents.
             </p>
 
             {/* Roadmap banner */}
@@ -166,7 +169,7 @@ export default function DocsPage() {
                   'Sui Wallet installed (Slipstream or Sui Wallet extension)',
                   'Node.js 18+ and pnpm/yarn',
                   'Environment variables configured (see .env.local.example)',
-                  'Testnet SUI tokens — fund via faucet.testnet.sui.io',
+                  'Testnet SUI tokens - fund via faucet.testnet.sui.io',
                 ].map(t => (
                   <li key={t} className="flex items-start gap-2 text-sm text-text-secondary">
                     <span className="w-1.5 h-1.5 rounded-full bg-cyan-primary/60 mt-1.5 flex-shrink-0" />
@@ -201,10 +204,10 @@ export default function DocsPage() {
             <h2 className="font-display text-2xl font-bold text-text-primary mb-5">Key Concepts</h2>
             <div className="rounded-2xl glass-card-heavy divide-y divide-[rgba(255,255,255,0.06)]">
               {[
-                { label: 'Reputation System', desc: 'On-chain metrics that track agent performance — executions, success rate, slippage, uptime', href: '/agents', internal: true },
-                { label: 'Badge Registry', desc: 'Bronze (LVL 1), Silver (LVL 3), Gold (LVL 5) — access-level certifications issued on-chain', href: '/badges', internal: true },
+                { label: 'Reputation System', desc: 'On-chain metrics that track agent performance - executions, success rate, slippage, uptime', href: '/agents', internal: true },
+                { label: 'Badge Registry', desc: 'Bronze (LVL 1), Silver (LVL 3), Gold (LVL 5) - access-level certifications issued on-chain', href: '/badges', internal: true },
                 { label: 'Aegis Score', desc: 'Multi-dimensional score: Performance 37% + Reliability 28% - Risk Penalty + Contribution 10%', href: '/leaderboard', internal: true },
-                { label: 'Auto-Revocation', desc: 'On-chain enforcement — >5 consecutive failures, <50% success rate, or >500 BPS slippage triggers instant credential revocation', href: '/badges', internal: true },
+                { label: 'Auto-Revocation', desc: 'On-chain enforcement - >5 consecutive failures, <50% success rate, or >500 BPS slippage triggers instant credential revocation', href: '/badges', internal: true },
                 { label: 'MemWal Audit Trail', desc: 'Encrypted private memory for agent reasoning; blob_id anchored in ReputationObject for full traceability', href: 'https://docs.memwal.ai/', internal: false },
               ].map(({ label, desc, href, internal }) => (
                 <div key={label} className="px-5 py-4 flex items-start gap-4">
@@ -425,7 +428,7 @@ pnpm test:stress --duration=60s --rps=100`} />
               ].map(({ label, desc }) => (
                 <li key={label} className="flex items-start gap-2 text-sm">
                   <span className="w-1.5 h-1.5 rounded-full bg-cyan-primary mt-1.5 flex-shrink-0" />
-                  <span><strong className="text-text-primary">{label}</strong> — <span className="text-text-secondary">{desc}</span></span>
+                  <span><strong className="text-text-primary">{label}</strong> - <span className="text-text-secondary">{desc}</span></span>
                 </li>
               ))}
             </ul>
@@ -492,7 +495,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
               <h3 className="font-semibold text-text-primary text-sm mb-3">Protocol Integrator Checklist</h3>
               <ul className="space-y-2">
                 {[
-                  'Always validate agent via contract_address — never trust display name alone',
+                  'Always validate agent via contract_address - never trust display name alone',
                   'Implement circuit breakers for losses >X% per epoch',
                   'Maintain whitelist of pre-approved backup agents (Gold/Silver only)',
                   'Sign all critical transactions with multi-sig',
@@ -511,9 +514,9 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
               <h3 className="font-semibold text-yellow-400 text-sm mb-3">Common Pitfalls</h3>
               <ul className="space-y-2">
                 {[
-                  'Do NOT use agent name as unique identifier — use contract address + Badge ID',
-                  'Do NOT ignore "Score Drop" alerts — they often precede revocation within hours',
-                  'Do NOT hardcode agent addresses — use dynamic registry lookup at runtime',
+                  'Do NOT use agent name as unique identifier - use contract address + Badge ID',
+                  'Do NOT ignore "Score Drop" alerts - they often precede revocation within hours',
+                  'Do NOT hardcode agent addresses - use dynamic registry lookup at runtime',
                 ].map(t => (
                   <li key={t} className="flex items-start gap-2.5 text-sm text-text-secondary">
                     <AlertTriangle size={13} className="text-yellow-400 flex-shrink-0 mt-0.5" />
@@ -534,7 +537,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
             <div className="rounded-2xl p-6 mb-8 bg-gradient-to-br from-cyan-primary/[0.10] to-mint-secondary/[0.05] border border-cyan-primary/30">
               <div className="flex items-center gap-3 mb-2">
                 <Map size={22} className="text-cyan-primary" />
-                <h2 className="font-display text-2xl font-bold text-text-primary">Aegis Protocol — Phase 2 Roadmap</h2>
+                <h2 className="font-display text-2xl font-bold text-text-primary">Aegis Protocol - Phase 2 Roadmap</h2>
               </div>
               <p className="text-text-secondary text-sm">
                 <strong className="text-cyan-primary">Theme:</strong> Dynamic Trust, Autonomous Contingency &amp; Cost-Efficient Monitoring
@@ -544,7 +547,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
             {/* Phase 1 Baseline */}
             <div className="rounded-2xl border border-[rgba(255,255,255,0.08)] bg-surface-0/40 p-5 mb-6">
               <h3 className="font-display font-bold text-text-primary text-base mb-3 flex items-center gap-2">
-                <CheckCircle size={15} className="text-mint-secondary" /> Phase 1 — Baseline (Functional)
+                <CheckCircle size={15} className="text-mint-secondary" /> Phase 1 - Baseline (Functional)
               </h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                 {[
@@ -580,7 +583,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                   rows: [
                     { k: 'Onboarding Text', v: 'Institutional explanation (max 10 lines) covering continuous evaluation, access tiers, and auto-revocation triggers.' },
                     { k: 'Revocation Pipeline', v: 'Detection → On-chain Invalidation → LVL 0 Downgrade → Quarantine → Audit Log → Notification → Conditional Reinstatement.' },
-                    { k: 'Canonical Identity', v: 'Contract Address + Badge ID = unique identity. Display name is UX only — never use for validation.' },
+                    { k: 'Canonical Identity', v: 'Contract Address + Badge ID = unique identity. Display name is UX only - never use for validation.' },
                     { k: 'On-chain Evaluators', v: 'Pluggable contracts evaluating: Success Rate, Volume, Uptime, Slippage, Security Flags.' },
                   ],
                 },
@@ -619,7 +622,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                   title: 'Integration SDK & Developer Tools',
                   rows: [
                     { k: 'Smart Contract Templates', v: 'Ready-to-use modules: AgentManager, FallbackRouter, CircuitBreaker.' },
-                    { k: 'Event Schema', v: 'AgentRevokedEvent, FallbackActivatedEvent, ScoreChangeEvent — standard across protocols.' },
+                    { k: 'Event Schema', v: 'AgentRevokedEvent, FallbackActivatedEvent, ScoreChangeEvent - standard across protocols.' },
                     { k: 'Developer Docs', v: 'Integration guides, hybrid fallback examples, security best practices.' },
                     { k: 'Testnet & Stress Tests', v: 'Simulated revocation, auto-swap, backup failure, volume spikes.' },
                   ],
@@ -681,6 +684,177 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
             </div>
           </section>
 
+          {/* ── Sustainability & Business Model ── */}
+          <section id="sustainability">
+            <div className="flex items-center gap-2 text-text-muted text-xs font-mono mb-3">
+              <span>Docs</span><ChevronRight size={12} /><span className="text-cyan-primary">Sustainability</span>
+            </div>
+
+            {/* Banner */}
+            <div className="rounded-2xl p-6 mb-8 bg-gradient-to-br from-mint-secondary/[0.08] to-cyan-primary/[0.05] border border-mint-secondary/25">
+              <div className="flex items-center gap-4 mb-3">
+                <img src="/icons/flow-globe.png" alt="Sustainability" className="w-10 h-10 object-contain flex-shrink-0" />
+                <div>
+                  <h2 className="font-display text-2xl font-bold text-text-primary">Sustainability &amp; Incentives</h2>
+                  <p className="text-text-muted text-xs font-mono uppercase tracking-widest">Business Model</p>
+                </div>
+              </div>
+              <p className="text-text-secondary text-sm italic leading-relaxed">
+                Aegis is designed to be self-sustaining: the better agents perform, the more value the ecosystem creates - for everyone.
+              </p>
+            </div>
+
+            {/* Free during hackathon callout */}
+            <div className="rounded-2xl p-4 mb-8 bg-cyan-primary/[0.06] border border-cyan-primary/25 flex items-start gap-3">
+              <Zap size={16} className="text-cyan-primary flex-shrink-0 mt-0.5" />
+              <p className="text-text-secondary text-sm leading-relaxed">
+                <strong className="text-cyan-primary">During the hackathon and testnet phase, all Aegis services are 100% free.</strong> Economic mechanisms will be introduced gradually with community governance.
+              </p>
+            </div>
+
+            {/* Value Flow */}
+            <h3 className="font-display font-bold text-text-primary text-lg mb-5">How Value Flows</h3>
+            <div className="rounded-2xl glass-card-heavy p-6 mb-8 overflow-x-auto">
+              <div className="flex items-center justify-between gap-1 min-w-[540px]">
+                {[
+                  { label: 'Protocols', sub: 'Pay small fee', color: 'border-cyan-primary/30 bg-cyan-primary/[0.07]', text: 'text-cyan-primary' },
+                  { label: 'Aegis Treasury', sub: 'Collects & routes', color: 'border-mint-secondary/30 bg-mint-secondary/[0.07]', text: 'text-mint-secondary' },
+                  { label: 'Agent Rewards', sub: 'High performers', color: 'border-yellow-400/30 bg-yellow-400/[0.07]', text: 'text-yellow-400' },
+                  { label: 'Gold Agents', sub: 'Maintain badges', color: 'border-purple-400/30 bg-purple-400/[0.07]', text: 'text-purple-400' },
+                  { label: 'Better Protocols', sub: 'Reliable agents', color: 'border-cyan-primary/30 bg-cyan-primary/[0.07]', text: 'text-cyan-primary' },
+                ].map((node, i, arr) => (
+                  <div key={node.label} className="flex items-center gap-1 flex-1 min-w-0">
+                    <div className={`flex-1 rounded-xl border ${node.color} p-3 text-center min-w-0`}>
+                      <p className={`font-display font-bold text-[11px] ${node.text} leading-tight`}>{node.label}</p>
+                      <p className="text-text-muted text-[9px] font-mono uppercase tracking-wide mt-0.5 leading-tight">{node.sub}</p>
+                    </div>
+                    {i < arr.length - 1 && (
+                      <ArrowRight size={12} className="text-text-muted flex-shrink-0" />
+                    )}
+                  </div>
+                ))}
+                <div className="flex items-center gap-1 ml-1">
+                  <ArrowRight size={12} className="text-text-muted flex-shrink-0 rotate-180" />
+                  <span className="text-text-muted text-[9px] font-mono tracking-wide">↺</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Revenue Sources */}
+            <h3 className="font-display font-bold text-text-primary text-lg mb-4">Revenue Sources</h3>
+            <div className="rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)] mb-8">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-surface-0 border-b border-[rgba(255,255,255,0.06)]">
+                    {['Source', 'Description', 'Stage'].map(h => (
+                      <th key={h} className="text-left px-5 py-3 text-text-muted font-semibold uppercase tracking-wider text-[10px]">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[rgba(255,255,255,0.04)]">
+                  {[
+                    {
+                      icon: <img src="/icons/stat-success.png" className="w-6 h-6 object-contain mix-blend-screen" alt="" />,
+                      source: 'Protocol Integration Fee',
+                      desc: 'Small % on verified executions - waived during hackathon/testnet',
+                      stage: 'Post-Mainnet',
+                      stageCls: 'text-text-muted bg-surface-2 border-[rgba(255,255,255,0.1)]',
+                    },
+                    {
+                      icon: <TrendingUp size={16} className="text-mint-secondary" />,
+                      source: 'Premium Analytics',
+                      desc: 'Advanced dashboards & alerting for enterprise users',
+                      stage: 'Roadmap Q3',
+                      stageCls: 'text-cyan-primary bg-cyan-primary/10 border-cyan-primary/20',
+                    },
+                    {
+                      icon: <Globe size={16} className="text-purple-400" />,
+                      source: 'Grant-Funded Development',
+                      desc: 'Ecosystem grants from Sui Foundation & ecosystem partners',
+                      stage: 'Active',
+                      stageCls: 'text-mint-secondary bg-mint-secondary/10 border-mint-secondary/20',
+                    },
+                  ].map(({ icon, source, desc, stage, stageCls }) => (
+                    <tr key={source} className="bg-surface-1/40">
+                      <td className="px-5 py-4">
+                        <div className="flex items-center gap-2.5">
+                          <div className="w-7 h-7 flex items-center justify-center">{icon}</div>
+                          <span className="font-semibold text-text-primary text-xs">{source}</span>
+                        </div>
+                      </td>
+                      <td className="px-5 py-4 text-text-secondary leading-relaxed">{desc}</td>
+                      <td className="px-5 py-4">
+                        <span className={`font-mono text-[10px] px-2 py-1 rounded-full border ${stageCls}`}>{stage}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Agent Incentives */}
+            <h3 className="font-display font-bold text-text-primary text-lg mb-4">Agent Incentives</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+              {[
+                {
+                  img: '/icons/incentive-trophy.png',
+                  title: 'Gold Badge Agents',
+                  desc: 'Priority access to high-value protocols + potential reward sharing from Aegis Treasury',
+                  color: 'text-yellow-400', border: 'border-yellow-400/20', bg: 'bg-yellow-400/[0.06]',
+                },
+                {
+                  icon: <TrendingUp size={18} className="text-mint-secondary" />,
+                  title: 'Performance-Based',
+                  desc: 'Fees and rewards scale with Aegis Score - bad actors earn nothing and face auto-revocation',
+                  color: 'text-mint-secondary', border: 'border-mint-secondary/20', bg: 'bg-mint-secondary/[0.06]',
+                },
+                {
+                  icon: <Shield size={18} className="text-cyan-primary" />,
+                  title: 'No Pay-to-Play',
+                  desc: 'Badges cannot be bought. Only earned via verifiable on-chain performance - no shortcuts',
+                  color: 'text-cyan-primary', border: 'border-cyan-primary/20', bg: 'bg-cyan-primary/[0.06]',
+                },
+              ].map(({ img, icon, title, desc, color, border, bg }) => (
+                <div key={title} className={`rounded-2xl border ${border} ${bg} p-5 flex flex-col gap-4`}>
+                  <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center ${bg} border ${border} overflow-hidden`}>
+                    {img
+                      ? <img src={img} alt={title} className="w-8 h-8 object-contain" />
+                      : icon}
+                  </div>
+                  <div>
+                    <p className={`font-display font-bold text-sm mb-1.5 ${color}`}>{title}</p>
+                    <p className="text-text-secondary text-xs leading-relaxed">{desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Transparency */}
+            <h3 className="font-display font-bold text-text-primary text-lg mb-4">Transparency Commitment</h3>
+            <div className="rounded-2xl border border-[rgba(255,255,255,0.08)] p-5 mb-4">
+              <ul className="space-y-3">
+                {[
+                  { icon: <CheckCircle size={14} className="text-mint-secondary" />, text: 'All fee structures and treasury movements are on-chain and fully auditable by anyone' },
+                  { icon: <CheckCircle size={14} className="text-mint-secondary" />, text: 'Governance proposals required for any changes to economic parameters - no unilateral updates' },
+                  { icon: <Clock size={14} className="text-cyan-primary" />, text: 'Public dashboard showing fee collection and distribution - coming Q2' },
+                ].map(({ icon, text }) => (
+                  <li key={text} className="flex items-start gap-2.5 text-sm text-text-secondary">
+                    <span className="flex-shrink-0 mt-0.5">{icon}</span>
+                    {text}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Revenue alignment note */}
+            <div className="rounded-2xl border border-yellow-400/20 bg-yellow-400/[0.04] p-4 flex items-start gap-3">
+              <AlertTriangle size={15} className="text-yellow-400 flex-shrink-0 mt-0.5" />
+              <p className="text-text-secondary text-xs leading-relaxed">
+                <strong className="text-yellow-400">Revenue alignment:</strong> The model is deliberately designed so that Aegis only earns when agents perform well and protocols benefit - charging for revocations or bad outcomes would misalign incentives.
+              </p>
+            </div>
+          </section>
+
           {/* ── Need Help ── */}
           <section className="border-t border-[rgba(255,255,255,0.06)] pt-12">
             <h2 className="font-display text-xl font-bold text-text-primary mb-5">Need Help?</h2>
@@ -688,7 +862,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
               {[
                 { label: 'FAQ', href: '/docs/faq', internal: true },
                 { label: 'Terms & Privacy', href: '/docs/terms', internal: true },
-                { label: 'GitHub — Report issues or contribute', href: 'https://github.com/EdCryptoFi/aegis', internal: false },
+                { label: 'GitHub - Report issues or contribute', href: 'https://github.com/EdCryptoFi/aegis', internal: false },
                 { label: 'Follow @aegisonchain on X', href: 'https://x.com/aegisonchain', internal: false },
               ].map(({ label, href, internal }) => (
                 <li key={label} className="flex items-center gap-2 text-sm">

@@ -8,6 +8,8 @@ import AIAssistant from '../components/AIAssistant';
 import { ThemeProvider } from '../lib/theme';
 import Navbar from '../components/Navbar';
 import CookieBanner from '../components/CookieBanner';
+import ParticleBackground from '../components/ParticleBackground';
+import GlowOrbs from '../components/GlowOrbs';
 import '@mysten/dapp-kit/dist/index.css';
 import '../styles/globals.css';
 
@@ -25,6 +27,11 @@ export default function App({ Component, pageProps }: AppProps) {
         <WalletProvider autoConnect>
           <ThemeProvider>
             <I18nProvider>
+            {/* Global animated background - sits behind all pages */}
+            <div className="fixed inset-0 z-0 pointer-events-none overflow-hidden">
+              <ParticleBackground />
+              <GlowOrbs />
+            </div>
             <Navbar />
             <Component {...pageProps} />
             <AIAssistant />
