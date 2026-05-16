@@ -212,8 +212,8 @@ export default function Home() {
                     <div className="p-5 pb-3">
                       {/* Top row: icon + label */}
                       <div className="flex items-start gap-3 mb-4">
-                        <div className="w-14 h-14 flex items-center justify-center flex-shrink-0">
-                          <img src={iconInfo.src} alt={stat.label} className={`w-[53px] h-[53px] object-contain${iconInfo.blend ? ' mix-blend-screen' : ''}`} />
+                        <div className="w-14 h-14 rounded-2xl bg-black flex items-center justify-center overflow-hidden flex-shrink-0">
+                          <img src={iconInfo.src} alt={stat.label} className={`w-10 h-10 object-contain${iconInfo.blend ? ' mix-blend-screen' : ''}`} />
                         </div>
                         <div className="mt-1">
                           <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>

@@ -21,8 +21,8 @@ module.exports = {
         'text-secondary': '#b9caca',
         'text-muted': '#849495',
 
-        'cyan-primary': '#40C4FF',
-        'cyan-dim': '#29b0e8',
+        'cyan-primary': '#00D4B8',
+        'cyan-dim': '#00b89f',
         'mint-secondary': '#00EED4',
         'mint-dim': '#00ccb8',
         'purple-tertiary': '#7000FF',
@@ -30,7 +30,7 @@ module.exports = {
 
         'border-glass': 'rgba(255, 255, 255, 0.08)',
 
-        'glow-cyan': 'rgba(64, 196, 255, 0.15)',
+        'glow-cyan': 'rgba(0, 212, 184, 0.15)',
         'glow-mint': 'rgba(0, 255, 167, 0.15)',
         'glow-purple': 'rgba(112, 0, 255, 0.15)',
 
@@ -41,7 +41,7 @@ module.exports = {
         danger: '#ef4444',
 
         // Legacy compat
-        primary: '#40C4FF',
+        primary: '#00D4B8',
         secondary: '#00EED4',
         dark: '#0c0f11',
         darker: '#080a0c',
@@ -67,19 +67,19 @@ module.exports = {
         'input': '12px',
       },
       boxShadow: {
-        'glow-cyan': '0 0 20px rgba(64, 196, 255, 0.15)',
-        'glow-cyan-intense': '0 0 30px rgba(64, 196, 255, 0.25)',
+        'glow-cyan': '0 0 20px rgba(0, 212, 184, 0.15)',
+        'glow-cyan-intense': '0 0 30px rgba(0, 212, 184, 0.25)',
         'glow-mint': '0 0 20px rgba(0, 255, 167, 0.15)',
         'glow-purple': '0 0 20px rgba(112, 0, 255, 0.15)',
         'neu-outset': '0 4px 20px rgba(0, 0, 0, 0.4)',
         'neu-inset': 'inset 2px 2px 5px rgba(0, 0, 0, 0.5), inset -2px -2px 5px rgba(255, 255, 255, 0.03)',
         'drop': '0 20px 40px rgba(0, 0, 0, 0.4)',
-        'card-hover': '0 8px 32px rgba(64, 196, 255, 0.12), 0 0 1px rgba(64, 196, 255, 0.3)',
-        'glow-inner-cyan': 'inset 0 0 10px rgba(64, 196, 255, 0.1)',
+        'card-hover': '0 8px 32px rgba(0, 212, 184, 0.12), 0 0 1px rgba(0, 212, 184, 0.3)',
+        'glow-inner-cyan': 'inset 0 0 10px rgba(0, 212, 184, 0.1)',
       },
       backgroundImage: {
-        'gradient-cyan-mint': 'linear-gradient(135deg, #40C4FF, #00EED4)',
-        'gradient-cyan-purple': 'linear-gradient(135deg, #40C4FF, #7000FF)',
+        'gradient-cyan-mint': 'linear-gradient(135deg, #00D4B8, #00EED4)',
+        'gradient-cyan-purple': 'linear-gradient(135deg, #00D4B8, #7000FF)',
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
         'gradient-dark': 'linear-gradient(180deg, #0c0f11 0%, #111416 100%)',
       },
