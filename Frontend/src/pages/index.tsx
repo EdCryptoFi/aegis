@@ -121,7 +121,7 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-base to-transparent z-10" />
 
         <motion.div
-          className="relative z-20 text-center max-w-4xl mx-auto"
+          className="relative z-20 text-center max-w-5xl mx-auto"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
@@ -190,7 +190,7 @@ export default function Home() {
           </motion.div>
 
           {/* Floating stat cards */}
-          <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-3xl mx-auto">
+          <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {stats.map((stat, i) => {
               const Icon = stat.icon;
               return (
@@ -231,46 +231,46 @@ export default function Home() {
           {/* Integrated with */}
           <motion.div
             variants={itemVariants}
-            className="mt-14 flex flex-col items-center gap-5"
+            className="mt-16 flex flex-col items-center gap-6"
           >
             <p className="text-text-muted text-xs font-mono uppercase tracking-widest">Integrated with</p>
-            <div className="flex flex-wrap items-center justify-center gap-8">
+            <div className="flex flex-wrap items-center justify-center gap-10 px-8 py-5 rounded-2xl border border-[rgba(255,255,255,0.06)] bg-surface-0/40 backdrop-blur-sm">
               {/* Sui */}
-              <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-                <div className="w-9 h-9 flex-shrink-0">
+              <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+                <div className="w-14 h-14 flex-shrink-0">
                   <SuiIcon />
                 </div>
-                <span className="font-display font-bold text-text-secondary text-base tracking-wide">Sui</span>
+                <span className="font-display font-bold text-text-secondary text-lg tracking-wide">Sui</span>
               </div>
 
-              <span className="w-px h-5 bg-[rgba(255,255,255,0.08)]" />
+              <span className="w-px h-8 bg-[rgba(255,255,255,0.08)]" />
 
               {/* DeepBook */}
-              <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-                <div className="w-9 h-9 flex-shrink-0">
+              <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+                <div className="w-14 h-14 flex-shrink-0">
                   <DeepBookIcon />
                 </div>
-                <span className="font-display font-bold text-text-secondary text-base tracking-wide">DeepBook</span>
+                <span className="font-display font-bold text-text-secondary text-lg tracking-wide">DeepBook</span>
               </div>
 
-              <span className="w-px h-5 bg-[rgba(255,255,255,0.08)]" />
+              <span className="w-px h-8 bg-[rgba(255,255,255,0.08)]" />
 
               {/* MemWal */}
-              <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-                <div className="w-9 h-9 flex-shrink-0">
+              <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+                <div className="w-14 h-14 flex-shrink-0">
                   <MemWalIcon />
                 </div>
-                <span className="font-display font-bold text-text-secondary text-base tracking-wide">MemWal</span>
+                <span className="font-display font-bold text-text-secondary text-lg tracking-wide">MemWal</span>
               </div>
 
-              <span className="w-px h-5 bg-[rgba(255,255,255,0.08)]" />
+              <span className="w-px h-8 bg-[rgba(255,255,255,0.08)]" />
 
               {/* Walrus */}
-              <div className="flex items-center gap-2 opacity-60 hover:opacity-100 transition-opacity">
-                <div className="w-9 h-9 flex-shrink-0">
+              <div className="flex items-center gap-3 opacity-60 hover:opacity-100 transition-opacity">
+                <div className="w-14 h-14 flex-shrink-0">
                   <WalrusIcon />
                 </div>
-                <span className="font-display font-bold text-text-secondary text-base tracking-wide">Walrus</span>
+                <span className="font-display font-bold text-text-secondary text-lg tracking-wide">Walrus</span>
               </div>
             </div>
           </motion.div>
@@ -512,7 +512,7 @@ export default function Home() {
 
       {/* ═══════ USE CASES ═══════ */}
       <section className="relative py-24 px-6">
-        <div className="max-w-7xl mx-auto">
+        <div className="max-w-5xl mx-auto">
 
           {/* Section header */}
           <motion.div
@@ -681,7 +681,7 @@ export default function Home() {
       <section className="relative py-24 px-6">
         <div className="absolute inset-0 pointer-events-none section-mint-ambient" />
 
-        <div className="max-w-7xl mx-auto relative">
+        <div className="max-w-5xl mx-auto relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
