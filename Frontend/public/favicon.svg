@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00FFA7"/>
+      <stop offset="100%" stop-color="#00F5FF"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="50" cy="50" r="48" fill="#0c0f11" stroke="#00FFA7" stroke-width="1.5" opacity="0.9"/>
+  <!-- Outer ring segments -->
+  <circle cx="50" cy="50" r="44" fill="none" stroke="#1e40af" stroke-width="3" stroke-dasharray="60 8" stroke-dashoffset="4" stroke-linecap="round"/>
+  <circle cx="50" cy="50" r="40" fill="none" stroke="url(#g1)" stroke-width="1" opacity="0.7"/>
+  <!-- A letterform -->
+  <path d="M 20 74 L 50 14 L 80 74" fill="none" stroke="#1d4ed8" stroke-width="8" stroke-linejoin="miter" stroke-linecap="round"/>
+  <path d="M 17 77 L 50 11 L 83 77" fill="none" stroke="#00FFA7" stroke-width="1" stroke-linejoin="miter" stroke-linecap="round" filter="url(#glow)"/>
+  <path d="M 24 72 L 50 18 L 76 72" fill="none" stroke="url(#g1)" stroke-width="4" stroke-linejoin="miter" stroke-linecap="square" filter="url(#glow)"/>
+  <!-- Star center -->
+  <path d="M 50 40 Q 50 58 64 58 Q 50 58 50 76 Q 50 58 36 58 Q 50 58 50 40 Z" fill="none" stroke="#00FFA7" stroke-width="1.2" filter="url(#glow)"/>
+  <circle cx="50" cy="58" r="2" fill="#ffffff" filter="url(#glow)"/>
+</svg>

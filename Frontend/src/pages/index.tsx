@@ -106,6 +106,8 @@ const itemVariants = {
 
 export default function Home() {
   const [agentAddress, setAgentAddress] = useState('');
+  const stepsRef = useRef<HTMLDivElement>(null);
+  const stepsInView = useInView(stepsRef, { once: true, margin: '-80px' });
 
   const handleCheckReputation = () => {
     if (agentAddress.trim()) {
@@ -704,32 +706,59 @@ export default function Home() {
             </p>
           </motion.div>
 
-          <div className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Connecting beam */}
-            <div className="hidden md:block absolute top-[52px] left-[calc(16.66%+40px)] right-[calc(16.66%+40px)] h-px step-beam opacity-60" />
+          <div ref={stepsRef} className="relative grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Animated connecting beam */}
+            <div className="hidden md:block absolute top-[52px] left-[calc(16.66%+40px)] right-[calc(16.66%+40px)] h-px bg-[rgba(255,255,255,0.06)] overflow-hidden">
+              <motion.div
+                className="h-full step-beam"
+                initial={{ scaleX: 0 }}
+                animate={stepsInView ? { scaleX: 1 } : { scaleX: 0 }}
+                style={{ transformOrigin: 'left' }}
+                transition={{ duration: 1.4, ease: 'easeOut', delay: 0.4 }}
+              />
+            </div>
 
             {steps.map((step, i) => {
               const StepIcon = step.icon;
               return (
                 <motion.div
                   key={step.title}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.15 }}
+                  initial={{ opacity: 0, y: 32 }}
+                  animate={stepsInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 32 }}
+                  transition={{ duration: 0.55, delay: 0.15 + i * 0.35 }}
                   className="relative text-center"
                 >
                   <div className="relative mx-auto mb-6 w-[104px] h-[104px] flex items-center justify-center">
-                    {/* Outer ring */}
-                    <div className="absolute inset-0 rounded-full step-ring-outer" />
-                    {/* Inner circle */}
-                    <div className="w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-primary/[0.12] to-mint-secondary/[0.06] border border-cyan-primary/20 shadow-glow-cyan">
+                    {/* SVG animated outer ring */}
+                    <svg className="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 104 104">
+                      <motion.circle
+                        cx="52" cy="52" r="50"
+                        fill="none"
+                        stroke="rgba(0,245,255,0.25)"
+                        strokeWidth="1"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        animate={stepsInView ? { pathLength: 1, opacity: 1 } : { pathLength: 0, opacity: 0 }}
+                        transition={{ duration: 1.0, delay: 0.3 + i * 0.35, ease: 'easeOut' }}
+                      />
+                    </svg>
+                    {/* Inner circle with icon */}
+                    <motion.div
+                      className="w-16 h-16 rounded-full flex items-center justify-center bg-gradient-to-br from-cyan-primary/[0.12] to-mint-secondary/[0.06] border border-cyan-primary/20 shadow-glow-cyan"
+                      initial={{ scale: 0, opacity: 0 }}
+                      animate={stepsInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
+                      transition={{ duration: 0.45, delay: 0.5 + i * 0.35, type: 'spring', stiffness: 220, damping: 18 }}
+                    >
                       <StepIcon size={24} className="text-cyan-primary" />
-                    </div>
+                    </motion.div>
                     {/* Number badge */}
-                    <span className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center font-display font-bold text-bg-base text-[11px] bg-gradient-cyan-mint shadow-glow-cyan">
+                    <motion.span
+                      className="absolute top-1 right-1 w-6 h-6 rounded-full flex items-center justify-center font-display font-bold text-bg-base text-[11px] bg-gradient-cyan-mint shadow-glow-cyan"
+                      initial={{ scale: 0 }}
+                      animate={stepsInView ? { scale: 1 } : { scale: 0 }}
+                      transition={{ duration: 0.35, delay: 0.75 + i * 0.35, type: 'spring', stiffness: 300 }}
+                    >
                       {i + 1}
-                    </span>
+                    </motion.span>
                   </div>
 
                   <h3 className="font-display text-[18px] font-semibold text-text-primary mb-3">{step.title}</h3>

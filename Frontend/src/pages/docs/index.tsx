@@ -109,7 +109,8 @@ export default function DocsPage() {
       </aside>
 
       {/* Main content */}
-      <main className="ml-60 flex-1 px-12 py-12 max-w-[900px]">
+      <main className="ml-60 flex-1 px-16 py-12">
+        <div className="max-w-4xl">
         <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
 
           {/* ── Welcome ── */}
@@ -880,6 +881,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
           </section>
 
         </motion.div>
+        </div>
       </main>
     </div>
   );
