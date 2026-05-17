@@ -10,6 +10,7 @@ import {
   BarChart2, Zap, Clock, Globe, Cpu, CheckCircle2, XCircle, ArrowLeft, ChevronRight
 } from 'lucide-react';
 import { config } from '../../config';
+import { SuccessIcon, UptimeIcon, FlaggedIcon, AlertIcon } from '../../components/AegisIcons';
 
 /* ─── Types ─── */
 interface ReputationData {
@@ -306,16 +307,20 @@ export default function AgentPage() {
             {/* ── Key Metrics ── */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
               {[
-                { label: 'Success Rate', value: `${successRate}%`, icon: TrendingUp, color: 'text-mint-secondary', bg: 'bg-mint-secondary/[0.06]' },
-                { label: 'Uptime Score', value: `${rep.uptimeScore}%`, icon: Activity, color: 'text-cyan-primary', bg: 'bg-cyan-primary/[0.06]' },
+                { label: 'Success Rate', value: `${successRate}%`, icon: TrendingUp, WireIcon: SuccessIcon, color: 'text-mint-secondary', bg: 'bg-mint-secondary/[0.06]' },
+                { label: 'Uptime Score', value: `${rep.uptimeScore}%`, icon: Activity, WireIcon: UptimeIcon, color: 'text-cyan-primary', bg: 'bg-cyan-primary/[0.06]' },
                 { label: 'Total Volume', value: formatVolume(rep.totalVolume), icon: BarChart2, color: 'text-text-primary', bg: 'bg-surface-2' },
                 { label: 'Executions', value: rep.totalExecutions.toLocaleString(), icon: Layers, color: 'text-text-primary', bg: 'bg-surface-2' },
-                { label: 'Avg Slippage', value: formatSlippage(avgSlippage), icon: Zap, color: successRate < 80 ? 'text-red-400' : 'text-text-secondary', bg: 'bg-surface-2' },
-                { label: 'Failed', value: rep.failedExecutions.toLocaleString(), icon: XCircle, color: rep.failedExecutions > 0 ? 'text-red-400' : 'text-text-muted', bg: rep.failedExecutions > 0 ? 'bg-red-500/[0.05]' : 'bg-surface-2' },
-              ].map(({ label, value, icon: Icon, color, bg }) => (
+                { label: 'Avg Slippage', value: formatSlippage(avgSlippage), icon: Zap, WireIcon: AlertIcon, color: successRate < 80 ? 'text-red-400' : 'text-text-secondary', bg: 'bg-surface-2' },
+                { label: 'Failed', value: rep.failedExecutions.toLocaleString(), icon: XCircle, WireIcon: FlaggedIcon, color: rep.failedExecutions > 0 ? 'text-red-400' : 'text-text-muted', bg: rep.failedExecutions > 0 ? 'bg-red-500/[0.05]' : 'bg-surface-2' },
+              ].map(({ label, value, icon: Icon, WireIcon, color, bg }) => (
                 <div key={label} className={`rounded-2xl p-4 ${bg} flex flex-col gap-1.5`}>
                   <div className="flex items-center gap-1.5">
-                    <Icon size={12} className="text-text-muted" />
+                    {WireIcon ? (
+                      <div className="w-3.5 h-3.5 text-text-muted flex-shrink-0"><WireIcon /></div>
+                    ) : (
+                      <Icon size={12} className="text-text-muted" />
+                    )}
                     <p className="text-text-muted text-[10px] uppercase tracking-wide">{label}</p>
                   </div>
                   <p className={`font-display font-bold text-lg leading-tight ${color}`}>{value}</p>

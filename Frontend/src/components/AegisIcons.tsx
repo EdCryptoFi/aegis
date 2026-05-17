@@ -354,3 +354,133 @@ export function EarnBadgeIcon({ className }: P) {
     </div>
   );
 }
+
+// ─── §07 · G·01 · Success ────────────────────────────────────────────────
+export function SuccessIcon({ className }: P) {
+  const { ref, a } = useAnim();
+  return (
+    <div ref={ref} className={className}>
+      <Base a={a}>
+        <motion.circle cx="32" cy="32" r="22" variants={pV} custom={0} />
+        <motion.circle cx="32" cy="32" r="15" strokeDasharray="1.4 1.6" variants={pV} custom={1} />
+        <motion.path d="M22 32 L29 39 L44 24" strokeWidth={1.6} variants={pV} custom={2} />
+        {[[32,10],[54,32],[32,54],[10,32]].map(([cx,cy],i) => (
+          <motion.circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={1.3} fill="currentColor" stroke="none" variants={dV} custom={i} />
+        ))}
+        <motion.circle cx="29" cy="39" r="1.4" fill="currentColor" stroke="none" variants={dV} custom={4} />
+        <motion.circle cx="44" cy="24" r="1.4" fill="currentColor" stroke="none" variants={dV} custom={5} />
+      </Base>
+    </div>
+  );
+}
+
+// ─── §07 · G·02 · Flagged ────────────────────────────────────────────────
+export function FlaggedIcon({ className }: P) {
+  const { ref, a } = useAnim();
+  return (
+    <div ref={ref} className={className}>
+      <Base a={a}>
+        <motion.line x1="16" y1="8" x2="16" y2="58" variants={pV} custom={0} />
+        <motion.path d="M16 12 L48 14 L42 24 L48 34 L16 34 Z" variants={pV} custom={1} />
+        <motion.line x1="10" y1="58" x2="22" y2="58" variants={pV} custom={2} />
+        {[[16,8],[48,14],[48,34],[16,34],[16,58],[10,58],[22,58]].map(([cx,cy],i) => (
+          <motion.circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={1.3} fill="currentColor" stroke="none" variants={dV} custom={i} />
+        ))}
+      </Base>
+    </div>
+  );
+}
+
+// ─── §07 · G·03 · Uptime (monitor + pulse) ───────────────────────────────
+export function UptimeIcon({ className }: P) {
+  const { ref, a } = useAnim();
+  return (
+    <div ref={ref} className={className}>
+      <Base a={a}>
+        <motion.path d="M6 10 L58 10 L58 44 L6 44 Z" variants={pV} custom={0} />
+        <motion.path d="M20 44 L16 54 M44 44 L48 54 M16 54 L48 54" variants={pV} custom={1} />
+        <motion.path d="M10 30 L18 30 L22 20 L27 40 L32 24 L37 34 L54 34" strokeWidth={1.4} variants={pV} custom={2} />
+        {[[6,10],[58,10],[58,44],[6,44],[16,54],[48,54]].map(([cx,cy],i) => (
+          <motion.circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={1.3} fill="currentColor" stroke="none" variants={dV} custom={i} />
+        ))}
+      </Base>
+    </div>
+  );
+}
+
+// ─── §07 · G·06 · Alert ──────────────────────────────────────────────────
+export function AlertIcon({ className }: P) {
+  const { ref, a } = useAnim();
+  return (
+    <div ref={ref} className={className}>
+      <Base a={a}>
+        <motion.path d="M32 8 L56 52 L8 52 Z" variants={pV} custom={0} />
+        <motion.line x1="32" y1="24" x2="32" y2="38" strokeWidth={1.4} variants={pV} custom={1} />
+        <motion.circle cx="32" cy="44" r="1.5" fill="currentColor" stroke="none" variants={dV} custom={0} />
+        {[[32,8],[56,52],[8,52]].map(([cx,cy],i) => (
+          <motion.circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={1.3} fill="currentColor" stroke="none" variants={dV} custom={i+1} />
+        ))}
+      </Base>
+    </div>
+  );
+}
+
+// ─── §08 · E·01 · Banner Register (shield + person + plus) ───────────────
+export function BannerRegisterIcon({ className }: P) {
+  const { ref, a } = useAnim();
+  return (
+    <div ref={ref} className={className}>
+      <Base a={a}>
+        <motion.path d="M32 6 L50 14 L50 32 C50 44 42 52 32 56 C22 52 14 44 14 32 L14 14 Z" variants={pV} custom={0} />
+        <motion.circle cx="27" cy="24" r="5" variants={pV} custom={1} />
+        <motion.path d="M18 40 C18 34 22 30 27 30 C29 30 31 30.6 33 31.5" variants={pV} custom={2} />
+        <motion.line x1="43" y1="20" x2="43" y2="32" strokeWidth={1.4} variants={pV} custom={3} />
+        <motion.line x1="37" y1="26" x2="49" y2="26" strokeWidth={1.4} variants={pV} custom={4} />
+        <motion.circle cx="43" cy="26" r="7" strokeDasharray="1 1.4" variants={pV} custom={5} />
+        {[[32,6],[50,14],[50,32],[14,14],[14,32]].map(([cx,cy],i) => (
+          <motion.circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={1.3} fill="currentColor" stroke="none" variants={dV} custom={i} />
+        ))}
+      </Base>
+    </div>
+  );
+}
+
+// ─── §08 · E·02 · Banner Record (iso panel + pulse) ──────────────────────
+export function BannerRecordIcon({ className }: P) {
+  const { ref, a } = useAnim();
+  return (
+    <div ref={ref} className={className}>
+      <Base a={a}>
+        <motion.path d="M6 14 L52 14 L52 50 L6 50 Z" variants={pV} custom={0} />
+        <motion.path d="M52 14 L58 8 L58 44 L52 50" variants={pV} custom={1} />
+        <motion.path d="M6 14 L12 8 L58 8" variants={pV} custom={2} />
+        <motion.line x1="6" y1="23" x2="52" y2="23" strokeDasharray="1.4 1.6" variants={pV} custom={3} />
+        <motion.line x1="6" y1="32" x2="52" y2="32" strokeDasharray="1.4 1.6" variants={pV} custom={3} />
+        <motion.line x1="20" y1="14" x2="20" y2="50" strokeDasharray="1.4 1.6" variants={pV} custom={4} />
+        <motion.line x1="36" y1="14" x2="36" y2="50" strokeDasharray="1.4 1.6" variants={pV} custom={4} />
+        <motion.path d="M9 42 L16 42 L20 32 L26 50 L31 34 L36 42 L50 42" strokeWidth={1.5} variants={pV} custom={5} />
+        {[[6,14],[52,14],[52,50],[6,50],[58,8],[58,44]].map(([cx,cy],i) => (
+          <motion.circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={1.3} fill="currentColor" stroke="none" variants={dV} custom={i} />
+        ))}
+      </Base>
+    </div>
+  );
+}
+
+// ─── §08 · E·03 · Banner Reward (medal + ribbons + star) ─────────────────
+export function BannerRewardIcon({ className }: P) {
+  const { ref, a } = useAnim();
+  return (
+    <div ref={ref} className={className}>
+      <Base a={a}>
+        <motion.path d="M16 6 L22 28 L28 24 L32 34 L36 24 L42 28 L48 6" variants={pV} custom={0} />
+        <motion.circle cx="32" cy="44" r="14" variants={pV} custom={1} />
+        <motion.circle cx="32" cy="44" r="9" strokeDasharray="1 1.4" variants={pV} custom={2} />
+        <motion.path d="M32 37 L33.8 42 L39 42 L35 45 L36.6 50 L32 47 L27.4 50 L29 45 L25 42 L30.2 42 Z" variants={pV} custom={3} />
+        {[[16,6],[48,6],[32,58],[18,44],[46,44]].map(([cx,cy],i) => (
+          <motion.circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={1.3} fill="currentColor" stroke="none" variants={dV} custom={i} />
+        ))}
+      </Base>
+    </div>
+  );
+}

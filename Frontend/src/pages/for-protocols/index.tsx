@@ -7,6 +7,7 @@ import {
   Shield, ArrowRight, XCircle, CheckCircle2, Wallet, ShoppingBag,
   Zap, BarChart2, Code2, Users, Award, TrendingUp, Lock, Cpu,
 } from 'lucide-react';
+import { BannerRegisterIcon, BannerRecordIcon, BannerRewardIcon } from '../../components/AegisIcons';
 
 const problems = [
   {
@@ -88,6 +89,8 @@ export default function ForProtocolsPage() {
   const problemInView = useInView(problemRef, { once: true, margin: '-80px' });
   const solutionRef = useRef<HTMLDivElement>(null);
   const solutionInView = useInView(solutionRef, { once: true, margin: '-80px' });
+  const lifecycleRef = useRef<HTMLDivElement>(null);
+  const lifecycleInView = useInView(lifecycleRef, { once: true, margin: '-80px' });
 
   return (
     <main className="min-h-screen bg-bg-base">
@@ -284,6 +287,128 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
               Full SDK Reference <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════ LIFECYCLE BANNER ═══════ */}
+      <section ref={lifecycleRef} className="relative py-24 px-6">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] rounded-full bg-cyan-primary/[0.03] blur-[120px]" />
+        </div>
+        <div className="max-w-5xl mx-auto relative">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={lifecycleInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.5 }}
+            className="text-center mb-16"
+          >
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-4">
+              How It Works
+            </span>
+            <h2 className="font-display text-[32px] md:text-[40px] font-bold text-text-primary mb-3">
+              Register. Record. Reward.
+            </h2>
+            <p className="text-text-secondary text-base max-w-xl mx-auto">
+              The full lifecycle of agent trust, handled entirely on-chain.
+            </p>
+          </motion.div>
+
+          <div className="flex flex-col md:flex-row items-center justify-center gap-0">
+
+            {/* Station 01 — Register */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={lifecycleInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="flex flex-col items-center text-center w-52"
+            >
+              <div className="relative w-36 h-36 flex items-center justify-center mb-5">
+                <div className="absolute inset-0 rounded-full border border-cyan-primary/25" />
+                <div className="absolute inset-4 rounded-full border border-dashed border-cyan-primary/15" />
+                <div className="w-[72px] h-[72px] text-cyan-primary">
+                  <BannerRegisterIcon />
+                </div>
+              </div>
+              <span className="font-mono text-[10px] text-cyan-primary/50 uppercase tracking-widest mb-1">01</span>
+              <h3 className="font-display font-bold text-text-primary text-base mb-2">Register</h3>
+              <p className="text-text-muted text-xs leading-relaxed max-w-[160px]">
+                Agent creates an on-chain reputation object with Aegis.
+              </p>
+            </motion.div>
+
+            {/* Arrow 1 */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={lifecycleInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="hidden md:block flex-shrink-0 w-20 mx-1 text-cyan-primary/35 mb-10"
+            >
+              <svg viewBox="0 0 76 24" fill="none" stroke="currentColor" strokeWidth={1.2} overflow="visible">
+                <circle cx="3" cy="12" r="1.6" fill="currentColor" stroke="none" />
+                <line x1="6" y1="12" x2="66" y2="12" strokeDasharray="2 3" />
+                <path d="M62 6 L72 12 L62 18" />
+                <circle cx="72" cy="12" r="1.6" fill="currentColor" stroke="none" />
+              </svg>
+            </motion.div>
+
+            {/* Station 02 — Record */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={lifecycleInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.25 }}
+              className="flex flex-col items-center text-center w-52"
+            >
+              <div className="relative w-36 h-36 flex items-center justify-center mb-5">
+                <div className="absolute inset-0 rounded-full border border-cyan-primary/25" />
+                <div className="absolute inset-4 rounded-full border border-dashed border-cyan-primary/15" />
+                <div className="w-[72px] h-[72px] text-cyan-primary">
+                  <BannerRecordIcon />
+                </div>
+              </div>
+              <span className="font-mono text-[10px] text-cyan-primary/50 uppercase tracking-widest mb-1">02</span>
+              <h3 className="font-display font-bold text-text-primary text-base mb-2">Record</h3>
+              <p className="text-text-muted text-xs leading-relaxed max-w-[160px]">
+                Every execution, success, and failure is written immutably on Sui.
+              </p>
+            </motion.div>
+
+            {/* Arrow 2 */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={lifecycleInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.45 }}
+              className="hidden md:block flex-shrink-0 w-20 mx-1 text-cyan-primary/35 mb-10"
+            >
+              <svg viewBox="0 0 76 24" fill="none" stroke="currentColor" strokeWidth={1.2} overflow="visible">
+                <circle cx="3" cy="12" r="1.6" fill="currentColor" stroke="none" />
+                <line x1="6" y1="12" x2="66" y2="12" strokeDasharray="2 3" />
+                <path d="M62 6 L72 12 L62 18" />
+                <circle cx="72" cy="12" r="1.6" fill="currentColor" stroke="none" />
+              </svg>
+            </motion.div>
+
+            {/* Station 03 — Reward */}
+            <motion.div
+              initial={{ opacity: 0, y: 24 }}
+              animate={lifecycleInView ? { opacity: 1, y: 0 } : {}}
+              transition={{ duration: 0.5, delay: 0.4 }}
+              className="flex flex-col items-center text-center w-52"
+            >
+              <div className="relative w-36 h-36 flex items-center justify-center mb-5">
+                <div className="absolute inset-0 rounded-full border border-cyan-primary/25" />
+                <div className="absolute inset-4 rounded-full border border-dashed border-cyan-primary/15" />
+                <div className="w-[72px] h-[72px] text-cyan-primary">
+                  <BannerRewardIcon />
+                </div>
+              </div>
+              <span className="font-mono text-[10px] text-cyan-primary/50 uppercase tracking-widest mb-1">03</span>
+              <h3 className="font-display font-bold text-text-primary text-base mb-2">Reward</h3>
+              <p className="text-text-muted text-xs leading-relaxed max-w-[160px]">
+                High performers earn Bronze, Silver, or Gold badges — portable across all protocols.
+              </p>
+            </motion.div>
+
+          </div>
         </div>
       </section>
 
