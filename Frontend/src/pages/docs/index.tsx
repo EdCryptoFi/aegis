@@ -20,6 +20,7 @@ const SIDEBAR = [
     { name: 'Testing & Local Dev', href: '#testing', anchor: true },
   ]},
   { title: 'Protocol Integrators', items: [
+    { name: 'For Protocols', href: '/for-protocols', anchor: false },
     { name: 'Integration Guides', href: '#integrations', anchor: true },
     { name: 'Security Best Practices', href: '#security', anchor: true },
     { name: 'Troubleshooting', href: '#troubleshooting', anchor: true },
@@ -135,8 +136,9 @@ export default function DocsPage() {
               </div>
             </a>
 
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-4 gap-4">
               {[
+                { icon: Globe, label: 'For Protocols', desc: 'Trust infra for protocols', href: '/for-protocols', color: 'text-cyan-primary', bg: 'bg-cyan-primary/[0.06]' },
                 { icon: Zap, label: 'Quick Start', desc: 'Get running in 5 minutes', href: '/developer', color: 'text-cyan-primary', bg: 'bg-cyan-primary/[0.06]' },
                 { icon: HelpCircle, label: 'FAQ', desc: 'Common questions answered', href: '/docs/faq', color: 'text-mint-secondary', bg: 'bg-mint-secondary/[0.06]' },
                 { icon: FileText, label: 'Terms & Privacy', desc: 'Legal information', href: '/docs/terms', color: 'text-text-muted', bg: 'bg-surface-2' },

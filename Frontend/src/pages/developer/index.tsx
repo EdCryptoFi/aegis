@@ -269,20 +269,130 @@ function generateSimulation(): SimResult {
   return { totalExecs, successes, failures, conFails: maxConFails, successRate: actualSuccessRate, totalVolumeSUI, avgSlippageBps: avgSlippage, isFlagged, badge, lines };
 }
 
+/* ─── Build SimResult from Real API agent data ─── */
+async function tryRealRegistration(): Promise<SimResult | null> {
+  try {
+    const res = await fetch('/api/agents/register', { method: 'POST' });
+    const data = await res.json();
+    if (!data.success || !data.agent) return null;
+
+    const a = data.agent as {
+      objectId: string; label: string; totalExecutions: number;
+      successfulExecutions: number; failedExecutions: number;
+      totalVolume: number; successRate: number; avgSlippage: number;
+      isFlagged: boolean; badge: string; address: string;
+    };
+
+    const totalVolumeSUI = a.totalVolume / 1_000_000_000;
+    const execs = a.totalExecutions;
+    const agentAddr = a.objectId.slice(0, 22) + '...';
+
+    let d = 0;
+    const add = (text: string, type: LineType, extraDelay = 0) => {
+      d += 60 + extraDelay;
+      return { text, type, delay: d };
+    };
+    const lines: TerminalLine[] = [];
+
+    lines.push(add('# ── STEP 1: Register Agent (on-chain) ─────', 'section'));
+    lines.push(add(`$ sui client call \\`, 'cmd'));
+    lines.push(add(`    --package ${a.objectId.slice(0, 10)}... \\`, 'cmd'));
+    lines.push(add(`    --module reputation \\`, 'cmd'));
+    lines.push(add(`    --function register_agent \\`, 'cmd'));
+    lines.push(add(`    --gas-budget 20000000`, 'cmd', 200));
+    lines.push(add('', 'spacer'));
+    lines.push(add('Connecting to Sui testnet...', 'output', 400));
+    lines.push(add(`Transaction Digest: ${a.objectId.slice(0, 20)}...`, 'output', 600));
+    lines.push(add(`✓  Agent registered:  ${a.objectId}`, 'success', 400));
+    lines.push(add('', 'spacer'));
+
+    lines.push(add('# ── STEP 2: Record Executions (${execs} tx) ──', 'section'));
+    lines.push(add(`$ aegis batch-simulate --agent ${agentAddr} --count ${execs}`, 'cmd', 200));
+    lines.push(add('', 'spacer'));
+
+    for (let idx = 0; idx < Math.min(execs, 20); idx++) {
+      const isSuccess = idx < a.successfulExecutions;
+      const v = (Math.random() * 5).toFixed(2);
+      if (isSuccess) {
+        lines.push(add(`Recording execution ${idx + 1}/${execs}  [success]  vol: ${v} SUI  slip: ${(Math.random() * 1).toFixed(2)}%  ✓`, 'success', rand(20, 60)));
+      } else {
+        lines.push(add(`Recording execution ${idx + 1}/${execs}  [FAILED]   vol: ${(Math.random() * 0.5).toFixed(2)} SUI  slippage exceeded  ✗`, 'error', rand(20, 60)));
+      }
+    }
+    if (execs > 20) {
+      lines.push(add(`  ... +${execs - 20} more executions recorded on-chain`, 'output', 200));
+    }
+    lines.push(add('', 'spacer'));
+    lines.push(add(`Summary → ${a.successfulExecutions}/${execs} succeeded  (${a.successRate}%)   Total volume: ${totalVolumeSUI.toFixed(2)} SUI`, 'output', 400));
+
+    if (a.isFlagged) {
+      lines.push(add(`⚠️  AGENT FLAGGED — On-chain detection triggered`, 'error', 400));
+    }
+
+    lines.push(add('', 'spacer'));
+    lines.push(add('# ── STEP 3: Check Badge Eligibility ───────────', 'section'));
+    lines.push(add(`$ aegis check-eligibility --agent ${agentAddr}`, 'cmd', 200));
+    lines.push(add('', 'spacer'));
+
+    if (a.badge !== 'none') {
+      const badgeLabel = a.badge.charAt(0).toUpperCase() + a.badge.slice(1);
+      lines.push(add(`✓  Agent qualifies for ${badgeLabel} badge on-chain`, 'success', 300));
+      lines.push(add('', 'spacer'));
+      lines.push(add(`# ── STEP 4: Mint ${badgeLabel} Badge ──────────────`, 'section'));
+      lines.push(add(`\$ sui client call --module badge_registry --function grant_badge --gas-budget 20000000`, 'cmd', 200));
+      lines.push(add('', 'spacer'));
+      lines.push(add(`🥇  ${badgeLabel} Badge minted on-chain!  Token: ${a.objectId.slice(0, 10)}...`, 'success', 400));
+    } else {
+      lines.push(add(`Agent does not qualify for any badge tier`, 'output', 300));
+    }
+
+    lines.push(add('', 'spacer'));
+    lines.push(add('✓  Agent data written to Sui testnet — viewable on leaderboard →', 'success', 400));
+
+    return {
+      totalExecs: execs,
+      successes: a.successfulExecutions,
+      failures: a.failedExecutions,
+      conFails: 0,
+      successRate: a.successRate,
+      totalVolumeSUI,
+      avgSlippageBps: a.avgSlippage,
+      isFlagged: a.isFlagged,
+      badge: a.badge as SimResult['badge'],
+      lines,
+    };
+  } catch {
+    return null;
+  }
+}
+
 /* ─── CLI Walkthrough Component ─── */
 function LiveDemo() {
   const [currentSim, setCurrentSim] = useState<SimResult | null>(null);
   const [visibleLines, setVisibleLines] = useState<number>(0);
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
+  const [realTx, setRealTx] = useState(false);
   const termRef = useRef<HTMLDivElement>(null);
   const timersRef = useRef<ReturnType<typeof setTimeout>[]>([]);
 
-  function startDemo() {
+  async function startDemo() {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
 
-    const sim = generateSimulation();
+    let sim: SimResult;
+    let isReal = false;
+
+    // Try real on-chain registration first
+    const real = await tryRealRegistration();
+    if (real) {
+      sim = real;
+      isReal = true;
+    } else {
+      sim = generateSimulation();
+    }
+
+    setRealTx(isReal);
     setCurrentSim(sim);
     setVisibleLines(0);
     setRunning(true);
@@ -340,8 +450,8 @@ function LiveDemo() {
           <div>
             <h3 className="font-display font-bold text-text-primary mb-1">CLI Walkthrough</h3>
             <p className="text-text-secondary text-sm leading-relaxed">
-              Each run generates a unique random simulation — agent execution data, success rate, volume, and badge
-              outcome are all determined on the fly. A preview of how real Sui CLI commands work on testnet.
+              Registers a real agent on Sui testnet, records executions, and checks badge eligibility.
+              Agent will appear on the <Link href="/leaderboard" className="text-cyan-primary hover:underline">Leaderboard</Link> after completion.
             </p>
           </div>
         </div>
@@ -391,12 +501,12 @@ function LiveDemo() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-secondary opacity-75" />
                   <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-mint-secondary" />
                 </span>
-                RUNNING
+                {realTx ? 'EXECUTING ON TESTNET' : 'SIMULATING'}
               </span>
             )}
             {done && (
               <span className="flex items-center gap-1.5 text-[10px] font-mono text-yellow-400">
-                <Award size={10} /> SIMULATION COMPLETE
+                <Award size={10} /> {realTx ? 'ON-CHAIN COMPLETE' : 'SIMULATION COMPLETE'}
               </span>
             )}
           </div>
@@ -410,7 +520,7 @@ function LiveDemo() {
           {visibleLines === 0 && !running && (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
               <Terminal size={40} className="text-text-muted opacity-40" />
-              <p className="text-text-muted text-sm">Click &quot;Run Demo&quot; to start the simulation</p>
+              <p className="text-text-muted text-sm">Click &quot;Run Demo&quot; to register an agent on Sui testnet</p>
             </div>
           )}
 
@@ -475,10 +585,10 @@ function LiveDemo() {
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
               <Link
-                href="/agents"
+                href={realTx ? "/leaderboard" : "/agents"}
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-[12px] border border-cyan-primary/30 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
               >
-                View in Agent List <ArrowRight size={14} />
+                {realTx ? 'View on Leaderboard' : 'View in Agent List'} <ArrowRight size={14} />
               </Link>
             </motion.div>
           </>

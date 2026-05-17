@@ -63,210 +63,83 @@ export default function ForProtocolsPage() {
   return (
     <main className="min-h-screen bg-bg-base">
 
-      {/* ═══════ HOW AEGIS WORKS BANNER ═══════ */}
-      <section className="relative border-b border-cyan-primary/15 bg-[#070c10] overflow-hidden">
-        {/* Ambient glow */}
+      {/* ═══════ HOW AEGIS WORKS ═══════ */}
+      <section className="relative overflow-hidden py-10">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-cyan-primary/[0.05] blur-[120px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-cyan-primary/[0.04] blur-[120px]" />
         </div>
-
-        {/* Top label row */}
-        <div className="relative flex items-center justify-between px-8 py-3 border-b border-cyan-primary/[0.12]">
-          <span className="font-mono text-[11px] text-cyan-primary/70 uppercase tracking-[0.25em]">HOW · AEGIS · WORKS</span>
-          <span className="font-mono text-[11px] text-cyan-primary/40 uppercase tracking-[0.25em]">3 STATIONS · DROP-IN FLOW</span>
-        </div>
-
-        {/* Stations */}
-        <div className="relative flex flex-col md:flex-row items-center justify-center py-16 px-6 gap-0">
+        <div className="relative flex flex-col md:flex-row items-center justify-center px-6 gap-0">
           {stations.map(({ num, label, desc, Icon }, i) => (
             <div key={num} className="flex items-center">
-              {/* Station */}
               <motion.div
-                initial={{ opacity: 0, y: 28 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.55, delay: i * 0.15 }}
-                className="flex flex-col items-center text-center w-64"
+                initial={{ opacity: 0, scale: 0.85 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.15 }}
+                className="flex flex-col items-center"
               >
-                {/* Station label */}
-                <span className="font-mono text-[11px] text-cyan-primary/55 uppercase tracking-[0.22em] mb-8">
-                  STATION · {num}
-                </span>
-
-                {/* Circle container with draw rings */}
-                <motion.div
-                  className="relative w-48 h-48 flex items-center justify-center mb-10"
-                  initial={{ opacity: 0, scale: 0.85 }}
-                  whileInView={{ opacity: 1, scale: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: i * 0.15 + 0.1 }}
-                >
-                  {/* SVG animated rings */}
-                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 192 192" fill="none" overflow="visible">
+                <div className="relative w-28 h-28 flex items-center justify-center">
+                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 120 120" fill="none" overflow="visible">
                     <motion.circle
-                      cx="96" cy="96" r="94"
+                      cx="60" cy="60" r="58"
                       stroke="rgba(0,212,184,0.30)"
-                      strokeWidth="1"
+                      strokeWidth="1.5"
                       initial={{ pathLength: 0, opacity: 0 }}
                       whileInView={{ pathLength: 1, opacity: 1 }}
                       viewport={{ once: true }}
                       transition={{ duration: 1.0, delay: i * 0.15 + 0.2, ease: 'easeOut' }}
                     />
-                    <motion.circle
-                      cx="96" cy="96" r="76"
-                      stroke="rgba(0,212,184,0.18)"
-                      strokeWidth="1"
-                      strokeDasharray="3 4"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      whileInView={{ pathLength: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.2, delay: i * 0.15 + 0.35, ease: 'easeOut' }}
-                    />
-                    <motion.circle
-                      cx="96" cy="96" r="58"
-                      stroke="rgba(0,212,184,0.10)"
-                      strokeWidth="1"
-                      strokeDasharray="1.5 3"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      whileInView={{ pathLength: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.0, delay: i * 0.15 + 0.5, ease: 'easeOut' }}
-                    />
                   </svg>
-                  {/* Icon */}
-                  <div className="w-[100px] h-[100px] text-cyan-primary relative z-10">
+                  <div className="w-14 h-14 text-cyan-primary relative z-10">
                     <Icon />
                   </div>
-                </motion.div>
-
-                {/* Name + description */}
-                <motion.div
-                  initial={{ opacity: 0, y: 12 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.15 + 0.5 }}
-                >
-                  <h3 className="font-display text-[28px] font-bold text-text-primary mb-3">{label}</h3>
-                  <p className="text-text-muted text-sm leading-relaxed max-w-[200px] mx-auto">{desc}</p>
-                </motion.div>
+                </div>
               </motion.div>
 
-              {/* Arrow between stations */}
               {i < 2 && (
                 <motion.div
-                  className="hidden md:flex flex-shrink-0 w-24 text-cyan-primary/30 mx-2 mb-[88px]"
+                  className="hidden md:flex flex-shrink-0 w-10 text-cyan-primary/20 mx-1"
                   initial={{ opacity: 0 }}
                   whileInView={{ opacity: 1 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 + 0.7 }}
+                  transition={{ delay: i * 0.15 + 0.5 }}
                 >
-                  <svg viewBox="0 0 76 24" fill="none" stroke="currentColor" strokeWidth={1.1} className="w-full" overflow="visible">
-                    <motion.circle cx="3" cy="12" r="1.6" fill="currentColor" stroke="none"
-                      initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-                      transition={{ delay: i * 0.15 + 0.75 }} />
-                    <motion.line x1="6" y1="12" x2="66" y2="12" strokeDasharray="2 3"
+                  <svg viewBox="0 0 60 16" fill="none" stroke="currentColor" strokeWidth={0.8} className="w-full">
+                    <motion.line x1="4" y1="8" x2="52" y2="8" strokeDasharray="2 3"
                       initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-                      transition={{ duration: 0.7, delay: i * 0.15 + 0.8, ease: 'easeOut' }} />
-                    <motion.path d="M62 6 L72 12 L62 18"
+                      transition={{ duration: 0.5, delay: i * 0.15 + 0.6, ease: 'easeOut' }} />
+                    <motion.path d="M48 4 L56 8 L48 12"
                       initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-                      transition={{ duration: 0.25, delay: i * 0.15 + 1.4, ease: 'easeOut' }} />
-                    <motion.circle cx="72" cy="12" r="1.6" fill="currentColor" stroke="none"
-                      initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
-                      transition={{ delay: i * 0.15 + 1.6 }} />
+                      transition={{ duration: 0.2, delay: i * 0.15 + 0.9, ease: 'easeOut' }} />
                   </svg>
                 </motion.div>
               )}
             </div>
           ))}
         </div>
-
-        {/* Bottom label row */}
-        <div className="relative flex items-center justify-between px-8 py-2.5 border-t border-cyan-primary/[0.08]">
-          <span className="font-mono text-[9px] text-cyan-primary/25 uppercase tracking-[0.2em]">SPEC · BANNER · /FOR-PROTOCOLS · V1.0</span>
-          <span className="font-mono text-[9px] text-cyan-primary/25 uppercase tracking-[0.2em]">ICONS COMPOSE WITH §05 TIER BADGES DOWNSTREAM</span>
-        </div>
-      </section>
-
-      {/* ═══════ HERO ═══════ */}
-      <section className="relative min-h-[70vh] flex items-center justify-center px-6 overflow-hidden">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-cyan-primary/[0.03] blur-[120px]" />
-          <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-cyan-primary/[0.04] blur-[100px]" />
-        </div>
-        <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-base to-transparent z-10" />
-
-        <motion.div
-          className="relative z-20 text-center max-w-4xl mx-auto"
-          initial="hidden"
-          animate="visible"
-          variants={fadeUp}
-        >
-          <motion.h1
-            variants={fadeUp}
-            className="font-display text-[36px] md:text-[52px] font-bold text-text-primary mb-6 leading-tight"
-          >
-            Stop building reputation systems.{' '}
-            <span className="gradient-text-cyan">Use ours.</span>
-          </motion.h1>
-
-          <motion.p
-            variants={fadeUp}
-            className="text-text-secondary text-lg max-w-2xl mx-auto mb-4 leading-relaxed"
-          >
-            Every protocol that works with AI agents needs a way to verify who's trustworthy.
-            Most build it themselves — and get it wrong.
-          </motion.p>
-
-          <motion.p
-            variants={fadeUp}
-            className="text-text-muted text-base max-w-2xl mx-auto mb-10 leading-relaxed"
-          >
-            Aegis is an on-chain reputation oracle. One API call gives you verified agent trust —
-            no infrastructure, no custom scoring, no blind faith.
-          </motion.p>
-
-          <motion.div variants={fadeUp} className="flex flex-wrap items-center justify-center gap-4">
-            <Link
-              href="/developer"
-              className="group inline-flex items-center gap-2 px-8 py-4 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all"
-            >
-              Integrate in 5 Minutes
-              <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-            </Link>
-            <Link
-              href="/docs"
-              className="inline-flex items-center gap-2 px-8 py-4 rounded-[12px] border border-[rgba(255,255,255,0.12)] bg-surface-1/20 backdrop-blur-sm text-text-primary font-display font-bold text-sm hover:bg-surface-1/40 transition-all"
-            >
-              Read the Docs
-            </Link>
-          </motion.div>
-        </motion.div>
       </section>
 
       {/* ═══════ SOLUTION ═══════ */}
-      <section ref={solutionRef} className="relative py-24 px-6">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] rounded-full bg-cyan-primary/[0.03] blur-[150px]" />
-        </div>
+      <section ref={solutionRef} className="relative py-10 px-6">
         <div className="max-w-5xl mx-auto relative">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={solutionInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5 }}
-            className="text-center mb-14"
+            className="text-center mb-8"
           >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-mint-secondary/10 border border-mint-secondary/[0.15] text-mint-secondary text-label-xs font-mono uppercase tracking-wider mb-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-mint-secondary/10 border border-mint-secondary/[0.15] text-mint-secondary text-label-xs font-mono uppercase tracking-wider mb-3">
               The Solution
             </span>
-            <h2 className="font-display text-[32px] md:text-[40px] font-bold text-text-primary mb-3">
+            <h2 className="font-display text-[28px] md:text-[34px] font-bold text-text-primary mb-2">
               Aegis: Trust Infrastructure for AI Agents
             </h2>
-            <p className="text-text-secondary text-base max-w-xl mx-auto">
+            <p className="text-text-secondary text-sm max-w-xl mx-auto">
               We did the hard work so you don&apos;t have to.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
             {solutions.map((item, i) => {
               const { WireIcon } = item;
               return (
@@ -275,13 +148,13 @@ export default function ForProtocolsPage() {
                   initial={{ opacity: 0, y: 16 }}
                   animate={solutionInView ? { opacity: 1, y: 0 } : {}}
                   transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className={`rounded-2xl p-6 border ${item.border} ${item.bg} hover:-translate-y-1 transition-all duration-300`}
+                  className={`rounded-2xl p-5 border ${item.border} ${item.bg} hover:-translate-y-1 transition-all duration-300`}
                 >
-                  <div className={`w-12 h-12 mb-5 ${item.color}`}>
+                  <div className={`w-10 h-10 mb-3 ${item.color}`}>
                     <WireIcon />
                   </div>
-                  <h3 className="font-display font-bold text-text-primary text-base mb-3">{item.title}</h3>
-                  <p className="text-text-secondary text-sm leading-relaxed">{item.desc}</p>
+                  <h3 className="font-display font-bold text-text-primary text-sm mb-2">{item.title}</h3>
+                  <p className="text-text-secondary text-xs leading-relaxed">{item.desc}</p>
                 </motion.div>
               );
             })}
@@ -292,25 +165,19 @@ export default function ForProtocolsPage() {
             initial={{ opacity: 0, y: 12 }}
             animate={solutionInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.4 }}
-            className="max-w-2xl mx-auto"
+            className="max-w-xl mx-auto"
           >
-            <div className="rounded-2xl bg-bg-base border border-cyan-primary/20 overflow-hidden">
-              <div className="flex items-center gap-2 px-5 py-3 border-b border-cyan-primary/10 bg-cyan-primary/[0.04]">
-                <Code2 size={14} className="text-cyan-primary" />
-                <span className="font-mono text-xs text-cyan-primary">One API call. All the trust you need.</span>
+            <div className="rounded-xl bg-bg-base border border-cyan-primary/20 overflow-hidden">
+              <div className="flex items-center gap-2 px-4 py-2.5 border-b border-cyan-primary/10 bg-cyan-primary/[0.04]">
+                <Code2 size={12} className="text-cyan-primary" />
+                <span className="font-mono text-[10px] text-cyan-primary">One API call. All the trust you need.</span>
               </div>
-              <pre className="p-5 font-mono text-sm leading-relaxed overflow-x-auto">{`const aegis = new AegisClient({ network: 'testnet' });
-
-// This is all it takes:
-const rep = await aegis.getReputation(agentAddress);
-
-// rep.badge        → 'gold'   // Verifiable on-chain
-// rep.successRate  → 96.8     // Real execution data
-// rep.isFlagged    → false    // Safety check
-// rep.totalExecs   → 847      // Track record
+              <pre className="p-4 font-mono text-xs leading-relaxed overflow-x-auto">{`const rep = await aegis.getReputation(agentAddress);
+// rep.badge → 'gold'  |  rep.successRate → 96.8
+// rep.isFlagged → false  |  rep.totalExecs → 847
 
 if (rep.badge === 'gold' && !rep.isFlagged) {
-  // Now you know this agent is trustworthy
+  // This agent is trustworthy
 }`}</pre>
             </div>
           </motion.div>
@@ -319,40 +186,40 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
             initial={{ opacity: 0, y: 12 }}
             animate={solutionInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.5, delay: 0.5 }}
-            className="text-center mt-8"
+            className="text-center mt-6"
           >
             <Link
               href="/developer"
-              className="inline-flex items-center gap-2 text-cyan-primary hover:text-mint-secondary transition-colors text-sm font-medium group"
+              className="inline-flex items-center gap-1.5 text-cyan-primary hover:text-mint-secondary transition-colors text-xs font-medium group"
             >
-              Full SDK Reference <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+              Full SDK Reference <ArrowRight size={12} className="group-hover:translate-x-1 transition-transform" />
             </Link>
           </motion.div>
         </div>
       </section>
 
       {/* ═══════ USE CASES ═══════ */}
-      <section className="relative py-20 px-6">
+      <section className="relative py-10 px-6">
         <div className="max-w-5xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="text-center mb-12"
+            className="text-center mb-8"
           >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-purple-400/10 border border-purple-400/[0.15] text-purple-400 text-label-xs font-mono uppercase tracking-wider mb-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-purple-400/10 border border-purple-400/[0.15] text-purple-400 text-label-xs font-mono uppercase tracking-wider mb-3">
               Use Cases
             </span>
-            <h2 className="font-display text-[32px] md:text-[36px] font-bold text-text-primary mb-3">
+            <h2 className="font-display text-[28px] md:text-[32px] font-bold text-text-primary mb-2">
               One Integration, Every Use Case
             </h2>
-            <p className="text-text-secondary text-base max-w-xl mx-auto">
+            <p className="text-text-secondary text-sm max-w-xl mx-auto">
               Add Aegis once. Use agent trust data everywhere in your app.
             </p>
           </motion.div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {useCases.map(({ Icon, label, desc, color }, i) => (
               <motion.div
                 key={label}
@@ -360,13 +227,13 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.4, delay: i * 0.1 }}
-                className="rounded-2xl p-6 glass-card-matte hover:bg-surface-2/60 hover:-translate-y-1 transition-all duration-300 text-center"
+                className="rounded-2xl p-5 glass-card-matte hover:bg-surface-2/60 hover:-translate-y-1 transition-all duration-300 text-center"
               >
-                <div className={`w-12 h-12 mb-4 mx-auto ${color}`}>
+                <div className={`w-10 h-10 mb-3 mx-auto ${color}`}>
                   <Icon />
                 </div>
-                <h3 className={`font-display font-bold text-sm mb-2 ${color}`}>{label}</h3>
-                <p className="text-text-muted text-xs leading-relaxed">{desc}</p>
+                <h3 className={`font-display font-bold text-xs mb-1.5 ${color}`}>{label}</h3>
+                <p className="text-text-muted text-[11px] leading-relaxed">{desc}</p>
               </motion.div>
             ))}
           </div>
@@ -374,22 +241,22 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
       </section>
 
       {/* ═══════ WHY AEGIS TABLE ═══════ */}
-      <section className="relative py-20 px-6">
+      <section className="relative py-10 px-6">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="text-center mb-12"
+            className="text-center mb-8"
           >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-yellow-400/10 border border-yellow-400/[0.15] text-yellow-400 text-label-xs font-mono uppercase tracking-wider mb-4">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-yellow-400/10 border border-yellow-400/[0.15] text-yellow-400 text-label-xs font-mono uppercase tracking-wider mb-3">
               Why Aegis
             </span>
-            <h2 className="font-display text-[32px] md:text-[36px] font-bold text-text-primary mb-3">
+            <h2 className="font-display text-[28px] md:text-[32px] font-bold text-text-primary mb-2">
               Why Protocols Choose Aegis
             </h2>
-            <p className="text-text-secondary text-base max-w-xl mx-auto">
+            <p className="text-text-secondary text-sm max-w-xl mx-auto">
               Over building their own trust system.
             </p>
           </motion.div>
@@ -434,14 +301,14 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
       </section>
 
       {/* ═══════ FINAL CTA ═══════ */}
-      <section className="relative py-20 px-6">
+      <section className="relative py-10 px-6">
         <div className="max-w-3xl mx-auto">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeUp}
-            className="rounded-2xl bg-gradient-to-r from-cyan-primary/[0.10] to-mint-secondary/[0.06] border border-cyan-primary/25 p-10 md:p-14 text-center relative overflow-hidden"
+            className="rounded-2xl bg-gradient-to-r from-cyan-primary/[0.10] to-mint-secondary/[0.06] border border-cyan-primary/25 p-8 md:p-10 text-center relative overflow-hidden"
           >
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-px bg-gradient-to-r from-transparent via-cyan-primary/40 to-transparent" />
             <div className="relative z-10 flex flex-wrap items-center justify-center gap-4">
@@ -459,7 +326,7 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                 See Documentation
               </Link>
             </div>
-            <p className="text-text-muted text-xs mt-6 font-mono">
+            <p className="text-text-muted text-xs mt-5 font-mono">
               Sui testnet · No credit card · Open source
             </p>
           </motion.div>
