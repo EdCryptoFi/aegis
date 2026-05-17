@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import {
@@ -26,6 +26,12 @@ import Footer from '@/components/Footer';
 import DecryptedText from '@/components/DecryptedText';
 import AegisLogo from '@/components/AegisLogo';
 import { SuiIcon, DeepBookIcon, MemWalIcon, WalrusIcon } from '@/components/EcosystemIcons';
+import {
+  AgentsTrackedIcon, SuccessRateIcon, VolumeProtectedIcon,
+  ProtocolIcon, ZeroInfraIcon, OneIntegrationIcon,
+  WalletsIcon, DeFiIcon, MarketplacesIcon, PortfoliosIcon,
+  RegisterIcon, RecordIcon, EarnBadgeIcon,
+} from '@/components/AegisIcons';
 
 /* ─── Animated Counter ─── */
 function AnimatedCounter({ value, suffix = '', prefix = '' }: { value: number; suffix?: string; prefix?: string }) {
@@ -90,10 +96,10 @@ const steps = [
   },
 ];
 
-const statsIconMap: Record<string, { src: string; blend?: boolean }> = {
-  'Agents Tracked': { src: '/icons/stat-agents.png' },
-  'Avg Success Rate': { src: '/icons/stat-success.png', blend: true },
-  'Volume Protected': { src: '/icons/stat-volume.png' },
+const statsIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  'Agents Tracked': AgentsTrackedIcon,
+  'Avg Success Rate': SuccessRateIcon,
+  'Volume Protected': VolumeProtectedIcon,
 };
 
 const containerVariants = {
@@ -202,7 +208,7 @@ export default function Home() {
           {/* Floating stat cards */}
           <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
             {stats.map((stat, i) => {
-              const iconInfo = statsIconMap[stat.label];
+              const StatIcon = statsIconMap[stat.label];
               return (
                 <motion.div key={stat.label} variants={itemVariants}>
                   <motion.div
@@ -214,8 +220,8 @@ export default function Home() {
                     <div className="p-5 pb-3">
                       {/* Top row: icon + label */}
                       <div className="flex items-start gap-3 mb-4">
-                        <div className="w-14 h-14 rounded-2xl bg-black flex items-center justify-center overflow-hidden flex-shrink-0">
-                          <img src={iconInfo.src} alt={stat.label} className={`w-10 h-10 object-contain${iconInfo.blend ? ' mix-blend-screen' : ''}`} />
+                        <div className="w-14 h-14 flex-shrink-0 text-cyan-primary">
+                          {StatIcon && <StatIcon />}
                         </div>
                         <div className="mt-1">
                           <p className="text-sm font-display font-semibold text-text-primary leading-tight">{stat.label}</p>
@@ -325,8 +331,8 @@ export default function Home() {
               transition={{ duration: 0.5 }}
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
-              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-cyan-primary/[0.08] border border-cyan-primary/20 overflow-hidden">
-                  <img src="/icons/card-protocol.png" alt="Protocol" className="w-8 h-8 object-contain mix-blend-screen" />
+              <div className="w-14 h-14 mb-5 text-cyan-primary">
+                <ProtocolIcon />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 You Focus on Your Protocol, We Handle Trust
@@ -361,8 +367,8 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.08 }}
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
-              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-mint-secondary/[0.06] border border-mint-secondary/20 overflow-hidden">
-                  <img src="/icons/card-zero-infra.png" alt="Zero Infrastructure" className="w-8 h-8 object-contain" />
+              <div className="w-14 h-14 mb-5 text-cyan-primary">
+                <ZeroInfraIcon />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 Zero Infrastructure Cost
@@ -392,8 +398,8 @@ export default function Home() {
               transition={{ duration: 0.5, delay: 0.16 }}
               className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
             >
-              <div className="w-10 h-10 rounded-[12px] flex items-center justify-center mb-5 bg-purple-400/[0.06] border border-purple-400/20 overflow-hidden">
-                  <img src="/icons/card-integration.png" alt="Integration" className="w-8 h-8 object-contain" />
+              <div className="w-14 h-14 mb-5 text-cyan-primary">
+                <OneIntegrationIcon />
               </div>
               <h3 className="font-display font-bold text-text-primary text-base mb-4">
                 One Integration, Infinite Trust
@@ -650,11 +656,11 @@ export default function Home() {
 
               <div className="grid grid-cols-2 md:grid-cols-4 gap-5">
                 {[
-                  { Icon: Wallet, label: 'Wallets', desc: 'Verify agent trust before fund delegation' },
-                  { Icon: ShoppingBag, label: 'Marketplaces', desc: 'Display certified badges on listings' },
-                  { Icon: Zap, label: 'DeFi', desc: 'Score agents for automated trading permissions' },
-                  { Icon: BarChart2, label: 'Portfolios', desc: 'Track real-time agent performance' },
-                ].map(({ Icon, label, desc }, i) => (
+                  { IconC: WalletsIcon, label: 'Wallets', desc: 'Verify agent trust before fund delegation' },
+                  { IconC: MarketplacesIcon, label: 'Marketplaces', desc: 'Display certified badges on listings' },
+                  { IconC: DeFiIcon, label: 'DeFi', desc: 'Score agents for automated trading permissions' },
+                  { IconC: PortfoliosIcon, label: 'Portfolios', desc: 'Track real-time agent performance' },
+                ].map(({ IconC, label, desc }, i) => (
                   <motion.div
                     key={label}
                     initial={{ opacity: 0, y: 18 }}
@@ -663,8 +669,8 @@ export default function Home() {
                     transition={{ duration: 0.4, delay: i * 0.1 }}
                     className="flex flex-col items-center text-center p-5 rounded-xl bg-surface-1/60 border border-[rgba(255,255,255,0.06)] hover:border-cyan-primary/30 transition-colors"
                   >
-                    <div className="mb-3 p-2.5 rounded-xl border bg-cyan-primary/10 border-cyan-primary/20 text-cyan-primary">
-                      <Icon size={22} />
+                    <div className="mb-3 w-12 h-12 text-cyan-primary mx-auto">
+                      <IconC />
                     </div>
                     <p className="font-display font-bold text-sm mb-1.5 text-cyan-primary">{label}</p>
                     <p className="text-text-muted text-xs leading-relaxed">{desc}</p>
@@ -730,7 +736,7 @@ export default function Home() {
             </div>
 
             {steps.map((step, i) => {
-              const StepIcon = step.icon;
+              const StepWireframe = [RegisterIcon, RecordIcon, EarnBadgeIcon][i];
               return (
                 <motion.div
                   key={step.title}
@@ -759,7 +765,9 @@ export default function Home() {
                       animate={stepsInView ? { scale: 1, opacity: 1 } : { scale: 0, opacity: 0 }}
                       transition={{ duration: 0.45, delay: 0.5 + i * 0.35, type: 'spring', stiffness: 220, damping: 18 }}
                     >
-                      <StepIcon size={24} className="text-cyan-primary" />
+                      <div className="w-9 h-9 text-cyan-primary">
+                        <StepWireframe />
+                      </div>
                     </motion.div>
                     {/* Number badge */}
                     <motion.span
