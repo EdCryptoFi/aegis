@@ -4,8 +4,7 @@ import { useRef } from 'react';
 import Link from 'next/link';
 import { motion, useInView } from 'framer-motion';
 import {
-  Shield, ArrowRight, XCircle, CheckCircle2, Wallet, ShoppingBag,
-  Zap, BarChart2, Code2, Users, Award, TrendingUp, Lock, Cpu,
+  Shield, ArrowRight, XCircle, CheckCircle2, Award, Code2,
 } from 'lucide-react';
 import {
   BannerRegisterIcon, BannerRecordIcon, BannerRewardIcon,
@@ -13,39 +12,8 @@ import {
   WalletsIcon, MarketplacesIcon, DeFiIcon, PortfoliosIcon,
 } from '../../components/AegisIcons';
 
-const problems = [
-  {
-    icon: XCircle,
-    title: 'Building trust infra costs you time & money',
-    desc: 'You\'re building DeFi, wallets, or marketplaces — not reputation systems. Every hour spent on agent scoring is an hour not spent on your core product.',
-    color: 'text-red-400',
-    bg: 'bg-red-400/[0.06]',
-    border: 'border-red-400/20',
-    iconBg: 'bg-red-400/10',
-  },
-  {
-    icon: XCircle,
-    title: 'Fragmented reputation, no standard',
-    desc: 'Every protocol builds its own trust system. Agents start from zero everywhere. Users have no way to verify an agent\'s track record across platforms.',
-    color: 'text-red-400',
-    bg: 'bg-red-400/[0.06]',
-    border: 'border-red-400/20',
-    iconBg: 'bg-red-400/10',
-  },
-  {
-    icon: XCircle,
-    title: 'Self-reported metrics are unreliable',
-    desc: 'Agents can lie about success rates, volume, and slippage. Without on-chain verification, you\'re trusting claims instead of data.',
-    color: 'text-red-400',
-    bg: 'bg-red-400/[0.06]',
-    border: 'border-red-400/20',
-    iconBg: 'bg-red-400/10',
-  },
-];
-
 const solutions = [
   {
-    icon: Shield,
     WireIcon: ProtocolIcon,
     title: 'Verifiable On-Chain Reputation',
     desc: 'Every execution, success rate, and badge is recorded on Sui. Immutable, transparent, and provable — no blind trust required.',
@@ -54,7 +22,6 @@ const solutions = [
     bg: 'bg-cyan-primary/[0.06]',
   },
   {
-    icon: CheckCircle2,
     WireIcon: ZeroInfraIcon,
     title: 'One Integration, Zero Infrastructure',
     desc: 'No database to maintain, no scoring engine to build, no badge system to design. Add the Aegis SDK and get full agent trust in one call.',
@@ -63,7 +30,6 @@ const solutions = [
     bg: 'bg-mint-secondary/[0.06]',
   },
   {
-    icon: Award,
     WireIcon: EarnBadgeIcon,
     title: 'Portable Badges, Cross-Protocol Trust',
     desc: 'Bronze, Silver, Gold badges follow agents everywhere. A Gold agent on DeepBook is a Gold agent on your protocol — verified, not claimed.',
@@ -71,15 +37,6 @@ const solutions = [
     border: 'border-yellow-400/20',
     bg: 'bg-yellow-400/[0.06]',
   },
-];
-
-const stakeholders = [
-  { icon: '🏦', project: 'Wallets', usage: 'Verify agent trust before delegating funds' },
-  { icon: '⚡', project: 'DeFi Protocols', usage: 'Trust score for agent-driven trading permissions' },
-  { icon: '🏪', project: 'AI Marketplaces', usage: 'Badges as proof of trust for agent listings' },
-  { icon: '📊', project: 'Fund Managers', usage: 'On-chain audit of contracted agent performance' },
-  { icon: '👛', project: 'Portfolio Trackers', usage: 'Real-time agent performance metrics for users' },
-  { icon: '🔍', project: 'Audit Tools', usage: 'Full immutable audit trail on-chain' },
 ];
 
 const useCases = [
@@ -91,9 +48,13 @@ const useCases = [
 
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
+const stations = [
+  { num: '01', label: 'Register', desc: 'Agent registered on Sui — on-chain identity created in one tx.', Icon: BannerRegisterIcon },
+  { num: '02', label: 'Record', desc: 'Every execution verified and stored in Walrus. Transparent audit trail.', Icon: BannerRecordIcon },
+  { num: '03', label: 'Reward', desc: 'Consistent performance mints portable Bronze, Silver, or Gold badges.', Icon: BannerRewardIcon },
+];
+
 export default function ForProtocolsPage() {
-  const problemRef = useRef<HTMLDivElement>(null);
-  const problemInView = useInView(problemRef, { once: true, margin: '-80px' });
   const solutionRef = useRef<HTMLDivElement>(null);
   const solutionInView = useInView(solutionRef, { once: true, margin: '-80px' });
   const lifecycleRef = useRef<HTMLDivElement>(null);
@@ -102,10 +63,134 @@ export default function ForProtocolsPage() {
   return (
     <main className="min-h-screen bg-bg-base">
 
+      {/* ═══════ HOW AEGIS WORKS BANNER ═══════ */}
+      <section className="relative border-b border-cyan-primary/15 bg-[#070c10] overflow-hidden">
+        {/* Ambient glow */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] rounded-full bg-cyan-primary/[0.05] blur-[120px]" />
+        </div>
+
+        {/* Top label row */}
+        <div className="relative flex items-center justify-between px-8 py-3 border-b border-cyan-primary/[0.12]">
+          <span className="font-mono text-[11px] text-cyan-primary/70 uppercase tracking-[0.25em]">HOW · AEGIS · WORKS</span>
+          <span className="font-mono text-[11px] text-cyan-primary/40 uppercase tracking-[0.25em]">3 STATIONS · DROP-IN FLOW</span>
+        </div>
+
+        {/* Stations */}
+        <div className="relative flex flex-col md:flex-row items-center justify-center py-16 px-6 gap-0">
+          {stations.map(({ num, label, desc, Icon }, i) => (
+            <div key={num} className="flex items-center">
+              {/* Station */}
+              <motion.div
+                initial={{ opacity: 0, y: 28 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={{ duration: 0.55, delay: i * 0.15 }}
+                className="flex flex-col items-center text-center w-64"
+              >
+                {/* Station label */}
+                <span className="font-mono text-[11px] text-cyan-primary/55 uppercase tracking-[0.22em] mb-8">
+                  STATION · {num}
+                </span>
+
+                {/* Circle container with draw rings */}
+                <motion.div
+                  className="relative w-48 h-48 flex items-center justify-center mb-10"
+                  initial={{ opacity: 0, scale: 0.85 }}
+                  whileInView={{ opacity: 1, scale: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.15 + 0.1 }}
+                >
+                  {/* SVG animated rings */}
+                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 192 192" fill="none" overflow="visible">
+                    <motion.circle
+                      cx="96" cy="96" r="94"
+                      stroke="rgba(0,212,184,0.30)"
+                      strokeWidth="1"
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      whileInView={{ pathLength: 1, opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.0, delay: i * 0.15 + 0.2, ease: 'easeOut' }}
+                    />
+                    <motion.circle
+                      cx="96" cy="96" r="76"
+                      stroke="rgba(0,212,184,0.18)"
+                      strokeWidth="1"
+                      strokeDasharray="3 4"
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      whileInView={{ pathLength: 1, opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.2, delay: i * 0.15 + 0.35, ease: 'easeOut' }}
+                    />
+                    <motion.circle
+                      cx="96" cy="96" r="58"
+                      stroke="rgba(0,212,184,0.10)"
+                      strokeWidth="1"
+                      strokeDasharray="1.5 3"
+                      initial={{ pathLength: 0, opacity: 0 }}
+                      whileInView={{ pathLength: 1, opacity: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 1.0, delay: i * 0.15 + 0.5, ease: 'easeOut' }}
+                    />
+                  </svg>
+                  {/* Icon */}
+                  <div className="w-[100px] h-[100px] text-cyan-primary relative z-10">
+                    <Icon />
+                  </div>
+                </motion.div>
+
+                {/* Name + description */}
+                <motion.div
+                  initial={{ opacity: 0, y: 12 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.4, delay: i * 0.15 + 0.5 }}
+                >
+                  <h3 className="font-display text-[28px] font-bold text-text-primary mb-3">{label}</h3>
+                  <p className="text-text-muted text-sm leading-relaxed max-w-[200px] mx-auto">{desc}</p>
+                </motion.div>
+              </motion.div>
+
+              {/* Arrow between stations */}
+              {i < 2 && (
+                <motion.div
+                  className="hidden md:flex flex-shrink-0 w-24 text-cyan-primary/30 mx-2 mb-[88px]"
+                  initial={{ opacity: 0 }}
+                  whileInView={{ opacity: 1 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.15 + 0.7 }}
+                >
+                  <svg viewBox="0 0 76 24" fill="none" stroke="currentColor" strokeWidth={1.1} className="w-full" overflow="visible">
+                    <motion.circle cx="3" cy="12" r="1.6" fill="currentColor" stroke="none"
+                      initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
+                      transition={{ delay: i * 0.15 + 0.75 }} />
+                    <motion.line x1="6" y1="12" x2="66" y2="12" strokeDasharray="2 3"
+                      initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
+                      transition={{ duration: 0.7, delay: i * 0.15 + 0.8, ease: 'easeOut' }} />
+                    <motion.path d="M62 6 L72 12 L62 18"
+                      initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
+                      transition={{ duration: 0.25, delay: i * 0.15 + 1.4, ease: 'easeOut' }} />
+                    <motion.circle cx="72" cy="12" r="1.6" fill="currentColor" stroke="none"
+                      initial={{ scale: 0 }} whileInView={{ scale: 1 }} viewport={{ once: true }}
+                      transition={{ delay: i * 0.15 + 1.6 }} />
+                  </svg>
+                </motion.div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom label row */}
+        <div className="relative flex items-center justify-between px-8 py-2.5 border-t border-cyan-primary/[0.08]">
+          <span className="font-mono text-[9px] text-cyan-primary/25 uppercase tracking-[0.2em]">SPEC · BANNER · /FOR-PROTOCOLS · V1.0</span>
+          <span className="font-mono text-[9px] text-cyan-primary/25 uppercase tracking-[0.2em]">ICONS COMPOSE WITH §05 TIER BADGES DOWNSTREAM</span>
+        </div>
+      </section>
+
       {/* ═══════ HERO ═══════ */}
       <section className="relative min-h-[70vh] flex items-center justify-center px-6 overflow-hidden">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-red-500/[0.03] blur-[120px]" />
+          <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full bg-cyan-primary/[0.03] blur-[120px]" />
           <div className="absolute bottom-1/4 right-1/4 w-[400px] h-[400px] rounded-full bg-cyan-primary/[0.04] blur-[100px]" />
         </div>
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-base to-transparent z-10" />
@@ -116,14 +201,6 @@ export default function ForProtocolsPage() {
           animate="visible"
           variants={fadeUp}
         >
-          <motion.span
-            variants={fadeUp}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-pill bg-red-400/10 border border-red-400/20 text-red-400 text-label-xs font-mono uppercase tracking-wider mb-6"
-          >
-            <XCircle size={12} />
-            The Problem with Agent Trust
-          </motion.span>
-
           <motion.h1
             variants={fadeUp}
             className="font-display text-[36px] md:text-[52px] font-bold text-text-primary mb-6 leading-tight"
@@ -164,49 +241,6 @@ export default function ForProtocolsPage() {
             </Link>
           </motion.div>
         </motion.div>
-      </section>
-
-      {/* ═══════ PROBLEM ═══════ */}
-      <section ref={problemRef} className="relative py-24 px-6">
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={problemInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-14"
-          >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-red-400/10 border border-red-400/[0.15] text-red-400 text-label-xs font-mono uppercase tracking-wider mb-4">
-              The Hard Truth
-            </span>
-            <h2 className="font-display text-[32px] md:text-[40px] font-bold text-text-primary mb-3">
-              Building trust infra isn&apos;t your job.
-            </h2>
-            <p className="text-text-secondary text-base max-w-xl mx-auto">
-              But right now, every protocol that integrates AI agents has to build it from scratch.
-            </p>
-          </motion.div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            {problems.map((item, i) => {
-              const Icon = item.icon;
-              return (
-                <motion.div
-                  key={item.title}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={problemInView ? { opacity: 1, y: 0 } : {}}
-                  transition={{ duration: 0.5, delay: i * 0.1 }}
-                  className={`rounded-2xl p-6 border ${item.border} ${item.bg}`}
-                >
-                  <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center mb-4 ${item.iconBg}`}>
-                    <Icon size={20} className={item.color} />
-                  </div>
-                  <h3 className="font-display font-bold text-text-primary text-base mb-3">{item.title}</h3>
-                  <p className="text-text-secondary text-sm leading-relaxed">{item.desc}</p>
-                </motion.div>
-              );
-            })}
-          </div>
-        </div>
       </section>
 
       {/* ═══════ SOLUTION ═══════ */}
@@ -293,182 +327,6 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
             >
               Full SDK Reference <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
             </Link>
-          </motion.div>
-        </div>
-      </section>
-
-      {/* ═══════ LIFECYCLE BANNER ═══════ */}
-      <section ref={lifecycleRef} className="relative py-24 px-6">
-        <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[300px] rounded-full bg-cyan-primary/[0.03] blur-[120px]" />
-        </div>
-        <div className="max-w-5xl mx-auto relative">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={lifecycleInView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.5 }}
-            className="text-center mb-16"
-          >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-4">
-              How It Works
-            </span>
-            <h2 className="font-display text-[32px] md:text-[40px] font-bold text-text-primary mb-3">
-              Register. Record. Reward.
-            </h2>
-            <p className="text-text-secondary text-base max-w-xl mx-auto">
-              The full lifecycle of agent trust, handled entirely on-chain.
-            </p>
-          </motion.div>
-
-          <div className="flex flex-col md:flex-row items-center justify-center gap-0">
-
-            {/* Station 01 — Register */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={lifecycleInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="flex flex-col items-center text-center w-52"
-            >
-              <div className="relative w-36 h-36 flex items-center justify-center mb-5">
-                <div className="absolute inset-0 rounded-full border border-cyan-primary/25" />
-                <div className="absolute inset-4 rounded-full border border-dashed border-cyan-primary/15" />
-                <div className="w-[72px] h-[72px] text-cyan-primary">
-                  <BannerRegisterIcon />
-                </div>
-              </div>
-              <span className="font-mono text-[10px] text-cyan-primary/50 uppercase tracking-widest mb-1">01</span>
-              <h3 className="font-display font-bold text-text-primary text-base mb-2">Register</h3>
-              <p className="text-text-muted text-xs leading-relaxed max-w-[160px]">
-                Agent creates an on-chain reputation object with Aegis.
-              </p>
-            </motion.div>
-
-            {/* Arrow 1 */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={lifecycleInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              className="hidden md:block flex-shrink-0 w-20 mx-1 text-cyan-primary/35 mb-10"
-            >
-              <svg viewBox="0 0 76 24" fill="none" stroke="currentColor" strokeWidth={1.2} overflow="visible">
-                <circle cx="3" cy="12" r="1.6" fill="currentColor" stroke="none" />
-                <line x1="6" y1="12" x2="66" y2="12" strokeDasharray="2 3" />
-                <path d="M62 6 L72 12 L62 18" />
-                <circle cx="72" cy="12" r="1.6" fill="currentColor" stroke="none" />
-              </svg>
-            </motion.div>
-
-            {/* Station 02 — Record */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={lifecycleInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.25 }}
-              className="flex flex-col items-center text-center w-52"
-            >
-              <div className="relative w-36 h-36 flex items-center justify-center mb-5">
-                <div className="absolute inset-0 rounded-full border border-cyan-primary/25" />
-                <div className="absolute inset-4 rounded-full border border-dashed border-cyan-primary/15" />
-                <div className="w-[72px] h-[72px] text-cyan-primary">
-                  <BannerRecordIcon />
-                </div>
-              </div>
-              <span className="font-mono text-[10px] text-cyan-primary/50 uppercase tracking-widest mb-1">02</span>
-              <h3 className="font-display font-bold text-text-primary text-base mb-2">Record</h3>
-              <p className="text-text-muted text-xs leading-relaxed max-w-[160px]">
-                Every execution, success, and failure is written immutably on Sui.
-              </p>
-            </motion.div>
-
-            {/* Arrow 2 */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={lifecycleInView ? { opacity: 1 } : {}}
-              transition={{ duration: 0.5, delay: 0.45 }}
-              className="hidden md:block flex-shrink-0 w-20 mx-1 text-cyan-primary/35 mb-10"
-            >
-              <svg viewBox="0 0 76 24" fill="none" stroke="currentColor" strokeWidth={1.2} overflow="visible">
-                <circle cx="3" cy="12" r="1.6" fill="currentColor" stroke="none" />
-                <line x1="6" y1="12" x2="66" y2="12" strokeDasharray="2 3" />
-                <path d="M62 6 L72 12 L62 18" />
-                <circle cx="72" cy="12" r="1.6" fill="currentColor" stroke="none" />
-              </svg>
-            </motion.div>
-
-            {/* Station 03 — Reward */}
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={lifecycleInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              className="flex flex-col items-center text-center w-52"
-            >
-              <div className="relative w-36 h-36 flex items-center justify-center mb-5">
-                <div className="absolute inset-0 rounded-full border border-cyan-primary/25" />
-                <div className="absolute inset-4 rounded-full border border-dashed border-cyan-primary/15" />
-                <div className="w-[72px] h-[72px] text-cyan-primary">
-                  <BannerRewardIcon />
-                </div>
-              </div>
-              <span className="font-mono text-[10px] text-cyan-primary/50 uppercase tracking-widest mb-1">03</span>
-              <h3 className="font-display font-bold text-text-primary text-base mb-2">Reward</h3>
-              <p className="text-text-muted text-xs leading-relaxed max-w-[160px]">
-                High performers earn Bronze, Silver, or Gold badges — portable across all protocols.
-              </p>
-            </motion.div>
-
-          </div>
-        </div>
-      </section>
-
-      {/* ═══════ WHO INTEGRATES ═══════ */}
-      <section className="relative py-20 px-6">
-        <div className="max-w-5xl mx-auto">
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="text-center mb-12"
-          >
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-4">
-              Who It&apos;s For
-            </span>
-            <h2 className="font-display text-[32px] md:text-[40px] font-bold text-text-primary mb-3">
-              Built for Protocols. Trusted by Wallets.
-            </h2>
-            <p className="text-text-secondary text-base max-w-xl mx-auto">
-              If your protocol touches AI agents, Aegis gives you verifiable trust out of the box.
-            </p>
-          </motion.div>
-
-          <motion.div
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true }}
-            variants={fadeUp}
-            className="rounded-2xl glass-card-heavy overflow-hidden"
-          >
-            <div className="grid grid-cols-12 px-6 py-3 bg-surface-0 border-b border-[rgba(255,255,255,0.06)]">
-              <span className="col-span-4 text-text-muted text-[11px] font-semibold uppercase tracking-wider">Who</span>
-              <span className="col-span-8 text-text-muted text-[11px] font-semibold uppercase tracking-wider">How They Use Aegis</span>
-            </div>
-            <div className="divide-y divide-[rgba(255,255,255,0.05)]">
-              {stakeholders.map((item, i) => (
-                <motion.div
-                  key={item.project}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.05 }}
-                  className="grid grid-cols-12 px-6 py-4 hover:bg-surface-1/40 transition-colors items-center"
-                >
-                  <span className="col-span-4 flex items-center gap-3 font-display font-semibold text-text-primary text-sm">
-                    <span className="text-lg">{item.icon}</span>
-                    {item.project}
-                  </span>
-                  <span className="col-span-8 text-text-secondary text-sm">{item.usage}</span>
-                </motion.div>
-              ))}
-            </div>
           </motion.div>
         </div>
       </section>
@@ -586,35 +444,24 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
             className="rounded-2xl bg-gradient-to-r from-cyan-primary/[0.10] to-mint-secondary/[0.06] border border-cyan-primary/25 p-10 md:p-14 text-center relative overflow-hidden"
           >
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-px bg-gradient-to-r from-transparent via-cyan-primary/40 to-transparent" />
-
-            <div className="relative z-10">
-              <Shield size={36} className="text-cyan-primary mx-auto mb-4" />
-              <h2 className="font-display text-[28px] md:text-[36px] font-bold text-text-primary mb-3">
-                Stop building trust infra.{' '}
-                <span className="gradient-text-cyan">Start integrating.</span>
-              </h2>
-              <p className="text-text-secondary text-sm max-w-lg mx-auto mb-8">
-                One SDK call gives your protocol verified agent trust — on-chain, portable, and zero infrastructure.
-              </p>
-              <div className="flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  href="/developer"
-                  className="group inline-flex items-center gap-2 px-8 py-4 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all"
-                >
-                  Start Integrating
-                  <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
-                </Link>
-                <Link
-                  href="/docs"
-                  className="inline-flex items-center gap-2 px-8 py-4 rounded-[12px] border border-[rgba(255,255,255,0.12)] bg-surface-1/20 backdrop-blur-sm text-text-primary font-display font-bold text-sm hover:bg-surface-1/40 transition-all"
-                >
-                  Documentation
-                </Link>
-              </div>
-              <p className="text-text-muted text-xs mt-6 font-mono">
-                Sui testnet • No credit card • Open source
-              </p>
+            <div className="relative z-10 flex flex-wrap items-center justify-center gap-4">
+              <Link
+                href="/developer"
+                className="group inline-flex items-center gap-2 px-8 py-4 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all"
+              >
+                Start Integrating
+                <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+              <Link
+                href="/docs"
+                className="inline-flex items-center gap-2 px-8 py-4 rounded-[12px] border border-[rgba(255,255,255,0.12)] bg-surface-1/20 backdrop-blur-sm text-text-primary font-display font-bold text-sm hover:bg-surface-1/40 transition-all"
+              >
+                See Documentation
+              </Link>
             </div>
+            <p className="text-text-muted text-xs mt-6 font-mono">
+              Sui testnet · No credit card · Open source
+            </p>
           </motion.div>
         </div>
       </section>

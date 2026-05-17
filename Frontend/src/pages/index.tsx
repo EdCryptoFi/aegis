@@ -147,7 +147,7 @@ export default function Home() {
         >
           {/* Logo */}
           <motion.div variants={itemVariants} className="flex justify-center mb-6 mt-16">
-            <div style={{ filter: 'saturate(0.6)' }}>
+            <div style={{ filter: 'grayscale(1) sepia(0.9) hue-rotate(135deg) saturate(2.8) brightness(0.82)' }}>
               <AegisLogo className="w-[224px] h-[224px]" />
             </div>
           </motion.div>
