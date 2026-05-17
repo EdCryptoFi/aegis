@@ -22,8 +22,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const privateKey = process.env.DEMO_WALLET_PRIVATE_KEY;
     if (privateKey) {
-      const raw = privateKey.startsWith('0x') ? privateKey.slice(2) : privateKey;
-      keypair = Ed25519Keypair.fromSecretKey(Buffer.from(raw, 'hex'));
+      if (privateKey.startsWith('suiprivkey')) {
+        keypair = Ed25519Keypair.fromSecretKey(privateKey);
+      } else {
+        const raw = privateKey.startsWith('0x') ? privateKey.slice(2) : privateKey;
+        keypair = Ed25519Keypair.fromSecretKey(Buffer.from(raw, 'hex'));
+      }
     } else {
       keypair = Ed25519Keypair.generate();
       const address = keypair.getPublicKey().toSuiAddress();
