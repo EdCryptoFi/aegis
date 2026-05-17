@@ -27,9 +27,9 @@ const TABS = [
   },
   {
     id: 'demo',
-    label: 'Live Demo',
-    icon: Play,
-    desc: 'Interactive CLI simulation',
+    label: 'CLI Walkthrough',
+    icon: Terminal,
+    desc: 'Step-by-step simulation of agent lifecycle',
   },
 ];
 
@@ -215,10 +215,10 @@ function LiveDemo() {
             <Terminal size={18} className="text-cyan-primary" />
           </div>
           <div>
-            <h3 className="font-display font-bold text-text-primary mb-1">Interactive CLI Simulation</h3>
+            <h3 className="font-display font-bold text-text-primary mb-1">CLI Walkthrough</h3>
             <p className="text-text-secondary text-sm leading-relaxed">
-              Watch real Sui CLI commands register an AI agent, record 15 executions, evaluate badge
-              eligibility, and mint a Bronze badge - all on Sui testnet with real contract calls.
+              Watch a simulated agent registration, execution recording, badge eligibility check, and Bronze badge mint — 
+              a preview of how real Sui CLI commands work on testnet.
             </p>
           </div>
         </div>
@@ -382,7 +382,15 @@ export default function DeveloperPage() {
             <Code2 size={28} className="text-cyan-primary" />
             <h1 className="font-display text-5xl font-bold gradient-text-cyan">Developer Hub</h1>
           </div>
-          <p className="text-text-secondary text-lg">Integrate your AI agent with Aegis on Sui</p>
+          <div className="flex items-center justify-between">
+            <p className="text-text-secondary text-lg">Integrate your AI agent with Aegis on Sui</p>
+            <Link
+              href="/agents"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all shadow-glow-cyan"
+            >
+              <Zap size={14} /> Register Agent
+            </Link>
+          </div>
         </motion.div>
 
         {/* For Protocols Section */}
@@ -459,15 +467,7 @@ export default function DeveloperPage() {
                   {t.label}
                 </p>
                 <p className="text-text-muted text-xs">{t.desc}</p>
-                {t.id === 'demo' ? (
-                  <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-primary/15 border border-cyan-primary/30 font-mono text-[9px] text-cyan-primary uppercase tracking-widest">
-                    <span className="relative flex h-1.5 w-1.5 mr-0.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-primary opacity-60" />
-                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyan-primary" />
-                    </span>
-                    LIVE
-                  </span>
-                ) : active && (
+                {active && (
                   <span className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-cyan-primary" />
                 )}
               </button>

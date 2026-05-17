@@ -148,7 +148,7 @@ export default function Home() {
           {/* Logo */}
           <motion.div variants={itemVariants} className="flex justify-center mb-6 mt-16">
             <div style={{ filter: 'grayscale(1) sepia(0.9) hue-rotate(135deg) saturate(2.8) brightness(0.82)' }}>
-              <AegisLogo className="w-[224px] h-[224px]" />
+              <AegisLogo className="w-[291px] h-[291px]" />
             </div>
           </motion.div>
 
@@ -194,10 +194,16 @@ export default function Home() {
           <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-4 mb-16">
             <Link
               href="/agents"
-              className="group inline-flex items-center gap-2 px-10 py-4 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all"
+              className="group inline-flex items-center gap-2 px-10 py-4 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all shadow-glow-cyan"
             >
               View Agents
               <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
+            </Link>
+            <Link
+              href="/developer"
+              className="inline-flex items-center gap-2 px-10 py-4 rounded-[12px] border border-cyan-primary/30 bg-cyan-primary/[0.04] text-text-primary font-display font-bold text-sm hover:bg-cyan-primary/[0.08] hover:shadow-glow-cyan transition-all"
+            >
+              Register Agent
             </Link>
             <Link
               href="/docs"

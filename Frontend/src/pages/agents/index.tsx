@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
-import { Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight } from 'lucide-react';
+import { Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight, Zap } from 'lucide-react';
 import { config } from '../../config';
 
 interface AgentInfo {
@@ -154,9 +154,17 @@ export default function AgentsPage() {
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors mb-6">
             <ChevronLeft size={14} /> Back to Home
           </Link>
-          <div className="flex items-center gap-3 mb-2">
-            <Users size={28} className="text-cyan-primary" />
-            <h1 className="font-display text-5xl font-bold gradient-text-cyan">Registered Agents</h1>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <Users size={28} className="text-cyan-primary" />
+              <h1 className="font-display text-5xl font-bold gradient-text-cyan">Registered Agents</h1>
+            </div>
+            <Link
+              href="/developer"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all shadow-glow-cyan"
+            >
+              <Zap size={14} /> Register Agent
+            </Link>
           </div>
           <p className="text-text-secondary text-lg">Explore all agents registered on Aegis</p>
         </motion.div>

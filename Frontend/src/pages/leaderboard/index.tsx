@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Trophy, TrendingUp, AlertTriangle, Award } from 'lucide-react';
+import { useState, useEffect, useCallback } from 'react';
+import { Trophy, TrendingUp, AlertTriangle, Award, RefreshCw, Zap, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { getAllAgents } from '../../lib/sdk';
 
 interface LeaderboardEntry {
   rank: number;
@@ -37,75 +38,124 @@ function deriveStatus(badge: string, isFlagged: boolean): LeaderboardEntry['stat
   return 'Read Only';
 }
 
+const KNOWN_NAMES: Record<string, string> = {
+  '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc': 'AlphaTrader',
+  '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec': 'BetaBot',
+  '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6': 'GammaScam',
+};
+
 const DEMO_LEADERBOARD: LeaderboardEntry[] = [
   { rank: 0, objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 99, successRate: 99, totalExecutions: 247, totalVolume: 2_100_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
   { rank: 0, objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 95, successRate: 91, totalExecutions: 67, totalVolume: 450_000_000_000, isFlagged: false, badge: 'silver', aegisScore: 82.1, status: 'Supervised' as const },
   { rank: 0, objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 41, successRate: 41, totalExecutions: 34, totalVolume: 45_000_000_000, isFlagged: true, badge: 'revoked', aegisScore: 12.0, status: 'Quarantined' as const },
 ];
 
+function deriveBadge(score: number, isFlagged: boolean): string {
+  if (isFlagged) return 'revoked';
+  if (score >= 90) return 'gold';
+  if (score >= 70) return 'silver';
+  if (score >= 50) return 'bronze';
+  return 'none';
+}
+
 async function getLeaderboard(): Promise<LeaderboardEntry[]> {
-  // Try to fetch from blockchain first
   try {
-    const response = await fetch('https://fullnode.testnet.sui.io:443', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'sui_getObject',
-        params: [DEMO_LEADERBOARD[0].objectId, { showContent: true }],
-      }),
-    });
-    const data = await response.json();
-    if (data.result?.data?.content?.dataType === 'moveObject') {
-      const agents: LeaderboardEntry[] = [];
-      for (const demo of DEMO_LEADERBOARD) {
-        const res = await fetch('https://fullnode.testnet.sui.io:443', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'sui_getObject',
-            params: [demo.objectId, { showContent: true }],
-          }),
+    const agents = await getAllAgents();
+    if (agents.length > 0) {
+      const entries: LeaderboardEntry[] = agents.map((agent) => {
+        const rep = agent.reputation;
+        const totalEx = rep.totalExecutions;
+        const successEx = rep.successfulExecutions;
+        const successRate = totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100;
+        const score = computeScore({
+          objectId: rep.objectId,
+          agentId: rep.agentId,
+          name: KNOWN_NAMES[rep.objectId] || `Agent ${rep.objectId.slice(0, 6)}...`,
+          uptimeScore: rep.uptimeScore,
+          successRate,
+          totalExecutions: totalEx,
+          totalVolume: rep.totalVolume,
+          isFlagged: rep.isFlagged,
+          badge: '',
         });
-        const d = await res.json();
-        if (d.result?.data?.content?.dataType === 'moveObject') {
-          const fields = d.result.data.content.fields;
-          const totalEx = Number(fields.total_executions);
-          const successEx = Number(fields.successful_executions);
-          const entry: LeaderboardEntry = {
-            rank: 0,
-            objectId: demo.objectId,
-            agentId: fields.agent_id,
-            name: demo.name,
-            uptimeScore: Number(fields.uptime_score),
-            successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
-            totalExecutions: totalEx,
-            totalVolume: Number(fields.total_volume),
-            isFlagged: fields.is_flagged,
-            badge: demo.badge,
-            aegisScore: 0,
-            status: 'Active',
-          };
-          entry.aegisScore = computeScore(entry);
-          entry.status = deriveStatus(entry.badge, entry.isFlagged);
-          agents.push(entry);
-        }
-      }
-      if (agents.length > 0) {
-        return agents.sort((a, b) => {
+        const badge = deriveBadge(score, rep.isFlagged);
+        return {
+          rank: 0,
+          objectId: rep.objectId,
+          agentId: rep.agentId,
+          name: KNOWN_NAMES[rep.objectId] || `Agent ${rep.objectId.slice(0, 6)}...`,
+          uptimeScore: rep.uptimeScore,
+          successRate,
+          totalExecutions: totalEx,
+          totalVolume: rep.totalVolume,
+          isFlagged: rep.isFlagged,
+          badge,
+          aegisScore: score,
+          status: deriveStatus(badge, rep.isFlagged),
+        };
+      });
+      return entries
+        .sort((a, b) => {
           if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
-          if (b.uptimeScore !== a.uptimeScore) return b.uptimeScore - a.uptimeScore;
+          if (b.aegisScore !== a.aegisScore) return b.aegisScore - a.aegisScore;
           return b.totalExecutions - a.totalExecutions;
-        }).map((agent, i) => ({ ...agent, rank: i + 1 }));
-      }
+        })
+        .map((agent, i) => ({ ...agent, rank: i + 1 }));
     }
   } catch (e) {
-    console.log('Using demo data (fetch failed):', e);
+    console.log('Chain fetch failed, trying RPC fallback:', e);
   }
-  // Return demo data sorted
+
+  // Fallback: try direct RPC for known agents
+  try {
+    const agents: LeaderboardEntry[] = [];
+    for (const demo of DEMO_LEADERBOARD) {
+      const res = await fetch('https://fullnode.testnet.sui.io:443', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          jsonrpc: '2.0',
+          id: 1,
+          method: 'sui_getObject',
+          params: [demo.objectId, { showContent: true }],
+        }),
+      });
+      const d = await res.json();
+      if (d.result?.data?.content?.dataType === 'moveObject') {
+        const fields = d.result.data.content.fields;
+        const totalEx = Number(fields.total_executions);
+        const successEx = Number(fields.successful_executions);
+        const entry: LeaderboardEntry = {
+          rank: 0,
+          objectId: demo.objectId,
+          agentId: fields.agent_id,
+          name: demo.name,
+          uptimeScore: Number(fields.uptime_score),
+          successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
+          totalExecutions: totalEx,
+          totalVolume: Number(fields.total_volume),
+          isFlagged: fields.is_flagged,
+          badge: demo.badge,
+          aegisScore: 0,
+          status: 'Active',
+        };
+        entry.aegisScore = computeScore(entry);
+        entry.status = deriveStatus(entry.badge, entry.isFlagged);
+        agents.push(entry);
+      }
+    }
+    if (agents.length > 0) {
+      return agents.sort((a, b) => {
+        if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
+        if (b.uptimeScore !== a.uptimeScore) return b.uptimeScore - a.uptimeScore;
+        return b.totalExecutions - a.totalExecutions;
+      }).map((agent, i) => ({ ...agent, rank: i + 1 }));
+    }
+  } catch (e) {
+    console.log('RPC fallback failed:', e);
+  }
+
+  // Last resort: demo data
   return DEMO_LEADERBOARD.sort((a, b) => {
     if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
     if (b.uptimeScore !== a.uptimeScore) return b.uptimeScore - a.uptimeScore;
@@ -137,6 +187,8 @@ const BADGE_COLORS: Record<string, string> = {
 export default function LeaderboardPage() {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
+  const [lastSync, setLastSync] = useState<Date | null>(null);
 
   useEffect(() => {
     loadLeaderboard();
@@ -146,7 +198,16 @@ export default function LeaderboardPage() {
     setLoading(true);
     const data = await getLeaderboard();
     setLeaderboard(data);
+    setLastSync(new Date());
     setLoading(false);
+  }
+
+  async function syncFromChain() {
+    setSyncing(true);
+    const data = await getLeaderboard();
+    setLeaderboard(data);
+    setLastSync(new Date());
+    setSyncing(false);
   }
 
   return (
@@ -162,13 +223,36 @@ export default function LeaderboardPage() {
           <Link href="/" className="inline-flex items-center gap-1.5 text-sm text-cyan-primary hover:text-mint-secondary transition-colors mb-6">
             ← Back to Home
           </Link>
-          <div className="flex items-center gap-3 mb-2">
-            <Trophy size={28} className="text-cyan-primary" />
-            <h1 className="font-display text-5xl font-bold gradient-text-cyan">Rankings</h1>
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <Trophy size={28} className="text-cyan-primary" />
+              <h1 className="font-display text-5xl font-bold gradient-text-cyan">Rankings</h1>
+            </div>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={syncFromChain}
+                disabled={syncing}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[10px] border border-cyan-primary/30 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.08] hover:shadow-glow-cyan transition-all disabled:opacity-50"
+              >
+                <RefreshCw size={14} className={syncing ? 'animate-spin' : ''} />
+                {syncing ? 'Syncing...' : 'Sync'}
+              </button>
+              <Link
+                href="/developer"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[10px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all shadow-glow-cyan"
+              >
+                <Plus size={14} /> Register Agent
+              </Link>
+            </div>
           </div>
           <p className="text-text-secondary text-lg">Top AI agents ranked by on-chain performance</p>
-          <p className="text-text-muted text-sm mt-2 font-mono">
-            Click on an agent for Full Analytics Dashboard
+          <p className="text-text-muted text-sm mt-2 font-mono flex items-center gap-4">
+            <span>Click on an agent for Full Analytics Dashboard</span>
+            {lastSync && (
+              <span className="text-text-muted/60">
+                Last sync: {lastSync.toLocaleTimeString()}
+              </span>
+            )}
           </p>
         </motion.div>
 
