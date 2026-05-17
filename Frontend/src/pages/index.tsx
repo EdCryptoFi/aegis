@@ -138,8 +138,10 @@ export default function Home() {
           variants={containerVariants}
         >
           {/* Logo */}
-          <motion.div variants={itemVariants} className="flex justify-center mb-6">
-            <AegisLogo className="w-[172px] h-[172px]" />
+          <motion.div variants={itemVariants} className="flex justify-center mb-6 mt-16">
+            <div style={{ filter: 'saturate(0.6)' }}>
+              <AegisLogo className="w-[224px] h-[224px]" />
+            </div>
           </motion.div>
 
           {/* Headline */}
