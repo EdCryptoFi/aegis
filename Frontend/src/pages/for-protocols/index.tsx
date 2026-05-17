@@ -64,58 +64,86 @@ export default function ForProtocolsPage() {
     <main className="min-h-screen bg-bg-base">
 
       {/* ═══════ HOW AEGIS WORKS ═══════ */}
-      <section className="relative overflow-hidden py-10">
+      <section className="relative overflow-hidden py-20 md:py-28">
         <div className="absolute inset-0 pointer-events-none">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-cyan-primary/[0.04] blur-[120px]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[500px] rounded-full bg-cyan-primary/[0.03] blur-[160px]" />
         </div>
-        <div className="relative flex flex-col md:flex-row items-center justify-center px-6 gap-0">
-          {stations.map(({ num, label, desc, Icon }, i) => (
-            <div key={num} className="flex items-center">
-              <motion.div
-                initial={{ opacity: 0, scale: 0.85 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.15 }}
-                className="flex flex-col items-center"
-              >
-                <div className="relative w-28 h-28 flex items-center justify-center">
-                  <svg className="absolute inset-0 w-full h-full" viewBox="0 0 120 120" fill="none" overflow="visible">
-                    <motion.circle
-                      cx="60" cy="60" r="58"
-                      stroke="rgba(0,212,184,0.30)"
-                      strokeWidth="1.5"
-                      initial={{ pathLength: 0, opacity: 0 }}
-                      whileInView={{ pathLength: 1, opacity: 1 }}
-                      viewport={{ once: true }}
-                      transition={{ duration: 1.0, delay: i * 0.15 + 0.2, ease: 'easeOut' }}
-                    />
-                  </svg>
-                  <div className="w-14 h-14 text-cyan-primary relative z-10">
-                    <Icon />
-                  </div>
-                </div>
-              </motion.div>
+        <div className="relative max-w-6xl mx-auto px-6">
+          <div className="flex flex-col md:flex-row items-start justify-center gap-0">
+            {stations.map(({ num, label, desc, Icon }, i) => (
+              <div key={num} className="flex items-center w-full md:w-auto">
 
-              {i < 2 && (
+                {/* Station card */}
                 <motion.div
-                  className="hidden md:flex flex-shrink-0 w-10 text-cyan-primary/20 mx-1"
-                  initial={{ opacity: 0 }}
-                  whileInView={{ opacity: 1 }}
+                  initial={{ opacity: 0, y: 24 }}
+                  whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: i * 0.15 + 0.5 }}
+                  transition={{ duration: 0.6, delay: i * 0.18 }}
+                  className="flex flex-col items-center flex-1 md:w-56"
                 >
-                  <svg viewBox="0 0 60 16" fill="none" stroke="currentColor" strokeWidth={0.8} className="w-full">
-                    <motion.line x1="4" y1="8" x2="52" y2="8" strokeDasharray="2 3"
-                      initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: i * 0.15 + 0.6, ease: 'easeOut' }} />
-                    <motion.path d="M48 4 L56 8 L48 12"
-                      initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
-                      transition={{ duration: 0.2, delay: i * 0.15 + 0.9, ease: 'easeOut' }} />
-                  </svg>
+                  {/* STATION · 0X label */}
+                  <p className="font-mono text-[10px] tracking-[0.28em] text-cyan-primary/60 uppercase mb-5">
+                    STATION · {num}
+                  </p>
+
+                  {/* Circle + icon */}
+                  <div className="relative w-40 h-40 md:w-48 md:h-48 flex items-center justify-center mb-7">
+                    <svg className="absolute inset-0 w-full h-full" viewBox="0 0 192 192" fill="none" overflow="visible">
+                      <motion.circle
+                        cx="96" cy="96" r="93"
+                        stroke="rgba(0,212,184,0.28)"
+                        strokeWidth="1.2"
+                        initial={{ pathLength: 0, opacity: 0 }}
+                        whileInView={{ pathLength: 1, opacity: 1 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 1.3, delay: i * 0.18 + 0.15, ease: 'easeOut' }}
+                      />
+                    </svg>
+                    <div className="w-20 h-20 text-cyan-primary relative z-10">
+                      <Icon />
+                    </div>
+                  </div>
+
+                  {/* Title */}
+                  <h3 className="font-display text-2xl md:text-3xl font-bold text-text-primary mb-3 text-center">
+                    {label}
+                  </h3>
+
+                  {/* Description */}
+                  <p className="text-text-secondary text-sm leading-relaxed text-center max-w-[168px]">
+                    {desc}
+                  </p>
                 </motion.div>
-              )}
-            </div>
-          ))}
+
+                {/* Arrow between stations */}
+                {i < 2 && (
+                  <motion.div
+                    className="hidden md:flex flex-shrink-0 self-start mt-[88px] mx-2 text-cyan-primary/25"
+                    style={{ width: '72px' }}
+                    initial={{ opacity: 0 }}
+                    whileInView={{ opacity: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.18 + 0.6 }}
+                  >
+                    <svg viewBox="0 0 72 14" fill="none" stroke="currentColor" strokeWidth={0.9} className="w-full">
+                      <motion.line
+                        x1="0" y1="7" x2="58" y2="7"
+                        strokeDasharray="3 4"
+                        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
+                        transition={{ duration: 0.8, delay: i * 0.18 + 0.75, ease: 'easeOut' }}
+                      />
+                      <motion.path
+                        d="M54 2 L70 7 L54 12"
+                        fill="none"
+                        initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: true }}
+                        transition={{ duration: 0.25, delay: i * 0.18 + 1.1, ease: 'easeOut' }}
+                      />
+                    </svg>
+                  </motion.div>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
