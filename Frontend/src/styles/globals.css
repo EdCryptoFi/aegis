@@ -296,19 +296,19 @@ body {
 
 /* Glow pulse for CLI Walkthrough */
 @keyframes glow-pulse {
-  0%, 100% { box-shadow: 0 0 12px rgba(0,245,255,0.15); border-color: rgba(0,245,255,0.2); }
-  50% { box-shadow: 0 0 28px rgba(0,245,255,0.4); border-color: rgba(0,245,255,0.5); }
+  0%, 100% { box-shadow: 0 0 20px rgba(0,245,255,0.2), 0 0 40px rgba(0,245,255,0.05); border-color: rgba(0,245,255,0.25); }
+  50% { box-shadow: 0 0 40px rgba(0,245,255,0.4), 0 0 80px rgba(0,245,255,0.1); border-color: rgba(0,245,255,0.55); }
 }
 .glow-pulse {
-  animation: glow-pulse 3s ease-in-out infinite;
+  animation: glow-pulse 2.5s ease-in-out infinite;
 }
 
 @keyframes glow-pulse-fast {
-  0%, 100% { box-shadow: 0 0 15px rgba(0,245,255,0.2); }
-  50% { box-shadow: 0 0 35px rgba(0,245,255,0.5); }
+  0%, 100% { box-shadow: 0 0 20px rgba(0,245,255,0.25), 0 0 50px rgba(0,245,255,0.08); }
+  50% { box-shadow: 0 0 45px rgba(0,245,255,0.5), 0 0 90px rgba(0,245,255,0.15); }
 }
 .glow-pulse-fast {
-  animation: glow-pulse-fast 2s ease-in-out infinite;
+  animation: glow-pulse-fast 1.5s ease-in-out infinite;
 }
 
 /* Step connector beam */

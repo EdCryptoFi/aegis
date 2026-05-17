@@ -377,7 +377,7 @@ function LiveDemo() {
       </div>
 
       {/* Terminal window */}
-      <div className={`rounded-2xl overflow-hidden border bg-[#0a0d0f] transition-all duration-300 ${!running && !done ? 'glow-pulse border-cyan-primary/20' : 'border-[rgba(255,255,255,0.08)]'}`}>
+      <div className={`rounded-2xl overflow-hidden border bg-[#0a0d0f] transition-all duration-500 ${!running && !done ? 'glow-pulse border-cyan-primary/25' : 'border-[rgba(255,255,255,0.08)] shadow-lg shadow-cyan-primary/5'}`}>
         {/* Title bar */}
         <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[rgba(255,255,255,0.06)] bg-[#0e1214]">
           <span className="w-3 h-3 rounded-full bg-red-500/70" />
@@ -440,7 +440,7 @@ function LiveDemo() {
         <button
           onClick={startDemo}
           disabled={running}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 shadow-glow-cyan"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 glow-pulse-fast"
         >
           {running ? (
             <><RefreshCw size={14} className="animate-spin" /> Running...</>
@@ -656,7 +656,7 @@ export default function DeveloperPage() {
                   ${active
                     ? 'bg-cyan-primary/[0.08] border-cyan-primary/30 shadow-glow-cyan'
                     : t.id === 'demo'
-                      ? 'border-cyan-primary/25 bg-cyan-primary/[0.04] hover:bg-cyan-primary/[0.07] hover:border-cyan-primary/40'
+                      ? 'border-cyan-primary/25 bg-cyan-primary/[0.04] glow-pulse hover:bg-cyan-primary/[0.07] hover:border-cyan-primary/40'
                       : 'glass-card-matte hover:bg-surface-2/60 hover:border-cyan-primary/10'
                   }
                 `}

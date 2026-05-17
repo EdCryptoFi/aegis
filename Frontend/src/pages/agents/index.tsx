@@ -232,6 +232,16 @@ export default function AgentsPage() {
           </div>
         </motion.div>
 
+        {/* Click hint */}
+        <motion.p
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15 }}
+          className="text-text-muted text-xs font-mono mb-8 -mt-4"
+        >
+          Click on an agent for Full Analytics Dashboard
+        </motion.p>
+
         {/* Content */}
         {loading ? (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
