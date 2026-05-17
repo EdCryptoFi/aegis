@@ -177,6 +177,18 @@ function LiveDemo() {
         if (i === DEMO_LINES.length - 1) {
           setRunning(false);
           setDone(true);
+          const demoAgent = {
+            objectId: '0xdemo' + Math.random().toString(16).slice(2, 14),
+            agentId: '0x' + Math.random().toString(16).slice(2, 10),
+            totalExecutions: 15,
+            successfulExecutions: 13,
+            uptimeScore: 87,
+            totalVolume: 15_000_000_000,
+            isFlagged: false,
+          };
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('aegis_demo_agent', JSON.stringify(demoAgent));
+          }
         }
       }, line.delay + 200);
       timersRef.current.push(t);
@@ -299,6 +311,16 @@ function LiveDemo() {
               <p className="text-yellow-400 font-bold text-sm">Bronze Badge Minted</p>
               <p className="text-text-muted text-xs">Agent certified - 86.7% success rate</p>
             </div>
+          </motion.div>
+        )}
+        {done && (
+          <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+            <Link
+              href="/agents"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-[12px] border border-cyan-primary/30 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
+            >
+              View in Agent List <ArrowRight size={14} />
+            </Link>
           </motion.div>
         )}
       </div>
@@ -424,18 +446,28 @@ export default function DeveloperPage() {
                   relative rounded-2xl p-5 text-left transition-all duration-200 border
                   ${active
                     ? 'bg-cyan-primary/[0.08] border-cyan-primary/30 shadow-glow-cyan'
-                    : 'glass-card-matte hover:bg-surface-2/60 hover:border-cyan-primary/10'
+                    : t.id === 'demo'
+                      ? 'border-cyan-primary/25 bg-cyan-primary/[0.04] hover:bg-cyan-primary/[0.07] hover:border-cyan-primary/40'
+                      : 'glass-card-matte hover:bg-surface-2/60 hover:border-cyan-primary/10'
                   }
                 `}
               >
-                <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center mb-4 transition-colors ${active ? 'bg-cyan-primary/20' : 'bg-surface-2'}`}>
-                  <Icon size={16} className={active ? 'text-cyan-primary' : 'text-text-muted'} />
+                <div className={`w-9 h-9 rounded-[10px] flex items-center justify-center mb-4 transition-colors ${active ? 'bg-cyan-primary/20' : t.id === 'demo' ? 'bg-cyan-primary/10' : 'bg-surface-2'}`}>
+                  <Icon size={16} className={active || t.id === 'demo' ? 'text-cyan-primary' : 'text-text-muted'} />
                 </div>
-                <p className={`font-display font-bold text-sm mb-0.5 ${active ? 'text-cyan-primary' : 'text-text-primary'}`}>
+                <p className={`font-display font-bold text-sm mb-0.5 ${active || t.id === 'demo' ? 'text-cyan-primary' : 'text-text-primary'}`}>
                   {t.label}
                 </p>
                 <p className="text-text-muted text-xs">{t.desc}</p>
-                {active && (
+                {t.id === 'demo' ? (
+                  <span className="absolute top-3 right-3 flex items-center gap-1 px-2 py-0.5 rounded-full bg-cyan-primary/15 border border-cyan-primary/30 font-mono text-[9px] text-cyan-primary uppercase tracking-widest">
+                    <span className="relative flex h-1.5 w-1.5 mr-0.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-primary opacity-60" />
+                      <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-cyan-primary" />
+                    </span>
+                    LIVE
+                  </span>
+                ) : active && (
                   <span className="absolute top-3 right-3 w-1.5 h-1.5 rounded-full bg-cyan-primary" />
                 )}
               </button>

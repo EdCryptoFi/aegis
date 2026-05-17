@@ -103,9 +103,16 @@ export default function AgentsPage() {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState<SortKey>('uptime');
   const [limit, setLimit] = useState<10 | 20 | 100>(10);
+  const [demoAgent, setDemoAgent] = useState<AgentInfo | null>(null);
 
   useEffect(() => {
     loadAgents();
+    if (typeof window !== 'undefined') {
+      const raw = localStorage.getItem('aegis_demo_agent');
+      if (raw) {
+        try { setDemoAgent(JSON.parse(raw)); } catch {}
+      }
+    }
   }, []);
 
   async function loadAgents() {
@@ -232,6 +239,60 @@ export default function AgentsPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.15 }}
           >
+            {demoAgent && (() => {
+              const demoSuccess = Math.round((demoAgent.successfulExecutions / demoAgent.totalExecutions) * 100);
+              const demoLevel = getTrustLevel(demoAgent);
+              return (
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0 }}
+                >
+                  <Link href={`/agent/${demoAgent.objectId}`} className="block h-full">
+                    <div className="relative h-full rounded-2xl p-6 glass-card-heavy border-cyan-primary/20 hover:border-cyan-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300 cursor-pointer">
+                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-primary/10 border border-cyan-primary/20 font-mono text-[9px] text-cyan-primary uppercase tracking-widest">
+                        DEMO
+                      </span>
+                      <div className="flex items-center justify-between mb-5">
+                        <span className="font-display text-3xl font-bold text-cyan-primary">★</span>
+                        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${TRUST_PILL[demoLevel]}`}>
+                          {demoLevel}
+                        </span>
+                      </div>
+                      <div className="mb-4">
+                        <p className="text-text-muted text-[10px] uppercase tracking-wider mb-1">Agent ID</p>
+                        <p className="font-mono text-sm text-text-primary">
+                          {demoAgent.objectId.slice(0, 8)}...{demoAgent.objectId.slice(-4)}
+                        </p>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2">
+                        <div className="rounded-xl p-3 bg-cyan-primary/[0.06]">
+                          <div className="flex items-center gap-1 mb-1">
+                            <TrendingUp size={10} className="text-cyan-primary" />
+                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
+                          </div>
+                          <p className="font-mono font-bold text-sm text-cyan-primary">{demoAgent.uptimeScore}%</p>
+                        </div>
+                        <div className="rounded-xl p-3 bg-mint-secondary/[0.06]">
+                          <div className="flex items-center gap-1 mb-1">
+                            <BarChart2 size={10} className="text-mint-secondary" />
+                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
+                          </div>
+                          <p className="font-mono font-bold text-sm text-mint-secondary">{demoSuccess}%</p>
+                        </div>
+                        <div className="rounded-xl p-3 bg-surface-2">
+                          <div className="flex items-center gap-1 mb-1">
+                            <Layers size={10} className="text-text-muted" />
+                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Volume</p>
+                          </div>
+                          <p className="font-mono font-bold text-xs text-text-primary">{formatVolume(demoAgent.totalVolume)}</p>
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </motion.div>
+              );
+            })()}
             {sortedAgents.map((agent, i) => {
               const level = getTrustLevel(agent);
               const successRate = agent.totalExecutions > 0
