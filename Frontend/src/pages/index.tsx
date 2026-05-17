@@ -116,6 +116,8 @@ export default function Home() {
   const [agentAddress, setAgentAddress] = useState('');
   const stepsRef = useRef<HTMLDivElement>(null);
   const stepsInView = useInView(stepsRef, { once: true, margin: '-80px' });
+  const integratedRef = useRef<HTMLDivElement>(null);
+  const integratedInView = useInView(integratedRef, { once: true, margin: '-60px' });
 
   const handleCheckReputation = () => {
     if (agentAddress.trim()) {
@@ -248,7 +250,10 @@ export default function Home() {
 
           {/* Integrated with */}
           <motion.div
-            variants={itemVariants}
+            ref={integratedRef}
+            initial={{ opacity: 0, y: 20 }}
+            animate={integratedInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.6 }}
             className="mt-16 flex flex-col items-center gap-6"
           >
             <p className="text-text-muted text-xs font-mono uppercase tracking-widest">Integrated with</p>
@@ -256,7 +261,7 @@ export default function Home() {
               {/* Sui */}
               <div className="flex items-center gap-3">
                 <div className="w-[72px] h-[72px] flex-shrink-0">
-                  <SuiIcon />
+                  {integratedInView && <SuiIcon />}
                 </div>
                 <span className="font-display font-bold text-text-secondary text-lg tracking-wide">Sui</span>
               </div>
@@ -266,7 +271,7 @@ export default function Home() {
               {/* DeepBook */}
               <div className="flex items-center gap-3">
                 <div className="w-[72px] h-[72px] flex-shrink-0">
-                  <DeepBookIcon />
+                  {integratedInView && <DeepBookIcon />}
                 </div>
                 <span className="font-display font-bold text-text-secondary text-lg tracking-wide">DeepBook</span>
               </div>
@@ -276,7 +281,7 @@ export default function Home() {
               {/* MemWal */}
               <div className="flex items-center gap-3">
                 <div className="w-[72px] h-[72px] flex-shrink-0">
-                  <MemWalIcon />
+                  {integratedInView && <MemWalIcon />}
                 </div>
                 <span className="font-display font-bold text-text-secondary text-lg tracking-wide">MemWal</span>
               </div>
@@ -286,7 +291,7 @@ export default function Home() {
               {/* Walrus */}
               <div className="flex items-center gap-3">
                 <div className="w-[72px] h-[72px] flex-shrink-0">
-                  <WalrusIcon />
+                  {integratedInView && <WalrusIcon />}
                 </div>
                 <span className="font-display font-bold text-text-secondary text-lg tracking-wide">Walrus</span>
               </div>

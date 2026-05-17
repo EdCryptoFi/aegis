@@ -7,7 +7,11 @@ import {
   Shield, ArrowRight, XCircle, CheckCircle2, Wallet, ShoppingBag,
   Zap, BarChart2, Code2, Users, Award, TrendingUp, Lock, Cpu,
 } from 'lucide-react';
-import { BannerRegisterIcon, BannerRecordIcon, BannerRewardIcon } from '../../components/AegisIcons';
+import {
+  BannerRegisterIcon, BannerRecordIcon, BannerRewardIcon,
+  ProtocolIcon, ZeroInfraIcon, EarnBadgeIcon,
+  WalletsIcon, MarketplacesIcon, DeFiIcon, PortfoliosIcon,
+} from '../../components/AegisIcons';
 
 const problems = [
   {
@@ -42,6 +46,7 @@ const problems = [
 const solutions = [
   {
     icon: Shield,
+    WireIcon: ProtocolIcon,
     title: 'Verifiable On-Chain Reputation',
     desc: 'Every execution, success rate, and badge is recorded on Sui. Immutable, transparent, and provable — no blind trust required.',
     color: 'text-cyan-primary',
@@ -50,6 +55,7 @@ const solutions = [
   },
   {
     icon: CheckCircle2,
+    WireIcon: ZeroInfraIcon,
     title: 'One Integration, Zero Infrastructure',
     desc: 'No database to maintain, no scoring engine to build, no badge system to design. Add the Aegis SDK and get full agent trust in one call.',
     color: 'text-mint-secondary',
@@ -58,6 +64,7 @@ const solutions = [
   },
   {
     icon: Award,
+    WireIcon: EarnBadgeIcon,
     title: 'Portable Badges, Cross-Protocol Trust',
     desc: 'Bronze, Silver, Gold badges follow agents everywhere. A Gold agent on DeepBook is a Gold agent on your protocol — verified, not claimed.',
     color: 'text-yellow-400',
@@ -76,10 +83,10 @@ const stakeholders = [
 ];
 
 const useCases = [
-  { Icon: Wallet, label: 'Wallets', desc: 'Verify agent trust before fund delegation. Show users exactly which agents are certified.', color: 'text-cyan-primary' },
-  { Icon: ShoppingBag, label: 'Marketplaces', desc: 'Display verified badges on listings. Buyers instantly know which agents are trustworthy.', color: 'text-mint-secondary' },
-  { Icon: Zap, label: 'DeFi', desc: 'Score agents for automated trading permissions. Only Gold-rated agents execute on your pools.', color: 'text-yellow-400' },
-  { Icon: BarChart2, label: 'Portfolios', desc: 'Track real-time agent performance. Give users data-driven insights, not marketing claims.', color: 'text-purple-400' },
+  { Icon: WalletsIcon, label: 'Wallets', desc: 'Verify agent trust before fund delegation. Show users exactly which agents are certified.', color: 'text-cyan-primary' },
+  { Icon: MarketplacesIcon, label: 'Marketplaces', desc: 'Display verified badges on listings. Buyers instantly know which agents are trustworthy.', color: 'text-cyan-primary' },
+  { Icon: DeFiIcon, label: 'DeFi', desc: 'Score agents for automated trading permissions. Only Gold-rated agents execute on your pools.', color: 'text-cyan-primary' },
+  { Icon: PortfoliosIcon, label: 'Portfolios', desc: 'Track real-time agent performance. Give users data-driven insights, not marketing claims.', color: 'text-cyan-primary' },
 ];
 
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
@@ -227,7 +234,7 @@ export default function ForProtocolsPage() {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-10">
             {solutions.map((item, i) => {
-              const Icon = item.icon;
+              const { WireIcon } = item;
               return (
                 <motion.div
                   key={item.title}
@@ -236,8 +243,8 @@ export default function ForProtocolsPage() {
                   transition={{ duration: 0.5, delay: i * 0.1 }}
                   className={`rounded-2xl p-6 border ${item.border} ${item.bg} hover:-translate-y-1 transition-all duration-300`}
                 >
-                  <div className={`w-10 h-10 rounded-[12px] flex items-center justify-center mb-4 ${item.bg}`}>
-                    <Icon size={20} className={item.color} />
+                  <div className={`w-12 h-12 mb-5 ${item.color}`}>
+                    <WireIcon />
                   </div>
                   <h3 className="font-display font-bold text-text-primary text-base mb-3">{item.title}</h3>
                   <p className="text-text-secondary text-sm leading-relaxed">{item.desc}</p>
@@ -497,8 +504,8 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                 transition={{ duration: 0.4, delay: i * 0.1 }}
                 className="rounded-2xl p-6 glass-card-matte hover:bg-surface-2/60 hover:-translate-y-1 transition-all duration-300 text-center"
               >
-                <div className={`mb-4 p-3 rounded-xl border ${color} bg-${color}/10 inline-flex`}>
-                  <Icon size={24} className={color} />
+                <div className={`w-12 h-12 mb-4 mx-auto ${color}`}>
+                  <Icon />
                 </div>
                 <h3 className={`font-display font-bold text-sm mb-2 ${color}`}>{label}</h3>
                 <p className="text-text-muted text-xs leading-relaxed">{desc}</p>

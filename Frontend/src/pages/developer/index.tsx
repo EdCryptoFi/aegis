@@ -9,6 +9,7 @@ import {
   XCircle, Award,
 } from 'lucide-react';
 import { config } from '../../config';
+import { UptimeIcon, FlaggedIcon, AlertIcon, SuccessIcon } from '../../components/AegisIcons';
 
 /* ─── Tab config ─── */
 const TABS = [
@@ -570,14 +571,14 @@ await aegis.grantBadge({
                   <AlertTriangle size={18} className="text-red-400" /> Auto-Revocation Rules
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {[
-                    { icon: '📉', title: 'Low Success Rate', desc: 'Agent flagged if success rate drops below 50%' },
-                    { icon: '❌', title: 'Consecutive Failures', desc: 'Agent flagged after 5+ consecutive failures' },
-                    { icon: '💸', title: 'High Slippage', desc: 'Agent flagged if slippage exceeds 500 BPS' },
-                    { icon: '🔄', title: 'Recovery', desc: 'Unflag after 100 consecutive successes' },
-                  ].map(({ icon, title, desc }) => (
+                  {([
+                    { WireIcon: UptimeIcon, title: 'Low Success Rate', desc: 'Agent flagged if success rate drops below 50%' },
+                    { WireIcon: FlaggedIcon, title: 'Consecutive Failures', desc: 'Agent flagged after 5+ consecutive failures' },
+                    { WireIcon: AlertIcon, title: 'High Slippage', desc: 'Agent flagged if slippage exceeds 500 BPS' },
+                    { WireIcon: SuccessIcon, title: 'Recovery', desc: 'Unflag after 100 consecutive successes' },
+                  ] as const).map(({ WireIcon, title, desc }) => (
                     <div key={title} className="rounded-2xl p-5 glass-card-matte flex gap-3">
-                      <span className="text-xl">{icon}</span>
+                      <div className="w-9 h-9 flex-shrink-0 text-cyan-primary mt-0.5"><WireIcon /></div>
                       <div>
                         <p className="text-text-primary font-semibold text-sm mb-1">{title}</p>
                         <p className="text-text-secondary text-xs">{desc}</p>

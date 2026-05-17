@@ -167,6 +167,9 @@ export default function LeaderboardPage() {
             <h1 className="font-display text-5xl font-bold gradient-text-cyan">Rankings</h1>
           </div>
           <p className="text-text-secondary text-lg">Top AI agents ranked by on-chain performance</p>
+          <p className="text-text-muted text-sm mt-2 font-mono">
+            Click on an agent for Full Analytics Dashboard
+          </p>
         </motion.div>
 
         {/* Stats bar */}
