@@ -59,10 +59,37 @@ function deriveBadge(score: number, isFlagged: boolean): string {
 }
 
 async function getLeaderboard(): Promise<LeaderboardEntry[]> {
+  // Fetch demo agents from server store
+  let demoEntries: LeaderboardEntry[] = [];
   try {
-    const agents = await getAllAgents();
-    if (agents.length > 0) {
-      const entries: LeaderboardEntry[] = agents.map((agent) => {
+    const demoRes = await fetch('/api/agents/demo');
+    const demoData = await demoRes.json();
+    if (demoData.success && demoData.agents?.length > 0) {
+      demoEntries = demoData.agents.map((a: any, i: number) => {
+        const score = computeScore({
+          objectId: a.objectId, agentId: a.objectId,
+          name: a.name, uptimeScore: a.uptimeScore, successRate: a.successRate,
+          totalExecutions: a.totalExecutions, totalVolume: a.totalVolume,
+          isFlagged: a.isFlagged, badge: a.badge,
+        });
+        const badge = deriveBadge(score, a.isFlagged);
+        return {
+          rank: 0, objectId: a.objectId, agentId: a.objectId,
+          name: a.name, uptimeScore: a.uptimeScore, successRate: a.successRate,
+          totalExecutions: a.totalExecutions, totalVolume: a.totalVolume,
+          isFlagged: a.isFlagged, badge, aegisScore: score,
+          status: deriveStatus(badge, a.isFlagged),
+        };
+      });
+    }
+  } catch {}
+
+  let blockchainAgents: LeaderboardEntry[] = [];
+
+  try {
+    const sdkAgents = await getAllAgents();
+    if (sdkAgents.length > 0) {
+      blockchainAgents = sdkAgents.map((agent) => {
         const rep = agent.reputation;
         const totalEx = rep.totalExecutions;
         const successEx = rep.successfulExecutions;
@@ -94,73 +121,72 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
           status: deriveStatus(badge, rep.isFlagged),
         };
       });
-      return entries
-        .sort((a, b) => {
-          if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
-          if (b.aegisScore !== a.aegisScore) return b.aegisScore - a.aegisScore;
-          return b.totalExecutions - a.totalExecutions;
-        })
-        .map((agent, i) => ({ ...agent, rank: i + 1 }));
     }
   } catch (e) {
     console.log('Chain fetch failed, trying RPC fallback:', e);
   }
 
   // Fallback: try direct RPC for known agents
-  try {
-    const agents: LeaderboardEntry[] = [];
-    for (const demo of DEMO_LEADERBOARD) {
-      const res = await fetch('https://fullnode.testnet.sui.io:443', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          jsonrpc: '2.0',
-          id: 1,
-          method: 'sui_getObject',
-          params: [demo.objectId, { showContent: true }],
-        }),
-      });
-      const d = await res.json();
-      if (d.result?.data?.content?.dataType === 'moveObject') {
-        const fields = d.result.data.content.fields;
-        const totalEx = Number(fields.total_executions);
-        const successEx = Number(fields.successful_executions);
-        const entry: LeaderboardEntry = {
-          rank: 0,
-          objectId: demo.objectId,
-          agentId: fields.agent_id,
-          name: demo.name,
-          uptimeScore: Number(fields.uptime_score),
-          successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
-          totalExecutions: totalEx,
-          totalVolume: Number(fields.total_volume),
-          isFlagged: fields.is_flagged,
-          badge: demo.badge,
-          aegisScore: 0,
-          status: 'Active',
-        };
-        entry.aegisScore = computeScore(entry);
-        entry.status = deriveStatus(entry.badge, entry.isFlagged);
-        agents.push(entry);
+  if (blockchainAgents.length === 0) {
+    try {
+      for (const demo of DEMO_LEADERBOARD) {
+        const res = await fetch('https://fullnode.testnet.sui.io:443', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'sui_getObject',
+            params: [demo.objectId, { showContent: true }],
+          }),
+        });
+        const d = await res.json();
+        if (d.result?.data?.content?.dataType === 'moveObject') {
+          const fields = d.result.data.content.fields;
+          const totalEx = Number(fields.total_executions);
+          const successEx = Number(fields.successful_executions);
+          const entry: LeaderboardEntry = {
+            rank: 0,
+            objectId: demo.objectId,
+            agentId: fields.agent_id,
+            name: demo.name,
+            uptimeScore: Number(fields.uptime_score),
+            successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
+            totalExecutions: totalEx,
+            totalVolume: Number(fields.total_volume),
+            isFlagged: fields.is_flagged,
+            badge: demo.badge,
+            aegisScore: 0,
+            status: 'Active',
+          };
+          entry.aegisScore = computeScore(entry);
+          entry.status = deriveStatus(entry.badge, entry.isFlagged);
+          blockchainAgents.push(entry);
+        }
       }
+    } catch (e) {
+      console.log('RPC fallback failed:', e);
     }
-    if (agents.length > 0) {
-      return agents.sort((a, b) => {
-        if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
-        if (b.uptimeScore !== a.uptimeScore) return b.uptimeScore - a.uptimeScore;
-        return b.totalExecutions - a.totalExecutions;
-      }).map((agent, i) => ({ ...agent, rank: i + 1 }));
-    }
-  } catch (e) {
-    console.log('RPC fallback failed:', e);
   }
 
-  // Last resort: demo data
-  return DEMO_LEADERBOARD.sort((a, b) => {
-    if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
-    if (b.uptimeScore !== a.uptimeScore) return b.uptimeScore - a.uptimeScore;
-    return b.totalExecutions - a.totalExecutions;
-  }).map((agent, i) => ({ ...agent, rank: i + 1 }));
+  // Merge blockchain agents with demo store agents
+  const combined = [...(blockchainAgents.length > 0 ? blockchainAgents : DEMO_LEADERBOARD), ...demoEntries];
+
+  // Deduplicate by objectId (demo store takes precedence for display)
+  const seen = new Set<string>();
+  const merged = combined.filter(a => {
+    if (seen.has(a.objectId)) return false;
+    seen.add(a.objectId);
+    return true;
+  });
+
+  return merged
+    .sort((a, b) => {
+      if (a.isFlagged !== b.isFlagged) return a.isFlagged ? 1 : -1;
+      if (b.aegisScore !== a.aegisScore) return b.aegisScore - a.aegisScore;
+      return b.totalExecutions - a.totalExecutions;
+    })
+    .map((agent, i) => ({ ...agent, rank: i + 1 }));
 }
 
 function formatVolume(mist: number): string {

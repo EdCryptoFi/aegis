@@ -23,6 +23,24 @@ const DEMO_AGENTS: AgentInfo[] = [
 ];
 
 async function getAllAgents(): Promise<AgentInfo[]> {
+  // Fetch demo agents from server store
+  let demoAgents: AgentInfo[] = [];
+  try {
+    const demoRes = await fetch('/api/agents/demo');
+    const demoData = await demoRes.json();
+    if (demoData.success && demoData.agents?.length > 0) {
+      demoAgents = demoData.agents.map((a: any) => ({
+        objectId: a.objectId,
+        agentId: a.objectId,
+        totalExecutions: a.totalExecutions,
+        successfulExecutions: a.successfulExecutions,
+        uptimeScore: a.uptimeScore,
+        totalVolume: a.totalVolume,
+        isFlagged: a.isFlagged,
+      }));
+    }
+  } catch {}
+
   // Try to fetch from blockchain first
   try {
     const response = await fetch('https://fullnode.testnet.sui.io:443', {
@@ -64,13 +82,26 @@ async function getAllAgents(): Promise<AgentInfo[]> {
           });
         }
       }
-      if (agents.length > 0) return agents;
+      if (agents.length > 0) {
+        // Merge with demo agents, deduplicate by objectId
+        const seen = new Set<string>();
+        return [...agents, ...demoAgents].filter(a => {
+          if (seen.has(a.objectId)) return false;
+          seen.add(a.objectId);
+          return true;
+        });
+      }
     }
   } catch (e) {
     console.log('Using demo data (fetch failed):', e);
   }
-  // Return demo data
-  return DEMO_AGENTS;
+  // Return demo data + demo store agents
+  const seen = new Set<string>();
+  return [...DEMO_AGENTS, ...demoAgents].filter(a => {
+    if (seen.has(a.objectId)) return false;
+    seen.add(a.objectId);
+    return true;
+  });
 }
 
 function formatVolume(mist: number): string {

@@ -388,8 +388,44 @@ function LiveDemo() {
     if (real) {
       sim = real;
       isReal = true;
+      // Save real agent to demo store for leaderboard visibility
+      fetch('/api/agents/demo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          objectId: real.lines.find(l => l.text.startsWith('✓  Agent registered:'))?.text.replace('✓  Agent registered:  ', '') || '',
+          name: `Demo Agent`,
+          totalExecutions: real.totalExecs,
+          successfulExecutions: real.successes,
+          failedExecutions: real.failures,
+          totalVolume: real.totalVolumeSUI * 1_000_000_000,
+          successRate: real.successRate,
+          avgSlippage: real.avgSlippageBps,
+          isFlagged: real.isFlagged,
+          badge: real.badge,
+          uptimeScore: real.successRate,
+        }),
+      }).catch(() => {});
     } else {
       sim = generateSimulation();
+      // Save simulated agent to demo store so it appears on leaderboard
+      fetch('/api/agents/demo', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          objectId: `0xSIM_${Date.now().toString(36).toUpperCase()}`,
+          name: `Demo Agent`,
+          totalExecutions: sim.totalExecs,
+          successfulExecutions: sim.successes,
+          failedExecutions: sim.failures,
+          totalVolume: sim.totalVolumeSUI * 1_000_000_000,
+          successRate: sim.successRate,
+          avgSlippage: sim.avgSlippageBps,
+          isFlagged: sim.isFlagged,
+          badge: sim.badge,
+          uptimeScore: sim.successRate,
+        }),
+      }).catch(() => {});
     }
 
     setRealTx(isReal);
