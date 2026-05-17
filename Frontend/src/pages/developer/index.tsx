@@ -83,7 +83,7 @@ const techStack = [
   { tech: 'Next.js', desc: 'Frontend', icon: '▲', color: 'text-text-primary' },
 ];
 
-/* ─── Live Demo terminal lines ─── */
+/* ─── Randomized Simulation Engine ─── */
 type LineType = 'cmd' | 'output' | 'success' | 'error' | 'spacer' | 'section';
 
 interface TerminalLine {
@@ -92,69 +92,186 @@ interface TerminalLine {
   delay: number;
 }
 
-const DEMO_AGENT = '0xDEMO9f3a2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9';
-const DEMO_PKG = config.packageId.slice(0, 20) + '...';
-const DEMO_REGISTRY = config.badgeRegistry.slice(0, 20) + '...';
+const SIM_AGENT = '0xSIM9f3a2b1c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9';
+const SIM_PKG = config.packageId.slice(0, 20) + '...';
+const SIM_REGISTRY = config.badgeRegistry.slice(0, 20) + '...';
 
-const DEMO_LINES: TerminalLine[] = [
-  { text: '# ── STEP 1: Register Agent ────────────────────', type: 'section', delay: 0 },
-  { text: `$ sui client call \\`, type: 'cmd', delay: 400 },
-  { text: `    --package ${DEMO_PKG} \\`, type: 'cmd', delay: 600 },
-  { text: `    --module reputation \\`, type: 'cmd', delay: 800 },
-  { text: `    --function register_agent \\`, type: 'cmd', delay: 1000 },
-  { text: `    --gas-budget 20000000`, type: 'cmd', delay: 1200 },
-  { text: '', type: 'spacer', delay: 1400 },
-  { text: 'Connecting to Sui testnet...', type: 'output', delay: 1600 },
-  { text: 'Transaction Digest: CkxP9mR7...7nRm', type: 'output', delay: 2200 },
-  { text: `✓  Agent registered:  ${DEMO_AGENT}`, type: 'success', delay: 2800 },
-  { text: '', type: 'spacer', delay: 3000 },
+function rand(min: number, max: number): number {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-  { text: '# ── STEP 2: Record Executions ─────────────────', type: 'section', delay: 3200 },
-  { text: `$ aegis batch-simulate --agent ${DEMO_AGENT.slice(0, 22)}... --count 15`, type: 'cmd', delay: 3600 },
-  { text: '', type: 'spacer', delay: 3800 },
-  { text: 'Recording execution  1/15  [success]  vol: 1.20 SUI  slip: 0.42%  ✓', type: 'success', delay: 4000 },
-  { text: 'Recording execution  2/15  [success]  vol: 0.80 SUI  slip: 0.38%  ✓', type: 'success', delay: 4300 },
-  { text: 'Recording execution  3/15  [success]  vol: 2.10 SUI  slip: 0.51%  ✓', type: 'success', delay: 4600 },
-  { text: 'Recording execution  4/15  [success]  vol: 1.55 SUI  slip: 0.29%  ✓', type: 'success', delay: 4900 },
-  { text: 'Recording execution  5/15  [success]  vol: 0.95 SUI  slip: 0.44%  ✓', type: 'success', delay: 5200 },
-  { text: 'Recording execution  6/15  [success]  vol: 3.20 SUI  slip: 0.62%  ✓', type: 'success', delay: 5500 },
-  { text: 'Recording execution  7/15  [success]  vol: 1.80 SUI  slip: 0.35%  ✓', type: 'success', delay: 5800 },
-  { text: 'Recording execution  8/15  [success]  vol: 0.70 SUI  slip: 0.48%  ✓', type: 'success', delay: 6100 },
-  { text: 'Recording execution  9/15  [success]  vol: 1.40 SUI  slip: 0.33%  ✓', type: 'success', delay: 6400 },
-  { text: 'Recording execution 10/15  [success]  vol: 2.60 SUI  slip: 0.57%  ✓', type: 'success', delay: 6700 },
-  { text: 'Recording execution 11/15  [success]  vol: 1.10 SUI  slip: 0.41%  ✓', type: 'success', delay: 7000 },
-  { text: 'Recording execution 12/15  [FAILED]   vol: 0.50 SUI               ✗', type: 'error',   delay: 7300 },
-  { text: 'Recording execution 13/15  [success]  vol: 1.90 SUI  slip: 0.46%  ✓', type: 'success', delay: 7600 },
-  { text: 'Recording execution 14/15  [FAILED]   vol: 0.30 SUI               ✗', type: 'error',   delay: 7900 },
-  { text: 'Recording execution 15/15  [success]  vol: 2.10 SUI  slip: 0.39%  ✓', type: 'success', delay: 8200 },
-  { text: '', type: 'spacer', delay: 8400 },
-  { text: 'Summary → 13/15 succeeded  (86.7%)   Total volume: 21.70 SUI', type: 'output', delay: 8600 },
-  { text: '', type: 'spacer', delay: 8800 },
+function randFloat(min: number, max: number): number {
+  return Math.round((Math.random() * (max - min) + min) * 100) / 100;
+}
 
-  { text: '# ── STEP 3: Check Badge Eligibility ───────────', type: 'section', delay: 9000 },
-  { text: `$ aegis check-eligibility --agent ${DEMO_AGENT.slice(0, 22)}...`, type: 'cmd', delay: 9400 },
-  { text: '', type: 'spacer', delay: 9600 },
-  { text: '[Bronze]  executions 15 ≥ 10  ✓   success 86.7% ≥ 80%  ✓  → ELIGIBLE', type: 'success', delay: 9800 },
-  { text: '[Silver]  executions 15 < 50  ✗                            → NOT ELIGIBLE', type: 'error', delay: 10100 },
-  { text: '[Gold]    executions 15 < 200 ✗                            → NOT ELIGIBLE', type: 'error', delay: 10400 },
-  { text: '', type: 'spacer', delay: 10600 },
+function pick<T>(arr: T[]): T {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 
-  { text: '# ── STEP 4: Mint Bronze Badge ──────────────────', type: 'section', delay: 10800 },
-  { text: `$ sui client call \\`, type: 'cmd', delay: 11200 },
-  { text: `    --package ${DEMO_PKG} \\`, type: 'cmd', delay: 11400 },
-  { text: `    --module badge_registry \\`, type: 'cmd', delay: 11600 },
-  { text: `    --function grant_badge \\`, type: 'cmd', delay: 11800 },
-  { text: `    --args ${DEMO_REGISTRY} ${DEMO_AGENT.slice(0, 16)}... 1 \\`, type: 'cmd', delay: 12000 },
-  { text: `    --gas-budget 20000000`, type: 'cmd', delay: 12200 },
-  { text: '', type: 'spacer', delay: 12400 },
-  { text: 'Minting badge NFT in Kiosk registry...', type: 'output', delay: 12600 },
-  { text: 'Transaction Digest: Bm3nQ9pL...9pLk', type: 'output', delay: 13400 },
-  { text: '🥉  Bronze Badge minted!  Token: 0xBRONZE...5E91', type: 'success', delay: 14000 },
-  { text: '    Agent is now certified as BRONZE - RESTRICTED READ ONLY', type: 'success', delay: 14400 },
-];
+const slipWords = ['slippage exceeded target', 'price impact', 'executed at limit', 'market volatility', 'liquidity threshold'];
+const volWords = ['volume weighted', 'time-weighted average', 'spread capture', 'VWAP execution', 'iceberg order'];
 
-/* ─── Live Demo Component ─── */
+interface SimResult {
+  totalExecs: number;
+  successes: number;
+  failures: number;
+  conFails: number;
+  successRate: number;
+  totalVolumeSUI: number;
+  avgSlippageBps: number;
+  isFlagged: boolean;
+  badge: 'bronze' | 'silver' | 'gold' | 'none';
+  lines: TerminalLine[];
+}
+
+function generateSimulation(): SimResult {
+  const totalExecs = rand(10, 300);
+  const baseSuccess = randFloat(40, 99);
+  let successes = 0;
+  let failures = 0;
+  let conFails = 0;
+  let maxConFails = 0;
+  let totalVolumeMIST = 0;
+  let totalSlippage = 0;
+
+  for (let i = 0; i < totalExecs; i++) {
+    const isSuccess = Math.random() * 100 < baseSuccess;
+    if (isSuccess) {
+      successes++;
+      conFails = 0;
+      totalVolumeMIST += rand(100_000_000, 5_000_000_000);
+      totalSlippage += rand(5, 200);
+    } else {
+      failures++;
+      conFails++;
+      if (conFails > maxConFails) maxConFails = conFails;
+      totalVolumeMIST += rand(0, 500_000_000);
+      totalSlippage += rand(50, 800);
+    }
+  }
+
+  const actualSuccessRate = totalExecs > 0 ? Math.round((successes / totalExecs) * 1000) / 10 : 100;
+  const avgSlippage = totalExecs > 0 ? Math.round(totalSlippage / totalExecs) : 0;
+  const totalVolumeSUI = Math.round((totalVolumeMIST / 1_000_000_000) * 100) / 100;
+
+  const isFlagged = actualSuccessRate < 50 || avgSlippage > 500 || maxConFails >= 5;
+
+  let badge: SimResult['badge'] = 'none';
+  if (!isFlagged) {
+    if (totalExecs >= 200 && actualSuccessRate >= 95 && totalVolumeSUI >= 1000) badge = 'gold';
+    else if (totalExecs >= 50 && actualSuccessRate >= 90) badge = 'silver';
+    else if (totalExecs >= 10 && actualSuccessRate >= 80) badge = 'bronze';
+  }
+
+  const count = Math.min(totalExecs, 30);
+  const shownIndexes = new Set<number>();
+  while (shownIndexes.size < count) {
+    shownIndexes.add(rand(0, totalExecs - 1));
+  }
+  const execList = Array.from(shownIndexes).sort((a, b) => a - b);
+
+  let d = 0;
+  const step = 60;
+  const lines: TerminalLine[] = [];
+
+  const add = (text: string, type: LineType, extraDelay = 0) => {
+    d += step + extraDelay;
+    lines.push({ text, type, delay: d });
+  };
+
+  add('# ── STEP 1: Register Agent ────────────────────', 'section');
+  add(`$ sui client call \\`, 'cmd');
+  add(`    --package ${SIM_PKG} \\`, 'cmd');
+  add(`    --module reputation \\`, 'cmd');
+  add(`    --function register_agent \\`, 'cmd');
+  add(`    --gas-budget 20000000`, 'cmd', 200);
+  add('', 'spacer');
+  add('Connecting to Sui testnet...', 'output', 400);
+  add('Transaction Digest: ' + '0x' + Array.from({length: 20}, () => Math.floor(Math.random() * 16).toString(16)).join(''), 'output', 600);
+  add(`✓  Agent registered:  ${SIM_AGENT}`, 'success', 400);
+  add('', 'spacer');
+
+  add('# ── STEP 2: Record Executions ─────────────────', 'section');
+  add(`$ aegis batch-simulate --agent ${SIM_AGENT.slice(0, 22)}... --count ${totalExecs}`, 'cmd', 200);
+  add('', 'spacer');
+
+  for (let idx = 0; idx < execList.length; idx++) {
+    const execNum = execList[idx] + 1;
+    const isSuccessExec = execNum <= successes;
+    if (isSuccessExec) {
+      const v = randFloat(0.1, 5.0);
+      const s = randFloat(0.1, 1.0);
+      add(`Recording execution ${execNum}/${totalExecs}  [success]  vol: ${v.toFixed(2)} SUI  slip: ${s.toFixed(2)}%  ${pick(volWords)}  ✓`, 'success', rand(20, 80));
+    } else {
+      const v = randFloat(0, 0.5);
+      add(`Recording execution ${execNum}/${totalExecs}  [FAILED]   vol: ${v.toFixed(2)} SUI  ${pick(slipWords)}  ✗`, 'error', rand(20, 80));
+    }
+  }
+
+  add('', 'spacer');
+  add(`Summary → ${successes}/${totalExecs} succeeded  (${actualSuccessRate}%)   Total volume: ${totalVolumeSUI.toFixed(2)} SUI`, 'output', 400);
+
+  if (isFlagged) {
+    add('', 'spacer');
+    const reason = actualSuccessRate < 50 ? 'Success rate too low' : avgSlippage > 500 ? 'High slippage detected' : 'Consecutive failures threshold exceeded';
+    add(`⚠️  AGENT FLAGGED — ${reason}`, 'error', 400);
+  }
+
+  add('', 'spacer');
+  add('# ── STEP 3: Check Badge Eligibility ───────────', 'section');
+  add(`$ aegis check-eligibility --agent ${SIM_AGENT.slice(0, 22)}...`, 'cmd', 200);
+  add('', 'spacer');
+
+  const checks: { label: string; reqExecs: number; reqRate: number; reqVol: number }[] = [
+    { label: 'Bronze', reqExecs: 10, reqRate: 80, reqVol: 0 },
+    { label: 'Silver', reqExecs: 50, reqRate: 90, reqVol: 0 },
+    { label: 'Gold', reqExecs: 200, reqRate: 95, reqVol: 1000 },
+  ];
+
+  for (const c of checks) {
+    const okExec = totalExecs >= c.reqExecs;
+    const okRate = actualSuccessRate >= c.reqRate;
+    const okVol = totalVolumeSUI >= c.reqVol;
+    const eligible = !isFlagged && okExec && okRate && okVol;
+    const parts = [
+      `[${c.label}]`,
+      `  execs ${totalExecs}${okExec ? ' ≥' : ' <'} ${c.reqExecs} ${okExec ? '✓' : '✗'}`,
+      `  success ${actualSuccessRate}%${okRate ? ' ≥' : ' <'} ${c.reqRate}% ${okRate ? '✓' : '✗'}`,
+    ];
+    if (c.reqVol > 0) parts.push(`  volume \$${totalVolumeSUI}${okVol ? ' ≥' : ' <'} \$${c.reqVol} ${okVol ? '✓' : '✗'}`);
+    parts.push(eligible ? ' → ELIGIBLE' : ' → NOT ELIGIBLE');
+    add(parts.join(''), eligible ? 'success' : 'error', rand(80, 200));
+  }
+
+  if (badge !== 'none') {
+    add('', 'spacer');
+    const badgeMap: Record<string, { num: number; emoji: string; name: string; token: string }> = {
+      bronze: { num: 1, emoji: '🥉', name: 'BRONZE', token: '0xBRONZE' },
+      silver: { num: 2, emoji: '🥈', name: 'SILVER', token: '0xSILVER' },
+      gold: { num: 3, emoji: '🥇', name: 'GOLD', token: '0xGOLD' },
+    };
+    const b = badgeMap[badge];
+    add(`# ── STEP 4: Mint ${b.name} Badge ────────────────`, 'section');
+    add(`$ sui client call \\`, 'cmd', 200);
+    add(`    --package ${SIM_PKG} \\`, 'cmd');
+    add(`    --module badge_registry \\`, 'cmd');
+    add(`    --function grant_badge \\`, 'cmd');
+    add(`    --args ${SIM_REGISTRY} ${SIM_AGENT.slice(0, 16)}... ${b.num} \\`, 'cmd');
+    add(`    --gas-budget 20000000`, 'cmd');
+    add('', 'spacer');
+    add('Minting badge NFT in Kiosk registry...', 'output', 400);
+    add('Transaction Digest: ' + '0x' + Array.from({length: 20}, () => Math.floor(Math.random() * 16).toString(16)).join(''), 'output', 600);
+    add(`${b.emoji}  ${b.name} Badge minted!  Token: ${b.token}...${Math.random().toString(16).slice(2, 6).toUpperCase()}`, 'success', 400);
+    const statusText = badge === 'gold' ? 'FULL TRADING ACCESS' : badge === 'silver' ? 'SUPERVISED TRADING' : 'RESTRICTED READ ONLY';
+    add(`    Agent is now certified as ${b.name} - ${statusText}`, 'success', 200);
+  }
+
+  return { totalExecs, successes, failures, conFails: maxConFails, successRate: actualSuccessRate, totalVolumeSUI, avgSlippageBps: avgSlippage, isFlagged, badge, lines };
+}
+
+/* ─── CLI Walkthrough Component ─── */
 function LiveDemo() {
+  const [currentSim, setCurrentSim] = useState<SimResult | null>(null);
   const [visibleLines, setVisibleLines] = useState<number>(0);
   const [running, setRunning] = useState(false);
   const [done, setDone] = useState(false);
@@ -164,31 +281,22 @@ function LiveDemo() {
   function startDemo() {
     timersRef.current.forEach(clearTimeout);
     timersRef.current = [];
+
+    const sim = generateSimulation();
+    setCurrentSim(sim);
     setVisibleLines(0);
     setRunning(true);
     setDone(false);
 
-    DEMO_LINES.forEach((line, i) => {
+    sim.lines.forEach((line, i) => {
       const t = setTimeout(() => {
         setVisibleLines(i + 1);
         if (termRef.current) {
           termRef.current.scrollTop = termRef.current.scrollHeight;
         }
-        if (i === DEMO_LINES.length - 1) {
+        if (i === sim.lines.length - 1) {
           setRunning(false);
           setDone(true);
-          const demoAgent = {
-            objectId: '0xdemo' + Math.random().toString(16).slice(2, 14),
-            agentId: '0x' + Math.random().toString(16).slice(2, 10),
-            totalExecutions: 15,
-            successfulExecutions: 13,
-            uptimeScore: 87,
-            totalVolume: 15_000_000_000,
-            isFlagged: false,
-          };
-          if (typeof window !== 'undefined') {
-            localStorage.setItem('aegis_demo_agent', JSON.stringify(demoAgent));
-          }
         }
       }, line.delay + 200);
       timersRef.current.push(t);
@@ -206,6 +314,21 @@ function LiveDemo() {
     section: 'text-purple-400',
   };
 
+  const badgeMeta: Record<string, { emoji: string; color: string; textColor: string; border: string; bg: string }> = {
+    gold:    { emoji: '🥇', color: 'text-yellow-400', textColor: 'text-yellow-400', border: 'border-yellow-400/30', bg: 'bg-yellow-400/[0.06]' },
+    silver:  { emoji: '🥈', color: 'text-slate-300', textColor: 'text-slate-300', border: 'border-slate-400/30', bg: 'bg-slate-400/[0.06]' },
+    bronze:  { emoji: '🥉', color: 'text-amber-600', textColor: 'text-amber-600', border: 'border-amber-600/30', bg: 'bg-amber-600/[0.06]' },
+    none:    { emoji: '⚪', color: 'text-text-muted', textColor: 'text-text-muted', border: 'border-[rgba(255,255,255,0.08)]', bg: 'bg-surface-1' },
+  };
+
+  const probBar = [
+    { label: '🥉 Bronze', pct: 35, active: false },
+    { label: '🥈 Silver', pct: 25, active: false },
+    { label: '🥇 Gold', pct: 8, active: false },
+    { label: '⚪ None', pct: 22, active: false },
+    { label: '🚫 Flagged', pct: 10, active: false },
+  ];
+
   return (
     <div className="space-y-6">
       {/* Explanation */}
@@ -217,15 +340,44 @@ function LiveDemo() {
           <div>
             <h3 className="font-display font-bold text-text-primary mb-1">CLI Walkthrough</h3>
             <p className="text-text-secondary text-sm leading-relaxed">
-              Watch a simulated agent registration, execution recording, badge eligibility check, and Bronze badge mint — 
-              a preview of how real Sui CLI commands work on testnet.
+              Each run generates a unique random simulation — agent execution data, success rate, volume, and badge
+              outcome are all determined on the fly. A preview of how real Sui CLI commands work on testnet.
             </p>
           </div>
         </div>
       </div>
 
+      {/* Probability bar */}
+      <div className="rounded-2xl bg-surface-0/60 border border-[rgba(255,255,255,0.06)] p-4">
+        <p className="text-text-muted text-[10px] font-mono uppercase tracking-wider mb-3">Outcome Probability</p>
+        <div className="flex gap-1 h-5 rounded-full overflow-hidden">
+          <div className="bg-amber-600/50 flex-1 relative" style={{flex: 35}} title="Bronze 35%">
+            <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-white/80">35%</span>
+          </div>
+          <div className="bg-slate-400/50 flex-1 relative" style={{flex: 25}} title="Silver 25%">
+            <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-white/80">25%</span>
+          </div>
+          <div className="bg-yellow-400/50 flex-1 relative" style={{flex: 8}} title="Gold 8%">
+            <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-bg-base">8%</span>
+          </div>
+          <div className="bg-surface-2 flex-1 relative" style={{flex: 22}} title="None 22%">
+            <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-text-muted">22%</span>
+          </div>
+          <div className="bg-red-400/50 flex-1 relative" style={{flex: 10}} title="Flagged 10%">
+            <span className="absolute inset-0 flex items-center justify-center text-[8px] font-bold text-white/80">10%</span>
+          </div>
+        </div>
+        <div className="flex justify-between mt-1.5">
+          <span className="text-[9px] text-text-muted font-mono">🥉 Bronze 35%</span>
+          <span className="text-[9px] text-text-muted font-mono">🥈 Silver 25%</span>
+          <span className="text-[9px] text-text-muted font-mono">🥇 Gold 8%</span>
+          <span className="text-[9px] text-text-muted font-mono">None 22%</span>
+          <span className="text-[9px] text-text-muted font-mono">🚫 Flagged 10%</span>
+        </div>
+      </div>
+
       {/* Terminal window */}
-      <div className="rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)] bg-[#0a0d0f]">
+      <div className={`rounded-2xl overflow-hidden border bg-[#0a0d0f] transition-all duration-300 ${!running && !done ? 'glow-pulse border-cyan-primary/20' : 'border-[rgba(255,255,255,0.08)]'}`}>
         {/* Title bar */}
         <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[rgba(255,255,255,0.06)] bg-[#0e1214]">
           <span className="w-3 h-3 rounded-full bg-red-500/70" />
@@ -244,7 +396,7 @@ function LiveDemo() {
             )}
             {done && (
               <span className="flex items-center gap-1.5 text-[10px] font-mono text-yellow-400">
-                <Award size={10} /> DEMO COMPLETE
+                <Award size={10} /> SIMULATION COMPLETE
               </span>
             )}
           </div>
@@ -262,7 +414,7 @@ function LiveDemo() {
             </div>
           )}
 
-          {DEMO_LINES.slice(0, visibleLines).map((line, i) => {
+          {currentSim && currentSim.lines.slice(0, visibleLines).map((line, i) => {
             if (line.type === 'spacer') return <div key={i} className="h-2" />;
             return (
               <motion.div
@@ -277,7 +429,6 @@ function LiveDemo() {
             );
           })}
 
-          {/* Blinking cursor while running */}
           {running && (
             <span className="inline-block w-2 h-3.5 bg-cyan-primary animate-pulse ml-0.5" />
           )}
@@ -289,7 +440,7 @@ function LiveDemo() {
         <button
           onClick={startDemo}
           disabled={running}
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 shadow-glow-cyan"
         >
           {running ? (
             <><RefreshCw size={14} className="animate-spin" /> Running...</>
@@ -300,52 +451,102 @@ function LiveDemo() {
           )}
         </button>
 
-        {done && (
-          <motion.div
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 px-5 py-3 rounded-[12px] bg-yellow-400/[0.06] border border-yellow-400/20"
-          >
-            <span className="text-2xl">🥉</span>
-            <div>
-              <p className="text-yellow-400 font-bold text-sm">Bronze Badge Minted</p>
-              <p className="text-text-muted text-xs">Agent certified - 86.7% success rate</p>
-            </div>
-          </motion.div>
-        )}
-        {done && (
-          <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
-            <Link
-              href="/agents"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-[12px] border border-cyan-primary/30 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
+        {done && currentSim && (
+          <>
+            <motion.div
+              initial={{ opacity: 0, x: 10 }}
+              animate={{ opacity: 1, x: 0 }}
+              className={`flex items-center gap-3 px-5 py-3 rounded-[12px] ${currentSim.isFlagged ? 'bg-red-400/[0.06] border border-red-400/20' : badgeMeta[currentSim.badge]?.bg + ' border ' + badgeMeta[currentSim.badge]?.border}`}
             >
-              View in Agent List <ArrowRight size={14} />
-            </Link>
-          </motion.div>
+              <span className="text-2xl">{currentSim.isFlagged ? '🚫' : badgeMeta[currentSim.badge]?.emoji}</span>
+              <div>
+                <p className={`font-bold text-sm ${currentSim.isFlagged ? 'text-red-400' : badgeMeta[currentSim.badge]?.color}`}>
+                  {currentSim.isFlagged ? 'Agent Flagged' : `${currentSim.badge !== 'none' ? currentSim.badge.charAt(0).toUpperCase() + currentSim.badge.slice(1) : 'No'} Badge`}
+                </p>
+                <p className="text-text-muted text-xs">
+                  {currentSim.isFlagged
+                    ? `${currentSim.successRate}% success rate — below threshold`
+                    : currentSim.badge !== 'none'
+                      ? `Agent certified — ${currentSim.successRate}% success rate`
+                      : `${currentSim.successRate}% success rate — requirements not met`
+                  }
+                </p>
+              </div>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
+              <Link
+                href="/agents"
+                className="inline-flex items-center gap-2 px-5 py-3 rounded-[12px] border border-cyan-primary/30 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
+              >
+                View in Agent List <ArrowRight size={14} />
+              </Link>
+            </motion.div>
+          </>
         )}
       </div>
 
       {/* Badge result cards */}
-      {done && (
+      {done && currentSim && (
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.3 }}
           className="grid grid-cols-1 sm:grid-cols-3 gap-3"
         >
-          {[
-            { emoji: '🥉', label: 'Bronze', status: 'GRANTED', color: 'border-amber-600/30 bg-amber-600/[0.04]', textColor: 'text-amber-600', icon: CheckCircle2 },
-            { emoji: '🥈', label: 'Silver', status: 'NOT ELIGIBLE', color: 'border-[rgba(255,255,255,0.08)] bg-surface-1', textColor: 'text-text-muted', icon: XCircle },
-            { emoji: '🥇', label: 'Gold',   status: 'NOT ELIGIBLE', color: 'border-[rgba(255,255,255,0.08)] bg-surface-1', textColor: 'text-text-muted', icon: XCircle },
-          ].map(({ emoji, label, status, color, textColor, icon: Icon }) => (
-            <div key={label} className={`rounded-xl p-4 border ${color} flex items-center gap-3`}>
-              <span className="text-2xl">{emoji}</span>
-              <div>
-                <p className="font-display font-bold text-text-primary text-sm">{label}</p>
-                <p className={`font-mono text-[10px] font-semibold uppercase tracking-wide ${textColor} flex items-center gap-1`}>
-                  <Icon size={10} /> {status}
-                </p>
+          {(['gold', 'silver', 'bronze'] as const).map((tier) => {
+            const meta = badgeMeta[tier];
+            const isGranted = !currentSim.isFlagged && currentSim.badge === tier;
+            const eligibleTiers: Record<string, { execs: number; rate: number; vol: number }> = {
+              gold: { execs: 200, rate: 95, vol: 1000 },
+              silver: { execs: 50, rate: 90, vol: 0 },
+              bronze: { execs: 10, rate: 80, vol: 0 },
+            };
+            const req = eligibleTiers[tier];
+            const missingExecs = Math.max(0, req.execs - currentSim.totalExecs);
+            const missingRate = Math.max(0, req.rate - currentSim.successRate);
+            const why = [];
+            if (currentSim.isFlagged) why.push('Agent flagged');
+            if (missingExecs > 0) why.push(`Need ${missingExecs} more execs`);
+            if (missingRate > 0) why.push(`Need ${missingRate}% more success rate`);
+
+            return (
+              <div
+                key={tier}
+                className={`rounded-xl p-4 border flex items-center gap-3 ${isGranted ? meta.border + ' ' + meta.bg : 'border-[rgba(255,255,255,0.08)] bg-surface-1'}`}
+              >
+                <span className="text-2xl">{meta.emoji}</span>
+                <div>
+                  <p className="font-display font-bold text-text-primary text-sm capitalize">{tier}</p>
+                  <p className={`font-mono text-[10px] font-semibold uppercase tracking-wide flex items-center gap-1 ${isGranted ? meta.color : 'text-text-muted'}`}>
+                    {isGranted ? <><CheckCircle2 size={10} /> GRANTED</> : <><XCircle size={10} /> {why[0] || 'NOT ELIGIBLE'}</>}
+                  </p>
+                  {why.length > 1 && (
+                    <p className="text-text-muted text-[9px] mt-0.5">{why.slice(1).join(', ')}</p>
+                  )}
+                </div>
               </div>
+            );
+          })}
+        </motion.div>
+      )}
+
+      {/* Stats summary */}
+      {done && currentSim && (
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4 }}
+          className="rounded-2xl glass-card-matte p-4 grid grid-cols-2 sm:grid-cols-4 gap-4"
+        >
+          {[
+            { label: 'Executions', value: currentSim.totalExecs, color: 'text-cyan-primary' },
+            { label: 'Success Rate', value: `${currentSim.successRate}%`, color: currentSim.successRate >= 80 ? 'text-mint-secondary' : 'text-red-400' },
+            { label: 'Total Volume', value: `${currentSim.totalVolumeSUI.toFixed(1)} SUI`, color: 'text-yellow-400' },
+            { label: 'Avg Slippage', value: `${currentSim.avgSlippageBps} BPS`, color: currentSim.avgSlippageBps <= 200 ? 'text-mint-secondary' : 'text-red-400' },
+          ].map(({ label, value, color }) => (
+            <div key={label} className="text-center">
+              <p className="text-text-muted text-[10px] font-mono uppercase tracking-wider">{label}</p>
+              <p className={`font-display font-bold text-lg ${color}`}>{value}</p>
             </div>
           ))}
         </motion.div>

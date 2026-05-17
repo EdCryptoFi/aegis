@@ -294,6 +294,23 @@ body {
   animation: ambient-breathe 8s ease-in-out infinite;
 }
 
+/* Glow pulse for CLI Walkthrough */
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 12px rgba(0,245,255,0.15); border-color: rgba(0,245,255,0.2); }
+  50% { box-shadow: 0 0 28px rgba(0,245,255,0.4); border-color: rgba(0,245,255,0.5); }
+}
+.glow-pulse {
+  animation: glow-pulse 3s ease-in-out infinite;
+}
+
+@keyframes glow-pulse-fast {
+  0%, 100% { box-shadow: 0 0 15px rgba(0,245,255,0.2); }
+  50% { box-shadow: 0 0 35px rgba(0,245,255,0.5); }
+}
+.glow-pulse-fast {
+  animation: glow-pulse-fast 2s ease-in-out infinite;
+}
+
 /* Step connector beam */
 .step-beam {
   background: linear-gradient(90deg, transparent, rgba(0,245,255,0.3), rgba(0,255,167,0.2), transparent);
