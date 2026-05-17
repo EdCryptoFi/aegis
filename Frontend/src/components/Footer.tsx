@@ -7,6 +7,7 @@ const footerLinks = {
     { label: 'Agents', href: '/agents' },
     { label: 'Leaderboard', href: '/leaderboard' },
     { label: 'Badges', href: '/badges' },
+    { label: 'For Protocols', href: '/for-protocols' },
     { label: 'Architecture', href: '/architecture' },
   ],
   Developers: [

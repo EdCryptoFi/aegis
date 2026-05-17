@@ -364,7 +364,7 @@ export default function DeveloperPage() {
 
         {/* For Protocols Section */}
         <motion.div 
-          className="mb-10 rounded-2xl bg-gradient-to-r from-cyan-primary/[0.06] to-mint-secondary/[0.04] border border-cyan-primary/20 p-6"
+          className="mb-10 rounded-2xl bg-gradient-to-r from-cyan-primary/[0.15] to-mint-secondary/[0.10] border border-cyan-primary/35 p-6"
           initial="hidden" animate="visible" variants={fadeUp}
           transition={{ delay: 0.05 }}
         >
@@ -391,10 +391,16 @@ export default function DeveloperPage() {
                   <p className="text-text-muted text-xs">Score agents for automated trading</p>
                 </div>
               </div>
-              <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.06)]">
+              <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.06)] flex items-center justify-between">
                 <code className="text-xs text-cyan-primary font-mono">
                   const rep = await aegis.getReputation(agentAddress); // Returns: {'{'} badge, successRate, isFlagged {'}'}
                 </code>
+                <Link
+                  href="/for-protocols"
+                  className="inline-flex items-center gap-1.5 text-xs text-cyan-primary hover:text-mint-secondary transition-colors font-medium group flex-shrink-0 ml-4"
+                >
+                  Learn More <ArrowRight size={12} className="group-hover:translate-x-0.5 transition-transform" />
+                </Link>
               </div>
             </div>
           </div>
@@ -627,19 +633,19 @@ sui client call \\
                 </h2>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
                   {[
-                    { icon: '📖', label: 'Integration Guide', href: '/docs/AGENT_INTEGRATION_GUIDE.md' },
-                    { icon: '⚡', label: 'Quick Start', href: '/docs/AGENT_QUICKSTART.md' },
-                    { icon: '📊', label: 'Performance Metrics', href: '/docs/AGENT_PERFORMANCE.md' },
-                    { icon: '🔒', label: 'Security Analysis', href: '/docs/SECURITY_ANALYSIS.md' },
+                    { icon: '📖', label: 'Integration Guide', href: '/docs#integrations' },
+                    { icon: '⚡', label: 'Quick Start', href: '/docs' },
+                    { icon: '📊', label: 'Performance Metrics', href: '/docs' },
+                    { icon: '🔒', label: 'Security Best Practices', href: '/docs#security' },
                   ].map(({ icon, label, href }) => (
-                    <a
+                    <Link
                       key={label}
                       href={href}
                       className="rounded-2xl p-5 glass-card-matte hover:bg-surface-2/60 hover:border-cyan-primary/20 hover:-translate-y-1 transition-all text-center flex flex-col items-center gap-2"
                     >
                       <span className="text-2xl">{icon}</span>
                       <span className="text-text-secondary text-xs font-medium leading-tight">{label}</span>
-                    </a>
+                    </Link>
                   ))}
                 </div>
               </section>
