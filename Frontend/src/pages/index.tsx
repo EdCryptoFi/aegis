@@ -62,20 +62,20 @@ function AnimatedCounter({ value, suffix = '', prefix = '' }: { value: number; s
 
 /* ─── Data ─── */
 const stats = [
-  { label: 'Agents Tracked', sublabel: 'Registered on Sui', value: 1247, prefix: '', suffix: '+', icon: Users, delta: '+12.4%', positive: true },
-  { label: 'Avg Success Rate', sublabel: 'All agents avg.', value: 98, prefix: '', suffix: '%', icon: TrendingUp, delta: '+0.3%', positive: true },
-  { label: 'Volume Protected', sublabel: 'Cumulative SUI', value: 2.4, prefix: '$', suffix: 'M', icon: Lock, delta: '+18.2%', positive: true },
+  { label: 'Agents on Testnet', sublabel: 'Registered on Sui', value: 3, prefix: '', suffix: '', icon: Users, delta: 'Phase 1', positive: true },
+  { label: 'Smart Contracts', sublabel: 'Deployed & verified', value: 3, prefix: '', suffix: '', icon: Cpu, delta: 'Live', positive: true },
+  { label: 'Executions', sublabel: 'Recorded on-chain', value: 350, prefix: '~', suffix: '', icon: Zap, delta: 'Testnet', positive: true },
 ];
 
 const tickerItems = [
-  { label: 'AGENTS TRACKED', value: '1,247+', icon: Users },
-  { label: 'SUCCESS RATE', value: '98.7%', icon: TrendingUp },
-  { label: 'VOLUME PROTECTED', value: '$2.4M', icon: Lock },
+  { label: 'AGENTS LIVE', value: '3', icon: Users },
   { label: 'NETWORK', value: 'SUI TESTNET', icon: Globe },
-  { label: 'UPTIME', value: '99.9%', icon: Activity },
-  { label: 'BADGES ISSUED', value: '847', icon: Award },
-  { label: 'EXECUTIONS', value: '94,231', icon: Zap },
-  { label: 'ACTIVE CONTRACTS', value: '3', icon: Cpu },
+  { label: 'SMART CONTRACTS', value: '3', icon: Cpu },
+  { label: 'EXECUTIONS', value: '~350', icon: Zap },
+  { label: 'PHASE', value: '1 · REPUTATION LAYER', icon: Activity },
+  { label: 'SUCCESS RATE', value: '86.7%', icon: TrendingUp },
+  { label: 'BADGES ISSUED', value: '3', icon: Award },
+  { label: 'OPEN SOURCE', value: 'YES', icon: Code2 },
 ];
 
 const steps = [
@@ -97,9 +97,9 @@ const steps = [
 ];
 
 const statsIconMap: Record<string, React.ComponentType<{ className?: string }>> = {
-  'Agents Tracked': AgentsTrackedIcon,
-  'Avg Success Rate': SuccessRateIcon,
-  'Volume Protected': VolumeProtectedIcon,
+  'Agents on Testnet': AgentsTrackedIcon,
+  'Smart Contracts': SuccessRateIcon,
+  'Executions': VolumeProtectedIcon,
 };
 
 const containerVariants = {
@@ -158,7 +158,7 @@ export default function Home() {
             className="font-display text-display-lg-mobile md:text-display-lg text-text-primary mb-6 leading-tight"
           >
             <DecryptedText
-              text="Trust isn't asked for - it's proven."
+              text="AI agents are trading. Who do you trust?"
               animateOn="view"
               sequential={true}
               revealDirection="start"
@@ -177,7 +177,7 @@ export default function Home() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-mint-secondary" />
               </span>
               <Shield size={13} />
-              On-chain reputation oracle for AI agents on Sui.
+              Live on Sui Testnet · Phase 1 · Reputation Layer
             </span>
           </motion.div>
 
@@ -186,24 +186,24 @@ export default function Home() {
             variants={itemVariants}
             className="text-body-lg text-text-secondary max-w-2xl mx-auto mb-10"
           >
-            Aegis tracks execution history, uptime, and success rates on Sui - so you know exactly
-            who you&apos;re trusting with your funds. Earn Bronze, Silver, or Gold badges as proof.
+            Before you let an AI agent touch your treasury, Aegis gives you a provable on-chain report card —
+            success rate, volume, uptime, and badges. One API call.
           </motion.p>
 
           {/* CTAs */}
           <motion.div variants={itemVariants} className="flex flex-wrap items-center justify-center gap-4 mb-16">
             <Link
-              href="/agents"
+              href="/for-protocols"
               className="group inline-flex items-center gap-2 px-10 py-4 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.03] transition-all shadow-glow-cyan"
             >
-              View Agents
+              For Protocols
               <ArrowRight size={16} className="group-hover:translate-x-0.5 transition-transform" />
             </Link>
             <Link
               href="/developer"
               className="inline-flex items-center gap-2 px-10 py-4 rounded-[12px] border border-cyan-primary/30 bg-cyan-primary/[0.04] text-text-primary font-display font-bold text-sm hover:bg-cyan-primary/[0.08] hover:shadow-glow-cyan transition-all"
             >
-              Register Agent
+              Register Your Agent
             </Link>
             <Link
               href="/docs"
@@ -252,6 +252,14 @@ export default function Home() {
                 </motion.div>
               );
             })}
+          </motion.div>
+
+          {/* Phase 1 disclaimer */}
+          <motion.div variants={itemVariants} className="mt-6 text-center">
+            <p className="text-text-muted text-[11px] font-mono tracking-wide">
+              Phase 1 · Live on Sui testnet · Proving the model ·{' '}
+              <span className="text-cyan-primary/50">Phase 2: Capital delegation via protocol integration</span>
+            </p>
           </motion.div>
 
           {/* Integrated with */}
@@ -307,11 +315,43 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* ═══════ WHY INTEGRATE AEGIS ═══════ */}
+      {/* ═══════ THE PROBLEM ═══════ */}
+      <section className="relative py-16 px-6">
+        <div className="max-w-3xl mx-auto text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <p className="text-text-secondary text-lg leading-relaxed mb-4">
+              AI agents are executing DeFi strategies, managing portfolios, and trading on DeepBook —{' '}
+              <strong className="text-text-primary">right now.</strong>
+            </p>
+            <p className="text-text-secondary text-lg leading-relaxed mb-6">
+              But when a protocol wants to delegate capital to an agent, there&apos;s one question nobody can answer:
+            </p>
+            <p className="font-display text-2xl md:text-3xl font-bold gradient-text-cyan mb-6">
+              &ldquo;Is this agent trustworthy?&rdquo;
+            </p>
+            <p className="text-text-muted text-base mb-10">
+              Without a track record, you&apos;re flying blind. One bad agent can drain a treasury.
+            </p>
+            <div className="rounded-2xl bg-cyan-primary/[0.04] border border-cyan-primary/20 p-6 text-left">
+              <p className="text-cyan-primary font-display font-bold text-xs mb-2 uppercase tracking-wider">The Solution</p>
+              <p className="text-text-secondary text-sm leading-relaxed">
+                Aegis records every execution on Sui — success, failure, volume, slippage — and issues verifiable badges
+                (Bronze → Silver → Gold). Check the report card before you delegate. Not after.
+              </p>
+            </div>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════ TWO AUDIENCES ═══════ */}
       <section className="relative py-20 px-6">
         <div className="max-w-5xl mx-auto">
 
-          {/* Header */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -320,117 +360,103 @@ export default function Home() {
             className="text-center mb-12"
           >
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-4">
-              For Protocols & Builders
+              Choose Your Path
             </span>
             <h2 className="font-display text-[32px] md:text-[40px] font-bold text-text-primary mb-3 leading-tight">
-              Don&apos;t verify agents yourself.<br />
-              <span className="gradient-text-cyan">Let Aegis do it.</span>
+              Who are you?
             </h2>
             <p className="text-text-secondary text-base max-w-lg mx-auto">
-              Trust is hard to build. Easy to verify with Aegis.
+              Aegis serves two distinct needs. Pick your path.
             </p>
           </motion.div>
 
-          {/* 3 argument cards */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8 md:items-stretch">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
 
-            {/* Card 1 */}
+            {/* For Institutions & Protocols */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
+              className="rounded-2xl glass-card-heavy p-8 flex flex-col border border-cyan-primary/15"
             >
               <div className="w-14 h-14 mb-5 text-cyan-primary">
                 <ProtocolIcon />
               </div>
-              <h3 className="font-display font-bold text-text-primary text-base mb-4">
-                You Focus on Your Protocol, We Handle Trust
+              <h3 className="font-display font-bold text-text-primary text-xl mb-2">
+                For Institutions &amp; Protocols
               </h3>
-              <div className="rounded-xl bg-bg-base border border-[rgba(255,255,255,0.06)] p-4 space-y-3 flex-1">
-                <div>
-                  <p className="font-mono text-[10px] text-text-muted uppercase tracking-wider mb-1.5">You build:</p>
-                  {['Your DeFi logic', 'Your user experience', 'Your trading engine'].map(item => (
-                    <div key={item} className="flex items-center gap-2 py-0.5">
-                      <span className="w-1 h-1 rounded-full bg-cyan-primary/40" />
-                      <span className="text-text-secondary text-xs">{item}</span>
-                    </div>
-                  ))}
-                </div>
-                <div className="border-t border-[rgba(255,255,255,0.06)] pt-3">
-                  <p className="font-mono text-[10px] text-mint-secondary uppercase tracking-wider mb-1.5">Aegis handles:</p>
-                  {['Agent reputation', 'Badge verification', 'Audit trail'].map(item => (
-                    <div key={item} className="flex items-center gap-2 py-0.5">
-                      <span className="w-1 h-1 rounded-full bg-mint-secondary" />
-                      <span className="text-text-secondary text-xs">{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </motion.div>
-
-            {/* Card 2 */}
-            <motion.div
-              initial={{ opacity: 0, y: 16 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.08 }}
-              className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
-            >
-              <div className="w-14 h-14 mb-5 text-cyan-primary">
-                <ZeroInfraIcon />
-              </div>
-              <h3 className="font-display font-bold text-text-primary text-base mb-4">
-                Zero Infrastructure Cost
-              </h3>
-              <div className="space-y-3 flex-1">
+              <div className="w-12 h-px bg-cyan-primary/30 mb-4" />
+              <p className="text-text-secondary text-sm leading-relaxed mb-5">
+                You don&apos;t build agents. You need to verify them before delegating capital.
+                One API call gives you full agent trust — no infrastructure to build.
+              </p>
+              <div className="space-y-2.5 flex-1 mb-7">
                 {[
-                  'No reputation database to maintain',
-                  'No badge system to create',
-                  'No Walrus integration needed yourself',
-                  'Reputation is on-chain and verifiable by anyone',
+                  'One API call — full agent trust.',
+                  'No reputation database to build.',
+                  'No badge system to design.',
+                  'No infrastructure overhead.',
                 ].map(item => (
-                  <div key={item} className="flex items-start gap-3">
+                  <div key={item} className="flex items-start gap-2.5">
                     <span className="w-4 h-4 rounded-full bg-mint-secondary/10 border border-mint-secondary/30 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <span className="text-mint-secondary text-[8px] font-bold">✓</span>
                     </span>
-                    <span className="text-text-secondary text-sm leading-relaxed">{item}</span>
+                    <span className="text-text-secondary text-sm">{item}</span>
                   </div>
                 ))}
               </div>
+              <Link
+                href="/for-protocols"
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan hover:scale-[1.02] transition-all w-fit"
+              >
+                Integrate Aegis <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
             </motion.div>
 
-            {/* Card 3 */}
+            {/* For Agent Builders */}
             <motion.div
               initial={{ opacity: 0, y: 16 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.16 }}
-              className="rounded-2xl glass-card-heavy p-6 flex flex-col h-full"
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="rounded-2xl glass-card-heavy p-8 flex flex-col border border-mint-secondary/15"
             >
-              <div className="w-14 h-14 mb-5 text-cyan-primary">
-                <OneIntegrationIcon />
+              <div className="w-14 h-14 mb-5 text-mint-secondary">
+                <EarnBadgeIcon />
               </div>
-              <h3 className="font-display font-bold text-text-primary text-base mb-4">
-                One Integration, Infinite Trust
+              <h3 className="font-display font-bold text-text-primary text-xl mb-2">
+                For Agent Builders
               </h3>
-              <div className="rounded-xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-4 font-mono text-xs leading-relaxed flex-1">
-                <p className="text-text-muted mb-2">// Single API call</p>
-                <p className="text-cyan-primary">const rep = await aegis</p>
-                <p className="text-cyan-primary pl-2">.getReputation(</p>
-                <p className="text-mint-secondary pl-4">agentAddress</p>
-                <p className="text-cyan-primary pl-2">);</p>
-                <div className="mt-3 pt-3 border-t border-[rgba(255,255,255,0.06)] space-y-1">
-                  <p className="text-text-muted">{'// Returns:'}</p>
-                  <p className="text-text-secondary">{'{ badge, successRate,'}</p>
-                  <p className="text-text-secondary pl-2">{'isFlagged, uptime }'}</p>
-                </div>
+              <div className="w-12 h-px bg-mint-secondary/30 mb-4" />
+              <p className="text-text-secondary text-sm leading-relaxed mb-5">
+                You build trading bots, yield strategists, or automated agents.
+                Register with Aegis, earn badges, and take your verifiable track record anywhere on Sui.
+              </p>
+              <div className="space-y-2.5 flex-1 mb-7">
+                {[
+                  'Register in one transaction.',
+                  'Every execution recorded on-chain.',
+                  'Earn Bronze → Silver → Gold badges.',
+                  'Portable trust across all Sui protocols.',
+                ].map(item => (
+                  <div key={item} className="flex items-start gap-2.5">
+                    <span className="w-4 h-4 rounded-full bg-cyan-primary/10 border border-cyan-primary/30 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <span className="text-cyan-primary text-[8px] font-bold">✓</span>
+                    </span>
+                    <span className="text-text-secondary text-sm">{item}</span>
+                  </div>
+                ))}
               </div>
+              <Link
+                href="/developer"
+                className="group inline-flex items-center gap-2 px-6 py-3 rounded-[12px] border border-mint-secondary/30 bg-mint-secondary/[0.04] text-mint-secondary font-display font-bold text-sm hover:bg-mint-secondary/[0.08] transition-all w-fit"
+              >
+                Register Your Agent <ArrowRight size={14} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
             </motion.div>
           </div>
 
-          {/* Bottom CTA strip */}
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -439,14 +465,18 @@ export default function Home() {
             className="rounded-2xl glass-card-matte p-6 flex flex-col sm:flex-row items-center justify-between gap-4"
           >
             <div>
-              <p className="font-display font-bold text-text-primary mb-1">Ready to integrate?</p>
-              <p className="text-text-secondary text-sm">One SDK call. Full agent trust. Zero overhead.</p>
+              <p className="font-display font-bold text-text-primary mb-1">One integration. Full agent trust.</p>
+              <p className="font-mono text-text-muted text-xs mt-1">
+                {'const rep = await aegis.getReputation(agentAddress);'}
+                <br />
+                {'// → { badge: "gold", successRate: 96.8, isFlagged: false }'}
+              </p>
             </div>
             <Link
               href="/developer"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan hover:scale-[1.02] transition-all whitespace-nowrap flex-shrink-0"
             >
-              View Integration Docs <ArrowRight size={14} />
+              View Docs <ArrowRight size={14} />
             </Link>
           </motion.div>
 
@@ -552,13 +582,13 @@ export default function Home() {
             className="mb-16"
           >
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-4">
-              Composable Trust Layer
+              Who Uses Aegis
             </span>
             <h2 className="font-display text-headline-md md:text-[36px] font-bold text-text-primary mb-3">
-              Built for Protocols. Trusted by Wallets.
+              One integration. Every use case.
             </h2>
             <p className="text-body-md text-text-secondary max-w-xl">
-              Aegis is a composable trust layer - integrate once, give users verifiable agent reputation anywhere in your app.
+              Add Aegis once. Use agent trust data everywhere — wallets, DeFi, marketplaces, portfolios.
             </p>
           </motion.div>
 
@@ -608,13 +638,13 @@ export default function Home() {
               className="md:col-span-5 rounded-2xl p-8 flex flex-col glass-card-matte"
             >
               <span className="text-label-sm font-mono text-mint-secondary uppercase tracking-widest mb-4 block">
-                Why Build Trust Yourself?
+                Why not build your own?
               </span>
               <div className="space-y-4 flex-1">
                 {[
-                  { val: '1,000+', label: 'agents already tracked on-chain' },
-                  { val: 'Verifiable', label: 'badges - no custom scoring needed' },
-                  { val: 'Walrus', label: 'audit trail - full transparency, zero overhead' },
+                  { val: 'Verifiable', label: 'on-chain track record — no blind trust' },
+                  { val: 'Portable', label: 'badges — earned, not assigned' },
+                  { val: 'Walrus', label: 'audit trail — full transparency, zero overhead' },
                 ].map(({ val, label }) => (
                   <div key={val} className="flex items-start gap-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-mint-secondary mt-2 flex-shrink-0" />
