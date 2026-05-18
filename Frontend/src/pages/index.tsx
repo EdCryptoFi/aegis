@@ -140,7 +140,7 @@ export default function Home() {
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-base to-transparent z-10" />
 
         <motion.div
-          className="relative z-20 text-center max-w-5xl mx-auto"
+          className="relative z-20 text-center max-w-6xl mx-auto"
           initial="hidden"
           animate="visible"
           variants={containerVariants}
@@ -184,9 +184,9 @@ export default function Home() {
           {/* Subtitle */}
           <motion.p
             variants={itemVariants}
-            className="text-body-lg text-text-secondary max-w-2xl mx-auto mb-10"
+            className="text-body-lg text-text-secondary max-w-none mx-auto mb-10"
           >
-            Before you let an AI agent touch your treasury, Aegis gives you a provable on-chain report card —
+            Before you let an AI agent touch your treasury, Aegis gives you a provable on-chain report card -
             success rate, volume, uptime, and badges. One API call.
           </motion.p>
 
@@ -214,7 +214,7 @@ export default function Home() {
           </motion.div>
 
           {/* Floating stat cards */}
-          <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-4xl mx-auto">
+          <motion.div variants={containerVariants} className="grid grid-cols-1 sm:grid-cols-3 gap-4 max-w-5xl mx-auto">
             {stats.map((stat, i) => {
               const StatIcon = statsIconMap[stat.label];
               return (
@@ -325,7 +325,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <p className="text-text-secondary text-lg leading-relaxed mb-4">
-              AI agents are executing DeFi strategies, managing portfolios, and trading on DeepBook —{' '}
+              AI agents are executing DeFi strategies, managing portfolios, and trading on DeepBook -{' '}
               <strong className="text-text-primary">right now.</strong>
             </p>
             <p className="text-text-secondary text-lg leading-relaxed mb-6">
@@ -340,7 +340,7 @@ export default function Home() {
             <div className="rounded-2xl bg-cyan-primary/[0.04] border border-cyan-primary/20 p-6 text-left">
               <p className="text-cyan-primary font-display font-bold text-xs mb-2 uppercase tracking-wider">The Solution</p>
               <p className="text-text-secondary text-sm leading-relaxed">
-                Aegis records every execution on Sui — success, failure, volume, slippage — and issues verifiable badges
+                Aegis records every execution on Sui - success, failure, volume, slippage - and issues verifiable badges
                 (Bronze → Silver → Gold). Check the report card before you delegate. Not after.
               </p>
             </div>
@@ -389,11 +389,11 @@ export default function Home() {
               <div className="w-12 h-px bg-cyan-primary/30 mb-4" />
               <p className="text-text-secondary text-sm leading-relaxed mb-5">
                 You don&apos;t build agents. You need to verify them before delegating capital.
-                One API call gives you full agent trust — no infrastructure to build.
+                One API call gives you full agent trust - no infrastructure to build.
               </p>
               <div className="space-y-2.5 flex-1 mb-7">
                 {[
-                  'One API call — full agent trust.',
+                  'One API call - full agent trust.',
                   'No reputation database to build.',
                   'No badge system to design.',
                   'No infrastructure overhead.',
@@ -588,7 +588,7 @@ export default function Home() {
               One integration. Every use case.
             </h2>
             <p className="text-body-md text-text-secondary max-w-xl">
-              Add Aegis once. Use agent trust data everywhere — wallets, DeFi, marketplaces, portfolios.
+              Add Aegis once. Use agent trust data everywhere - wallets, DeFi, marketplaces, portfolios.
             </p>
           </motion.div>
 
@@ -642,9 +642,9 @@ export default function Home() {
               </span>
               <div className="space-y-4 flex-1">
                 {[
-                  { val: 'Verifiable', label: 'on-chain track record — no blind trust' },
-                  { val: 'Portable', label: 'badges — earned, not assigned' },
-                  { val: 'Walrus', label: 'audit trail — full transparency, zero overhead' },
+                  { val: 'Verifiable', label: 'on-chain track record - no blind trust' },
+                  { val: 'Portable', label: 'badges - earned, not assigned' },
+                  { val: 'Walrus', label: 'audit trail - full transparency, zero overhead' },
                 ].map(({ val, label }) => (
                   <div key={val} className="flex items-start gap-3">
                     <span className="w-1.5 h-1.5 rounded-full bg-mint-secondary mt-2 flex-shrink-0" />

@@ -214,7 +214,7 @@ function generateSimulation(): SimResult {
   if (isFlagged) {
     add('', 'spacer');
     const reason = actualSuccessRate < 50 ? 'Success rate too low' : avgSlippage > 500 ? 'High slippage detected' : 'Consecutive failures threshold exceeded';
-    add(`⚠️  AGENT FLAGGED — ${reason}`, 'error', 400);
+    add(`⚠️  AGENT FLAGGED -${reason}`, 'error', 400);
   }
 
   add('', 'spacer');
@@ -306,7 +306,7 @@ async function tryRealRegistration(): Promise<SimResult | null> {
     lines.push(add(`✓  Agent registered:  ${a.objectId}`, 'success', 400));
     lines.push(add('', 'spacer'));
 
-    lines.push(add('# ── STEP 2: Record Executions (${execs} tx) ──', 'section'));
+    lines.push(add(`# ── STEP 2: Record Executions (${execs} tx) ──`, 'section'));
     lines.push(add(`$ aegis batch-simulate --agent ${agentAddr} --count ${execs}`, 'cmd', 200));
     lines.push(add('', 'spacer'));
 
@@ -326,7 +326,7 @@ async function tryRealRegistration(): Promise<SimResult | null> {
     lines.push(add(`Summary → ${a.successfulExecutions}/${execs} succeeded  (${a.successRate}%)   Total volume: ${totalVolumeSUI.toFixed(2)} SUI`, 'output', 400));
 
     if (a.isFlagged) {
-      lines.push(add(`⚠️  AGENT FLAGGED — On-chain detection triggered`, 'error', 400));
+      lines.push(add(`⚠️  AGENT FLAGGED - On-chain detection triggered`, 'error', 400));
     }
 
     lines.push(add('', 'spacer'));
@@ -347,7 +347,7 @@ async function tryRealRegistration(): Promise<SimResult | null> {
     }
 
     lines.push(add('', 'spacer'));
-    lines.push(add('✓  Agent data written to Sui testnet — viewable on leaderboard →', 'success', 400));
+    lines.push(add('✓  Agent data written to Sui testnet - viewable on leaderboard →', 'success', 400));
 
     return {
       totalExecs: execs,
@@ -611,10 +611,10 @@ function LiveDemo() {
                 </p>
                 <p className="text-text-muted text-xs">
                   {currentSim.isFlagged
-                    ? `${currentSim.successRate}% success rate — below threshold`
+                    ? `${currentSim.successRate}% success rate - below threshold`
                     : currentSim.badge !== 'none'
-                      ? `Agent certified — ${currentSim.successRate}% success rate`
-                      : `${currentSim.successRate}% success rate — requirements not met`
+                      ? `Agent certified -${currentSim.successRate}% success rate`
+                      : `${currentSim.successRate}% success rate - requirements not met`
                   }
                 </p>
               </div>
@@ -753,7 +753,7 @@ export default function DeveloperPage() {
             <div className="flex-1">
               <h3 className="font-display font-bold text-text-primary mb-2">For Protocols & Builders</h3>
               <p className="text-text-secondary text-sm mb-4">
-                Don't verify agents yourself. Let Aegis do it. One API call gives you verified agent trust — zero infrastructure cost.
+                Don't verify agents yourself. Let Aegis do it. One API call gives you verified agent trust - zero infrastructure cost.
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div className="rounded-xl bg-bg-base/50 p-3 border border-[rgba(255,255,255,0.06)]">

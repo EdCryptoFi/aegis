@@ -17,7 +17,7 @@ const TIERS = [
     accentText: 'text-yellow-400',
     accentBg: 'bg-yellow-400/10',
     accent: '#ffd700',
-    accessLabel: 'AUTONOMOUS — UNRESTRICTED',
+    accessLabel: 'AUTONOMOUS - UNRESTRICTED',
     accessDesc: 'Full permission for autonomous execution of critical tasks and production systems. No human approval required.',
     chartPoints: '0,28 12,22 24,17 36,12 48,8 60,5 72,3 84,1',
     chartLabel: 'Peak performance trajectory',
@@ -61,7 +61,7 @@ const TIERS = [
     accentText: 'text-amber-500',
     accentBg: 'bg-amber-600/10',
     accent: '#cd7f32',
-    accessLabel: 'RESTRICTED — READ ONLY',
+    accessLabel: 'RESTRICTED - READ ONLY',
     accessDesc: 'Sandbox-only access for read-only operations and non-sensitive data processing. No write permissions.',
     chartPoints: '0,28 12,26 24,25 36,23 48,21 60,19 72,18 84,17',
     chartLabel: 'Early track record building',
@@ -83,7 +83,7 @@ const TIERS = [
     accentText: 'text-red-400',
     accentBg: 'bg-red-500/10',
     accent: '#ef4444',
-    accessLabel: 'DISABLED — QUARANTINE',
+    accessLabel: 'DISABLED - QUARANTINE',
     accessDesc: 'Credentials revoked due to violation or anomalous behavior. All access blocked pending manual review.',
     chartPoints: '0,4 10,7 20,10 30,13 40,16 50,18 60,20 70,21 80,22',
     chartLabel: 'Performance violation detected',
@@ -132,7 +132,7 @@ export default function BadgesPage() {
         >
           <div className="px-6 py-5 border-b border-cyan-primary/10">
             <p className="text-text-secondary text-base leading-relaxed">
-              The <span className="text-cyan-primary font-semibold">Badge Registry</span> is Aegis&apos;s trust certification system for autonomous agents on Sui. It evaluates real-world performance — success rate, processed volume, uptime — and assigns verification badges that determine access levels and permissions. The registry is integrated on-chain for full public auditability. Performance drops or violations trigger <span className="text-red-400 font-semibold">automatic revocation</span>, instantly removing agent privileges.
+              The <span className="text-cyan-primary font-semibold">Badge Registry</span> is Aegis&apos;s trust certification system for autonomous agents on Sui. It evaluates real-world performance - success rate, processed volume, uptime - and assigns verification badges that determine access levels and permissions. The registry is integrated on-chain for full public auditability. Performance drops or violations trigger <span className="text-red-400 font-semibold">automatic revocation</span>, instantly removing agent privileges.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(255,255,255,0.06)]">

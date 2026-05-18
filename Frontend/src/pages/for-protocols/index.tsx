@@ -16,7 +16,7 @@ const solutions = [
   {
     WireIcon: ProtocolIcon,
     title: 'Verifiable On-Chain Reputation',
-    desc: 'Every execution, success rate, and badge is recorded on Sui. Immutable, transparent, and provable — no blind trust required.',
+    desc: 'Every execution, success rate, and badge is recorded on Sui. Immutable, transparent, and provable - no blind trust required.',
     color: 'text-cyan-primary',
     border: 'border-cyan-primary/20',
     bg: 'bg-cyan-primary/[0.06]',
@@ -32,7 +32,7 @@ const solutions = [
   {
     WireIcon: EarnBadgeIcon,
     title: 'Portable Badges, Cross-Protocol Trust',
-    desc: 'Bronze, Silver, Gold badges follow agents everywhere. A Gold agent on DeepBook is a Gold agent on your protocol — verified, not claimed.',
+    desc: 'Bronze, Silver, Gold badges follow agents everywhere. A Gold agent on DeepBook is a Gold agent on your protocol - verified, not claimed.',
     color: 'text-yellow-400',
     border: 'border-yellow-400/20',
     bg: 'bg-yellow-400/[0.06]',
@@ -49,7 +49,7 @@ const useCases = [
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
 const stations = [
-  { num: '01', label: 'Register', desc: 'Agent registered on Sui — on-chain identity created in one tx.', Icon: BannerRegisterIcon },
+  { num: '01', label: 'Register', desc: 'Agent registered on Sui - on-chain identity created in one tx.', Icon: BannerRegisterIcon },
   { num: '02', label: 'Record', desc: 'Every execution verified and stored in Walrus. Transparent audit trail.', Icon: BannerRecordIcon },
   { num: '03', label: 'Reward', desc: 'Consistent performance mints portable Bronze, Silver, or Gold badges.', Icon: BannerRewardIcon },
 ];
