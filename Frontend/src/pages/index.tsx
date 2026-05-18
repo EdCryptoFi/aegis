@@ -271,7 +271,7 @@ export default function Home() {
             className="mt-16 flex flex-col items-center gap-6"
           >
             <p className="text-text-muted text-xs font-mono uppercase tracking-widest">Integrated with</p>
-            <div className="flex flex-wrap items-center justify-center gap-10 px-8 py-5 rounded-2xl border border-[rgba(255,255,255,0.06)] bg-surface-0/40 backdrop-blur-sm">
+            <div className="w-full flex flex-wrap items-center justify-center gap-10 px-8 py-5 rounded-2xl border border-[rgba(255,255,255,0.06)] bg-surface-0/40 backdrop-blur-sm">
               {/* Sui */}
               <div className="flex items-center gap-3">
                 <div className="w-[72px] h-[72px] flex-shrink-0">
@@ -317,7 +317,7 @@ export default function Home() {
 
       {/* ═══════ THE PROBLEM ═══════ */}
       <section className="relative py-16 px-6">
-        <div className="max-w-3xl mx-auto text-center">
+        <div className="max-w-5xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
