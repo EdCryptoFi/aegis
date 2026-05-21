@@ -55,7 +55,13 @@ const BADGE_CONFIG = {
   none:   { label: 'UNRANKED', color: 'text-text-muted', bg: 'bg-surface-2',      border: 'border-[rgba(255,255,255,0.08)]', glow: '' },
 };
 
-function buildCliLines(agent: VerifyAgentData, level: string, badge: string, sr: number): { text: string; color: string; delay: number }[] {
+function buildCliLines(
+  agent: VerifyAgentData,
+  level: string,
+  badge: string,
+  sr: number,
+  failedExecs: number,
+): { text: string; color: string; delay: number }[] {
   const short = `${agent.objectId.slice(0, 12)}...${agent.objectId.slice(-6)}`;
   const isVerified = !agent.isFlagged;
   const lines = [
@@ -72,16 +78,18 @@ function buildCliLines(agent: VerifyAgentData, level: string, badge: string, sr:
     { text: `  UPTIME    ${agent.uptimeScore}%`, color: 'text-cyan-primary', delay: 2600 },
     { text: `  VOLUME    ${formatVolume(agent.totalVolume)}`, color: 'text-text-secondary', delay: 2800 },
     { text: `  EXECS     ${agent.totalExecutions}`, color: 'text-text-secondary', delay: 3000 },
-    { text: '─────────────────────────', color: 'text-[rgba(255,255,255,0.12)]', delay: 3200 },
+    { text: `  FAILED    ${failedExecs}`, color: failedExecs > 0 ? 'text-red-400/80' : 'text-text-muted', delay: 3150 },
+    { text: `  NETWORK   Sui Testnet`, color: 'text-text-muted', delay: 3300 },
+    { text: '─────────────────────────', color: 'text-[rgba(255,255,255,0.12)]', delay: 3500 },
     {
       text: isVerified ? '  STATUS    VERIFIED ✓' : '  STATUS    REVOKED ✗',
       color: isVerified ? 'text-mint-secondary' : 'text-red-400',
-      delay: 3500,
+      delay: 3750,
     },
     {
       text: isVerified ? '  ACCESS    GRANTED' : '  ACCESS    BLOCKED',
       color: isVerified ? 'text-mint-secondary' : 'text-red-400',
-      delay: 3750,
+      delay: 4000,
     },
   ];
   return lines;
@@ -97,9 +105,20 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
   const badge = getBadgeTier(agent);
   const sr = agent.totalExecutions > 0
     ? Math.round((agent.successfulExecutions / agent.totalExecutions) * 100) : 100;
+  const failedExecs = agent.totalExecutions - agent.successfulExecutions;
   const bc = BADGE_CONFIG[badge];
   const isVerified = !agent.isFlagged;
-  const cliLines = buildCliLines(agent, level, badge, sr);
+  const isRealOnChain = !agent.objectId.startsWith('0xdemo') && !agent.objectId.startsWith('0xSIM');
+
+  const riskLabel = agent.isFlagged ? 'CRITICAL'
+    : sr < 80 ? 'HIGH'
+    : sr < 90 ? 'MEDIUM'
+    : 'LOW';
+  const riskColor = agent.isFlagged || sr < 80 ? 'text-red-400'
+    : sr < 90 ? 'text-yellow-400'
+    : 'text-mint-secondary';
+
+  const cliLines = buildCliLines(agent, level, badge, sr, failedExecs);
 
   const [visibleCli, setVisibleCli] = useState(0);
 
@@ -128,7 +147,7 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
       <motion.div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
 
       <motion.div
-        className="relative z-10 w-full max-w-3xl rounded-2xl bg-surface-1 border border-cyan-primary/20 shadow-[0_0_60px_rgba(0,212,184,0.08)] overflow-hidden"
+        className="relative z-10 w-full max-w-4xl rounded-2xl bg-surface-1 border border-cyan-primary/20 shadow-[0_0_60px_rgba(0,212,184,0.08)] overflow-hidden"
         initial={{ scale: 0.92, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.92, opacity: 0, y: 20 }}
@@ -143,44 +162,41 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
 
         <div className="grid grid-cols-1 md:grid-cols-2">
           {/* Left: Verify Info */}
-          <div className="p-8 border-r border-[rgba(255,255,255,0.06)]">
+          <div className="p-8 border-r border-[rgba(255,255,255,0.06)] flex flex-col">
             <p className="font-mono text-[10px] uppercase tracking-widest text-cyan-primary mb-1">Verify Agent</p>
             <h2 className="font-display text-3xl font-bold text-text-primary mb-1">{agent.name}</h2>
             <p className="font-mono text-xs text-text-muted mb-1">
               {agent.objectId.slice(0, 12)}...{agent.objectId.slice(-6)}
             </p>
-            {!agent.objectId.startsWith('0xdemo') && !agent.objectId.startsWith('0xSIM') && (
+            {isRealOnChain ? (
               <a
                 href={`https://suiscan.xyz/testnet/object/${agent.objectId}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 text-[10px] font-mono text-cyan-primary/60 hover:text-cyan-primary transition-colors mb-4"
+                className="inline-flex items-center gap-1 text-[10px] font-mono text-cyan-primary/60 hover:text-cyan-primary transition-colors mb-5"
               >
                 <ExternalLink size={10} /> View on SuiScan
               </a>
-            )}
-            {(agent.objectId.startsWith('0xdemo') || agent.objectId.startsWith('0xSIM')) && (
-              <div className="mb-4" />
+            ) : (
+              <div className="mb-5" />
             )}
 
-            {/* Badge */}
-            <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl ${bc.bg} border ${bc.border} ${bc.glow} mb-4`}>
-              {isVerified
-                ? <ShieldCheck size={15} className={bc.color} />
-                : <ShieldX size={15} className="text-red-400" />}
-              <span className={`font-mono font-bold text-sm ${isVerified ? bc.color : 'text-red-400'}`}>
-                {agent.isFlagged ? 'FLAGGED' : `${bc.label} BADGE`}
-              </span>
-            </div>
-
-            {/* Trust pill */}
-            <div className="mb-5">
+            {/* Badge + Trust pill in one row */}
+            <div className="flex items-center flex-wrap gap-3 mb-5">
+              <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl ${bc.bg} border ${bc.border} ${bc.glow}`}>
+                {isVerified
+                  ? <ShieldCheck size={13} className={bc.color} />
+                  : <ShieldX size={13} className="text-red-400" />}
+                <span className={`font-mono font-bold text-xs ${isVerified ? bc.color : 'text-red-400'}`}>
+                  {agent.isFlagged ? 'FLAGGED' : `${bc.label} BADGE`}
+                </span>
+              </div>
               <span className={`px-3 py-1.5 rounded-full text-[11px] font-bold border ${TRUST_PILL[level]}`}>
                 {level} TRUST
               </span>
             </div>
 
-            {/* Metrics */}
+            {/* Metrics — 2×3 grid */}
             <div className="grid grid-cols-2 gap-2 mb-5">
               <div className="rounded-xl p-3 bg-surface-2">
                 <p className="text-text-muted text-[10px] uppercase mb-1">Uptime</p>
@@ -197,6 +213,16 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
               <div className="rounded-xl p-3 bg-surface-2">
                 <p className="text-text-muted text-[10px] uppercase mb-1">Executions</p>
                 <p className="font-mono font-bold text-xl text-text-primary">{agent.totalExecutions}</p>
+              </div>
+              <div className="rounded-xl p-3 bg-surface-2">
+                <p className="text-text-muted text-[10px] uppercase mb-1">Failed</p>
+                <p className={`font-mono font-bold text-xl ${failedExecs > 0 ? 'text-red-400/80' : 'text-text-muted'}`}>
+                  {failedExecs}
+                </p>
+              </div>
+              <div className="rounded-xl p-3 bg-surface-2">
+                <p className="text-text-muted text-[10px] uppercase mb-1">Risk</p>
+                <p className={`font-mono font-bold text-sm ${riskColor}`}>{riskLabel}</p>
               </div>
             </div>
 
@@ -218,6 +244,27 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
                 </div>
               </div>
             )}
+
+            {/* On-Chain Technical Details — only for real agents */}
+            {isRealOnChain && (
+              <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.06)]">
+                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-2">On-Chain Details</p>
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] text-text-muted">Network</span>
+                    <span className="font-mono text-[10px] text-cyan-primary">Sui Testnet</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-[10px] text-text-muted">Object Type</span>
+                    <span className="font-mono text-[10px] text-text-secondary">ReputationObject</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-2">
+                    <span className="font-mono text-[10px] text-text-muted flex-shrink-0">Object ID</span>
+                    <span className="font-mono text-[10px] text-text-secondary truncate">{agent.objectId}</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right: CLI Terminal */}
@@ -228,10 +275,10 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
               <span className="w-3 h-3 rounded-full bg-green-500/60" />
               <span className="ml-2 font-mono text-[10px] text-text-muted">aegis - verify</span>
             </div>
-            <div className="flex-1 font-mono text-xs leading-relaxed space-y-0.5 overflow-hidden">
+            <div className="flex-1 font-mono text-xs leading-relaxed space-y-0.5 overflow-y-auto">
               {cliLines.slice(0, visibleCli).map((line, i) => (
                 <p key={i} className={line.color || 'text-transparent select-none'}>
-                  {line.text || ' '}
+                  {line.text || ' '}
                 </p>
               ))}
               {visibleCli < cliLines.length && (
