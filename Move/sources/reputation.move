@@ -23,6 +23,7 @@ public struct ReputationObject has key, store {
     successful_executions: u64,
     failed_executions: u64,
     consecutive_failures: u64,
+    consecutive_successes: u64,
     total_volume: u64,
     total_slippage: u64,
     uptime_score: u8,
@@ -62,6 +63,7 @@ public entry fun register_agent(ctx: &mut TxContext) {
         successful_executions: 0,
         failed_executions: 0,
         consecutive_failures: 0,
+        consecutive_successes: 0,
         total_volume: 0,
         total_slippage: 0,
         uptime_score: 100,
@@ -94,6 +96,7 @@ public entry fun record_execution(
 
     rep.total_executions = rep.total_executions + 1;
     rep.consecutive_failures = if (success) { 0 } else { rep.consecutive_failures + 1 };
+    rep.consecutive_successes = if (success) { rep.consecutive_successes + 1 } else { 0 };
 
     if (success) {
         rep.successful_executions = rep.successful_executions + 1;
@@ -164,7 +167,7 @@ const RECOVERY_MIN_EXECUTIONS: u64 = 200;
 
 fun check_and_unflag(rep: &mut ReputationObject) {
     if (rep.is_flagged) {
-        let eligible = rep.consecutive_failures >= RECOVERY_CONSECUTIVE_SUCCESSES
+        let eligible = rep.consecutive_successes >= RECOVERY_CONSECUTIVE_SUCCESSES
             && rep.total_executions >= RECOVERY_MIN_EXECUTIONS;
 
         if (eligible) {
@@ -245,7 +248,7 @@ public fun is_eligible_for_badge(
         return total >= 50 && success_rate >= 90;
     };
     if (badge_type == 3) {
-        return total >= 200 && success_rate >= 95 && volume >= 1_000_000;
+        return total >= 200 && success_rate >= 95 && volume >= 1_000_000_000_000;
     };
     false
 }
