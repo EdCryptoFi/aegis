@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { motion, AnimatePresence, useInView } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import {
   Code2, Copy, Check, Terminal, Zap, BookOpen, BarChart2, AlertTriangle,
   Workflow, ArrowRight, Play, RefreshCw, CheckCircle2,
@@ -602,11 +602,11 @@ function LiveDemo() {
           className="inline-flex items-center gap-2 px-6 py-3 rounded-[12px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm hover:shadow-glow-cyan-intense hover:scale-[1.02] transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100 glow-pulse-fast"
         >
           {running ? (
-            <><RefreshCw size={14} className="animate-spin" /> Running...</>
+            <><RefreshCw size={14} className="animate-spin" /> Running... (~30s)</>
           ) : done ? (
             <><RefreshCw size={14} /> Run Again</>
           ) : (
-            <><Play size={14} /> Run Demo</>
+            <><Play size={14} /> Run Demo (~30s)</>
           )}
         </button>
 
@@ -719,7 +719,7 @@ export default function DeveloperPage() {
   const [tab, setTab] = useState<'hub' | 'pipeline' | 'demo'>('hub');
   const [copied, setCopied] = useState<string | null>(null);
   const flowRef = useRef<HTMLDivElement>(null);
-  const flowInView = useInView(flowRef, { once: true, margin: '-60px' });
+  const flowInView = tab === 'pipeline';
 
   function copyToClipboard(text: string, id: string) {
     navigator.clipboard.writeText(text);
