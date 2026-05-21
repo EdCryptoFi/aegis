@@ -1,6 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ConvexHttpClient } from 'convex/browser';
-import { anyApi } from 'convex/server';
+import { makeFunctionReference } from 'convex/server';
+
+const agentsList  = makeFunctionReference<'query'>('agents:list');
+const agentsAdd   = makeFunctionReference<'mutation'>('agents:add');
+const agentsClear = makeFunctionReference<'mutation'>('agents:clear');
 import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
 import { methodNotAllowed, serverError, sanitizeString, validatePositiveInt } from '../../../lib/api-utils';
 
@@ -40,7 +44,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.setHeader('X-RateLimit-Remaining', String(remaining));
 
         if (convex) {
-          const agents = await convex.query(anyApi.agents.list, {});
+          const agents = await convex.query(agentsList, {});
           return res.status(200).json({ success: true, count: agents.length, agents });
         }
 
@@ -76,7 +80,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         };
 
         if (convex) {
-          const result = await convex.mutation(anyApi.agents.add, entry);
+          const result = await convex.mutation(agentsAdd, entry);
           return res.status(201).json({ success: true, agent: result });
         }
 
@@ -90,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (limited) return rateLimitResponse(res, 120_000);
 
         if (convex) {
-          await convex.mutation(anyApi.agents.clear, {});
+          await convex.mutation(agentsClear, {});
           return res.status(200).json({ success: true, message: 'Store cleared' });
         }
 
