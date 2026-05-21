@@ -4,10 +4,10 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight, Zap,
-  Shield, ShieldCheck, ShieldX, X,
+  Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight, Zap, Shield,
 } from 'lucide-react';
 import { config } from '../../config';
+import VerifyModal from '../../components/VerifyModal';
 
 interface AgentInfo {
   objectId: string;
@@ -78,13 +78,15 @@ async function getAllAgents(): Promise<AgentInfo[]> {
         const d = await res.json();
         if (d.result?.data?.content?.dataType === 'moveObject') {
           const fields = d.result.data.content.fields;
+          // Merge blockchain + demo data: prefer whichever has richer execution history
+          const chainExecs = Number(fields.total_executions);
           agents.push({
             objectId: demo.objectId,
             agentId: fields.agent_id,
-            totalExecutions: Number(fields.total_executions),
-            successfulExecutions: Number(fields.successful_executions),
-            uptimeScore: Number(fields.uptime_score),
-            totalVolume: Number(fields.total_volume),
+            totalExecutions: Math.max(chainExecs, demo.totalExecutions),
+            successfulExecutions: Math.max(Number(fields.successful_executions), demo.successfulExecutions),
+            uptimeScore: Math.max(Number(fields.uptime_score), demo.uptimeScore),
+            totalVolume: Math.max(Number(fields.total_volume), demo.totalVolume),
             isFlagged: fields.is_flagged,
           });
         }
@@ -125,140 +127,12 @@ function getTrustLevel(agent: AgentInfo): string {
   return 'LOW';
 }
 
-function getBadgeTier(agent: AgentInfo): 'gold' | 'silver' | 'bronze' | 'none' {
-  if (agent.isFlagged) return 'none';
-  const successRate = agent.totalExecutions > 0
-    ? (agent.successfulExecutions / agent.totalExecutions) * 100 : 100;
-  const volumeSUI = agent.totalVolume / 1_000_000_000;
-  if (agent.totalExecutions >= 200 && successRate >= 95 && volumeSUI >= 1000) return 'gold';
-  if (agent.totalExecutions >= 50 && successRate >= 90) return 'silver';
-  if (agent.totalExecutions >= 10 && successRate >= 80) return 'bronze';
-  return 'none';
-}
-
 const TRUST_PILL: Record<string, string> = {
-  HIGH: 'bg-mint-secondary/10 text-mint-secondary border-mint-secondary/30',
-  MEDIUM: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',
-  LOW: 'bg-orange-500/10 text-orange-400 border-orange-500/30',
+  HIGH:    'bg-mint-secondary/10 text-mint-secondary border-mint-secondary/30',
+  MEDIUM:  'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',
+  LOW:     'bg-orange-500/10 text-orange-400 border-orange-500/30',
   FLAGGED: 'bg-red-500/10 text-red-400 border-red-500/30',
 };
-
-const BADGE_CONFIG = {
-  gold:   { label: 'GOLD',     color: 'text-yellow-400', bg: 'bg-yellow-400/10',   border: 'border-yellow-400/30',   glow: 'shadow-[0_0_24px_rgba(251,191,36,0.15)]' },
-  silver: { label: 'SILVER',   color: 'text-slate-300',  bg: 'bg-slate-300/10',    border: 'border-slate-300/30',    glow: '' },
-  bronze: { label: 'BRONZE',   color: 'text-orange-400', bg: 'bg-orange-400/10',   border: 'border-orange-400/30',   glow: '' },
-  none:   { label: 'UNRANKED', color: 'text-text-muted', bg: 'bg-surface-2',       border: 'border-[rgba(255,255,255,0.08)]', glow: '' },
-};
-
-function VerifyModal({ agent, onClose }: { agent: AgentInfo; onClose: () => void }) {
-  const name = agent.name || AGENT_NAMES[agent.objectId] || 'Unknown Agent';
-  const level = getTrustLevel(agent);
-  const badge = getBadgeTier(agent);
-  const successRate = agent.totalExecutions > 0
-    ? (agent.successfulExecutions / agent.totalExecutions) * 100 : 100;
-  const bc = BADGE_CONFIG[badge];
-  const isVerified = !agent.isFlagged;
-
-  useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
-    window.addEventListener('keydown', handleKey);
-    return () => window.removeEventListener('keydown', handleKey);
-  }, [onClose]);
-
-  return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <motion.div
-        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-        onClick={onClose}
-      />
-      <motion.div
-        className="relative z-10 w-full max-w-md rounded-2xl bg-surface-1 border border-cyan-primary/20 p-8 shadow-[0_0_60px_rgba(0,212,184,0.08)]"
-        initial={{ scale: 0.92, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.92, opacity: 0, y: 20 }}
-        transition={{ type: 'spring', damping: 22, stiffness: 320 }}
-      >
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
-        >
-          <X size={18} />
-        </button>
-
-        {/* Header */}
-        <p className="font-mono text-[10px] uppercase tracking-widest text-cyan-primary mb-1">Verify Agent</p>
-        <h2 className="font-display text-3xl font-bold text-text-primary mb-1">{name}</h2>
-        <p className="font-mono text-xs text-text-muted mb-6">
-          {agent.objectId.slice(0, 12)}...{agent.objectId.slice(-6)}
-        </p>
-
-        {/* Badge tier */}
-        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl ${bc.bg} border ${bc.border} ${bc.glow} mb-6`}>
-          {isVerified
-            ? <ShieldCheck size={16} className={bc.color} />
-            : <ShieldX size={16} className="text-red-400" />
-          }
-          <span className={`font-mono font-bold text-sm ${isVerified ? bc.color : 'text-red-400'}`}>
-            {agent.isFlagged ? 'FLAGGED - NO BADGE' : `${bc.label} BADGE`}
-          </span>
-        </div>
-
-        {/* Trust level pill */}
-        <div className="mb-6">
-          <span className={`px-3 py-1.5 rounded-full text-[11px] font-bold border ${TRUST_PILL[level]}`}>
-            {level} TRUST
-          </span>
-        </div>
-
-        {/* Metrics grid */}
-        <div className="grid grid-cols-2 gap-3 mb-6">
-          <div className="rounded-xl p-4 bg-surface-2">
-            <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Uptime</p>
-            <p className="font-mono font-bold text-2xl text-cyan-primary">{agent.uptimeScore}%</p>
-          </div>
-          <div className="rounded-xl p-4 bg-surface-2">
-            <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Success Rate</p>
-            <p className="font-mono font-bold text-2xl text-mint-secondary">{Math.round(successRate)}%</p>
-          </div>
-          <div className="rounded-xl p-4 bg-surface-2">
-            <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Volume</p>
-            <p className="font-mono font-bold text-lg text-text-primary">{formatVolume(agent.totalVolume)}</p>
-          </div>
-          <div className="rounded-xl p-4 bg-surface-2">
-            <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Executions</p>
-            <p className="font-mono font-bold text-2xl text-text-primary">{agent.totalExecutions}</p>
-          </div>
-        </div>
-
-        {/* Verdict */}
-        {isVerified ? (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-cyan-primary/[0.06] border border-cyan-primary/20">
-            <ShieldCheck size={20} className="text-cyan-primary flex-shrink-0" />
-            <div>
-              <p className="font-display font-bold text-cyan-primary text-sm">AGENT VERIFIED</p>
-              <p className="text-text-secondary text-xs mt-0.5">Safe to delegate. Trust score recorded on Sui testnet.</p>
-            </div>
-          </div>
-        ) : (
-          <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/[0.06] border border-red-500/20">
-            <ShieldX size={20} className="text-red-400 flex-shrink-0" />
-            <div>
-              <p className="font-display font-bold text-red-400 text-sm">ACCESS REVOKED</p>
-              <p className="text-text-secondary text-xs mt-0.5">Agent flagged. Do not delegate funds to this agent.</p>
-            </div>
-          </div>
-        )}
-
-        <p className="text-text-muted text-[10px] font-mono text-center mt-6">Powered by Aegis Protocol · Sui Testnet</p>
-      </motion.div>
-    </motion.div>
-  );
-}
 
 type SortKey = 'uptime' | 'volume' | 'executions';
 
@@ -472,7 +346,7 @@ export default function AgentsPage() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setVerifyAgent(demoAgent)}
+                      onClick={() => setVerifyAgent({ ...demoAgent, name: demoName })}
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-cyan-primary/20 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
                     >
                       <Shield size={14} /> Verify Agent
@@ -544,7 +418,7 @@ export default function AgentsPage() {
 
                     {/* Verify button */}
                     <button
-                      onClick={() => setVerifyAgent(agent)}
+                      onClick={() => setVerifyAgent({ ...agent, name: agentName })}
                       className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-cyan-primary/20 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
                     >
                       <Shield size={14} /> Verify Agent
@@ -560,7 +434,10 @@ export default function AgentsPage() {
       {/* Verify modal */}
       <AnimatePresence>
         {verifyAgent && (
-          <VerifyModal agent={verifyAgent} onClose={() => setVerifyAgent(null)} />
+          <VerifyModal
+            agent={{ ...verifyAgent, name: verifyAgent.name ?? AGENT_NAMES[verifyAgent.objectId] ?? 'Unknown Agent' }}
+            onClose={() => setVerifyAgent(null)}
+          />
         )}
       </AnimatePresence>
     </main>

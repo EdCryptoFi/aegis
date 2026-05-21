@@ -3,12 +3,13 @@
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 import {
   Shield, ShieldOff, AlertTriangle, TrendingUp, Activity, Layers,
   BarChart2, Zap, Clock, Globe, Cpu, CheckCircle2, XCircle, ArrowLeft, ChevronRight
 } from 'lucide-react';
+import VerifyModal, { type VerifyAgentData } from '../../components/VerifyModal';
 import { config } from '../../config';
 import { SuccessIcon, UptimeIcon, FlaggedIcon, AlertIcon } from '../../components/AegisIcons';
 
@@ -203,6 +204,7 @@ export default function AgentPage() {
   const [tab, setTab] = useState<Tab>('success');
   const [chartData, setChartData] = useState<ReturnType<typeof buildChartData>>([]);
   const [activity, setActivity] = useState<ReturnType<typeof generateActivity>>([]);
+  const [verifyOpen, setVerifyOpen] = useState(false);
 
   const meta = address ? AGENT_META[address] : null;
 
@@ -296,10 +298,18 @@ export default function AgentPage() {
                   </div>
                 </div>
 
-                {/* Created date */}
-                <div className="flex-shrink-0 text-right">
-                  <p className="text-text-muted text-[10px] uppercase tracking-widest mb-1">Created</p>
-                  <p className="font-mono text-sm text-text-secondary">{meta?.createdAt || '-'}</p>
+                {/* Created date + Verify */}
+                <div className="flex-shrink-0 text-right flex flex-col items-end gap-3">
+                  <div>
+                    <p className="text-text-muted text-[10px] uppercase tracking-widest mb-1">Created</p>
+                    <p className="font-mono text-sm text-text-secondary">{meta?.createdAt || '-'}</p>
+                  </div>
+                  <button
+                    onClick={() => setVerifyOpen(true)}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-cyan-primary/25 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
+                  >
+                    <Shield size={14} /> Verify Agent
+                  </button>
                 </div>
               </div>
             </div>
@@ -473,6 +483,23 @@ export default function AgentPage() {
           </motion.div>
         )}
       </div>
+
+      <AnimatePresence>
+        {verifyOpen && rep && (
+          <VerifyModal
+            agent={{
+              objectId: address,
+              name: meta?.name || `Agent ${address?.slice(0, 6)}...`,
+              totalExecutions: rep.totalExecutions,
+              successfulExecutions: rep.successfulExecutions,
+              uptimeScore: rep.uptimeScore,
+              totalVolume: rep.totalVolume,
+              isFlagged: rep.isFlagged,
+            } as VerifyAgentData}
+            onClose={() => setVerifyOpen(false)}
+          />
+        )}
+      </AnimatePresence>
     </main>
   );
 }
