@@ -634,10 +634,10 @@ function LiveDemo() {
             </motion.div>
             <motion.div initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }}>
               <Link
-                href={realTx ? "/leaderboard" : "/agents"}
+                href="/leaderboard"
                 className="inline-flex items-center gap-2 px-5 py-3 rounded-[12px] border border-cyan-primary/30 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
               >
-                {realTx ? 'View on Leaderboard' : 'View in Agent List'} <ArrowRight size={14} />
+                View on Leaderboard <ArrowRight size={14} />
               </Link>
             </motion.div>
           </>

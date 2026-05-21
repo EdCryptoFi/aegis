@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, ShieldCheck, ShieldX, X } from 'lucide-react';
+import { Shield, ShieldCheck, ShieldX, X, ExternalLink } from 'lucide-react';
 
 export interface VerifyAgentData {
   objectId: string;
@@ -146,9 +146,22 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
           <div className="p-8 border-r border-[rgba(255,255,255,0.06)]">
             <p className="font-mono text-[10px] uppercase tracking-widest text-cyan-primary mb-1">Verify Agent</p>
             <h2 className="font-display text-3xl font-bold text-text-primary mb-1">{agent.name}</h2>
-            <p className="font-mono text-xs text-text-muted mb-5">
+            <p className="font-mono text-xs text-text-muted mb-1">
               {agent.objectId.slice(0, 12)}...{agent.objectId.slice(-6)}
             </p>
+            {!agent.objectId.startsWith('0xdemo') && !agent.objectId.startsWith('0xSIM') && (
+              <a
+                href={`https://suiscan.xyz/testnet/object/${agent.objectId}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 text-[10px] font-mono text-cyan-primary/60 hover:text-cyan-primary transition-colors mb-4"
+              >
+                <ExternalLink size={10} /> View on SuiScan
+              </a>
+            )}
+            {(agent.objectId.startsWith('0xdemo') || agent.objectId.startsWith('0xSIM')) && (
+              <div className="mb-4" />
+            )}
 
             {/* Badge */}
             <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl ${bc.bg} border ${bc.border} ${bc.glow} mb-4`}>

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
-  Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight, Zap, Shield,
+  Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight, Zap, Shield, ExternalLink,
 } from 'lucide-react';
 import { config } from '../../config';
 import VerifyModal from '../../components/VerifyModal';
@@ -389,6 +389,17 @@ export default function AgentsPage() {
                       <p className="font-mono text-sm text-text-primary">
                         {agent.objectId.slice(0, 8)}...{agent.objectId.slice(-4)}
                       </p>
+                      {!agent.objectId.startsWith('0xdemo') && !agent.objectId.startsWith('0xSIM') && (
+                        <a
+                          href={`https://suiscan.xyz/testnet/object/${agent.objectId}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-1 mt-1 text-[10px] font-mono text-cyan-primary/50 hover:text-cyan-primary transition-colors"
+                          onClick={e => e.stopPropagation()}
+                        >
+                          <ExternalLink size={9} /> SuiScan ↗
+                        </a>
+                      )}
                     </div>
 
                     {/* Metrics */}

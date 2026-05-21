@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { Trophy, TrendingUp, AlertTriangle, Award, RefreshCw, Zap, Plus } from 'lucide-react';
+import { Trophy, TrendingUp, AlertTriangle, Award, RefreshCw, Zap, Plus, ExternalLink } from 'lucide-react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { getAllAgents } from '../../lib/sdk';
@@ -83,6 +83,37 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
       });
     }
   } catch {}
+
+  // Also pull the most recent demo agent from localStorage so it appears
+  // on the leaderboard immediately after running the CLI walkthrough
+  if (typeof window !== 'undefined') {
+    try {
+      const raw = localStorage.getItem('aegis_demo_agent');
+      if (raw) {
+        const local = JSON.parse(raw);
+        const alreadyIn = demoEntries.some(e => e.objectId === local.objectId);
+        if (!alreadyIn) {
+          const sr = local.totalExecutions > 0
+            ? Math.round((local.successfulExecutions / local.totalExecutions) * 100)
+            : (local.uptimeScore ?? 100);
+          const score = computeScore({
+            objectId: local.objectId, agentId: local.agentId || local.objectId,
+            name: local.name || 'Demo Agent', uptimeScore: local.uptimeScore ?? sr,
+            successRate: sr, totalExecutions: local.totalExecutions ?? 0,
+            totalVolume: local.totalVolume ?? 0, isFlagged: local.isFlagged ?? false, badge: '',
+          });
+          const badge = deriveBadge(score, local.isFlagged ?? false);
+          demoEntries.push({
+            rank: 0, objectId: local.objectId, agentId: local.agentId || local.objectId,
+            name: local.name || 'Demo Agent', uptimeScore: local.uptimeScore ?? sr,
+            successRate: sr, totalExecutions: local.totalExecutions ?? 0,
+            totalVolume: local.totalVolume ?? 0, isFlagged: local.isFlagged ?? false,
+            badge, aegisScore: score, status: deriveStatus(badge, local.isFlagged ?? false),
+          });
+        }
+      }
+    } catch {}
+  }
 
   let blockchainAgents: LeaderboardEntry[] = [];
 
@@ -356,6 +387,17 @@ export default function LeaderboardPage() {
                   <span className="flex flex-col justify-center">
                     <span className="text-text-primary font-semibold text-sm">{agent.name}</span>
                     <span className="font-mono text-text-muted text-[11px]">{agent.objectId.slice(0, 6)}...{agent.objectId.slice(-4)}</span>
+                    {!agent.objectId.startsWith('0xdemo') && !agent.objectId.startsWith('0xSIM') && (
+                      <a
+                        href={`https://suiscan.xyz/testnet/object/${agent.objectId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        onClick={e => e.stopPropagation()}
+                        className="inline-flex items-center gap-0.5 mt-0.5 text-[9px] font-mono text-cyan-primary/40 hover:text-cyan-primary transition-colors"
+                      >
+                        <ExternalLink size={8} /> SuiScan
+                      </a>
+                    )}
                   </span>
 
                   {/* Badge */}
