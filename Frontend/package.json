@@ -14,6 +14,7 @@
     "@mysten/dapp-kit": "^1.0.6",
     "@mysten/sui": "^2.16.2",
     "@tanstack/react-query": "^5.100.10",
+    "convex": "^1.39.1",
     "framer-motion": "^12.38.0",
     "lucide-react": "^1.16.0",
     "next": "^14.0.0",
