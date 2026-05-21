@@ -1,14 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { ConvexHttpClient } from 'convex/browser';
-import { makeFunctionReference } from 'convex/server';
 import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
 import { methodNotAllowed, serverError, sanitizeString, validatePositiveInt } from '../../../lib/api-utils';
 
-const agentsList  = makeFunctionReference<'query'>('agents:list');
-const agentsAdd   = makeFunctionReference<'mutation'>('agents:add');
-const agentsClear = makeFunctionReference<'mutation'>('agents:clear');
-
-const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL || '';
+const CONVEX_SITE_URL = process.env.NEXT_PUBLIC_CONVEX_SITE_URL || '';
 
 interface DemoAgentEntry {
   id: string;
@@ -27,24 +21,18 @@ interface DemoAgentEntry {
 }
 const fallbackStore: DemoAgentEntry[] = [];
 
-function getConvex(): ConvexHttpClient | null {
-  if (!CONVEX_URL) return null;
-  return new ConvexHttpClient(CONVEX_URL);
-}
-
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
-    const convex = getConvex();
-
     switch (req.method) {
       case 'GET': {
         const { limited, remaining } = checkRateLimit(req, 'relaxed');
         if (limited) return rateLimitResponse(res, 60_000);
         res.setHeader('X-RateLimit-Remaining', String(remaining));
 
-        if (convex) {
-          const agents = await convex.query(agentsList, {});
-          return res.status(200).json({ success: true, count: agents.length, agents });
+        if (CONVEX_SITE_URL) {
+          const upstream = await fetch(`${CONVEX_SITE_URL}/agents`);
+          const data = await upstream.json();
+          return res.status(200).json(data);
         }
 
         const sorted = [...fallbackStore].sort((a, b) => b.createdAt - a.createdAt);
@@ -57,30 +45,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         res.setHeader('X-RateLimit-Remaining', String(remaining));
 
         const body = req.body || {};
-        const totalExecs = validatePositiveInt(body.totalExecutions) ?? 0;
-        const successes = validatePositiveInt(body.successfulExecutions) ?? 0;
-        const failures = validatePositiveInt(body.failedExecutions) ?? 0;
-        const volume = validatePositiveInt(body.totalVolume) ?? 0;
-        const successRate = validatePositiveInt(body.successRate) ?? 0;
-        const slippage = validatePositiveInt(body.avgSlippage) ?? 0;
-
         const entry = {
           objectId: sanitizeString(body.objectId, 100) || `0xDEMO_${Date.now().toString(36).toUpperCase()}`,
           name: sanitizeString(body.name, 60) || 'Demo Agent',
-          totalExecutions: totalExecs,
-          successfulExecutions: successes,
-          failedExecutions: failures,
-          uptimeScore: body.uptimeScore ?? Math.min(100, Math.max(0, successRate)),
-          totalVolume: volume,
-          successRate,
-          avgSlippage: slippage,
+          totalExecutions: validatePositiveInt(body.totalExecutions) ?? 0,
+          successfulExecutions: validatePositiveInt(body.successfulExecutions) ?? 0,
+          failedExecutions: validatePositiveInt(body.failedExecutions) ?? 0,
+          uptimeScore: body.uptimeScore ?? 0,
+          totalVolume: validatePositiveInt(body.totalVolume) ?? 0,
+          successRate: validatePositiveInt(body.successRate) ?? 0,
+          avgSlippage: validatePositiveInt(body.avgSlippage) ?? 0,
           isFlagged: body.isFlagged === true,
           badge: ['none', 'bronze', 'silver', 'gold'].includes(body.badge) ? body.badge : 'none',
         };
 
-        if (convex) {
-          const result = await convex.mutation(agentsAdd, entry);
-          return res.status(201).json({ success: true, agent: result });
+        if (CONVEX_SITE_URL) {
+          const upstream = await fetch(`${CONVEX_SITE_URL}/agents`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(entry),
+          });
+          const data = await upstream.json();
+          return res.status(201).json(data);
         }
 
         const fallbackEntry = { id: `demo_${Date.now()}`, ...entry, createdAt: Date.now() };
@@ -92,9 +78,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { limited } = checkRateLimit(req, 'strict');
         if (limited) return rateLimitResponse(res, 120_000);
 
-        if (convex) {
-          await convex.mutation(agentsClear, {});
-          return res.status(200).json({ success: true, message: 'Store cleared' });
+        if (CONVEX_SITE_URL) {
+          const upstream = await fetch(`${CONVEX_SITE_URL}/agents`, { method: 'DELETE' });
+          const data = await upstream.json();
+          return res.status(200).json(data);
         }
 
         fallbackStore.length = 0;
