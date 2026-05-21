@@ -1,16 +1,15 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { ConvexHttpClient } from 'convex/browser';
 import { makeFunctionReference } from 'convex/server';
+import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
+import { methodNotAllowed, serverError, sanitizeString, validatePositiveInt } from '../../../lib/api-utils';
 
 const agentsList  = makeFunctionReference<'query'>('agents:list');
 const agentsAdd   = makeFunctionReference<'mutation'>('agents:add');
 const agentsClear = makeFunctionReference<'mutation'>('agents:clear');
-import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
-import { methodNotAllowed, serverError, sanitizeString, validatePositiveInt } from '../../../lib/api-utils';
 
 const CONVEX_URL = process.env.NEXT_PUBLIC_CONVEX_URL || '';
 
-// In-memory fallback when Convex is not configured
 interface DemoAgentEntry {
   id: string;
   objectId: string;
@@ -67,7 +66,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
         const entry = {
           objectId: sanitizeString(body.objectId, 100) || `0xDEMO_${Date.now().toString(36).toUpperCase()}`,
-          name: sanitizeString(body.name, 60) || `Demo Agent`,
+          name: sanitizeString(body.name, 60) || 'Demo Agent',
           totalExecutions: totalExecs,
           successfulExecutions: successes,
           failedExecutions: failures,
