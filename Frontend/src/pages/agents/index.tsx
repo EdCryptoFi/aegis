@@ -2,8 +2,11 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight, Zap } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import {
+  Users, ChevronLeft, TrendingUp, BarChart2, Layers, ArrowRight, Zap,
+  Shield, ShieldCheck, ShieldX, X,
+} from 'lucide-react';
 import { config } from '../../config';
 
 interface AgentInfo {
@@ -14,7 +17,14 @@ interface AgentInfo {
   uptimeScore: number;
   totalVolume: number;
   isFlagged: boolean;
+  name?: string;
 }
+
+const AGENT_NAMES: Record<string, string> = {
+  '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc': 'AlphaTrader',
+  '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec': 'BetaBot',
+  '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6': 'GammaScam',
+};
 
 const DEMO_AGENTS: AgentInfo[] = [
   { objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', totalExecutions: 247, successfulExecutions: 244, uptimeScore: 99, totalVolume: 1_450_000_000_000, isFlagged: false },
@@ -23,7 +33,6 @@ const DEMO_AGENTS: AgentInfo[] = [
 ];
 
 async function getAllAgents(): Promise<AgentInfo[]> {
-  // Fetch demo agents from server store
   let demoAgents: AgentInfo[] = [];
   try {
     const demoRes = await fetch('/api/agents/demo');
@@ -41,7 +50,6 @@ async function getAllAgents(): Promise<AgentInfo[]> {
     }
   } catch {}
 
-  // Try to fetch from blockchain first
   try {
     const response = await fetch('https://fullnode.testnet.sui.io:443', {
       method: 'POST',
@@ -54,7 +62,6 @@ async function getAllAgents(): Promise<AgentInfo[]> {
       }),
     });
     const data = await response.json();
-    // If we get valid data, use it; otherwise fall back to demo data
     if (data.result?.data?.content?.dataType === 'moveObject') {
       const agents: AgentInfo[] = [];
       for (const demo of DEMO_AGENTS) {
@@ -83,7 +90,6 @@ async function getAllAgents(): Promise<AgentInfo[]> {
         }
       }
       if (agents.length > 0) {
-        // Merge with demo agents, deduplicate by objectId
         const seen = new Set<string>();
         return [...agents, ...demoAgents].filter(a => {
           if (seen.has(a.objectId)) return false;
@@ -95,7 +101,6 @@ async function getAllAgents(): Promise<AgentInfo[]> {
   } catch (e) {
     console.log('Using demo data (fetch failed):', e);
   }
-  // Return demo data + demo store agents
   const seen = new Set<string>();
   return [...DEMO_AGENTS, ...demoAgents].filter(a => {
     if (seen.has(a.objectId)) return false;
@@ -120,12 +125,140 @@ function getTrustLevel(agent: AgentInfo): string {
   return 'LOW';
 }
 
+function getBadgeTier(agent: AgentInfo): 'gold' | 'silver' | 'bronze' | 'none' {
+  if (agent.isFlagged) return 'none';
+  const successRate = agent.totalExecutions > 0
+    ? (agent.successfulExecutions / agent.totalExecutions) * 100 : 100;
+  const volumeSUI = agent.totalVolume / 1_000_000_000;
+  if (agent.totalExecutions >= 200 && successRate >= 95 && volumeSUI >= 1000) return 'gold';
+  if (agent.totalExecutions >= 50 && successRate >= 90) return 'silver';
+  if (agent.totalExecutions >= 10 && successRate >= 80) return 'bronze';
+  return 'none';
+}
+
 const TRUST_PILL: Record<string, string> = {
   HIGH: 'bg-mint-secondary/10 text-mint-secondary border-mint-secondary/30',
   MEDIUM: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',
   LOW: 'bg-orange-500/10 text-orange-400 border-orange-500/30',
   FLAGGED: 'bg-red-500/10 text-red-400 border-red-500/30',
 };
+
+const BADGE_CONFIG = {
+  gold:   { label: 'GOLD',     color: 'text-yellow-400', bg: 'bg-yellow-400/10',   border: 'border-yellow-400/30',   glow: 'shadow-[0_0_24px_rgba(251,191,36,0.15)]' },
+  silver: { label: 'SILVER',   color: 'text-slate-300',  bg: 'bg-slate-300/10',    border: 'border-slate-300/30',    glow: '' },
+  bronze: { label: 'BRONZE',   color: 'text-orange-400', bg: 'bg-orange-400/10',   border: 'border-orange-400/30',   glow: '' },
+  none:   { label: 'UNRANKED', color: 'text-text-muted', bg: 'bg-surface-2',       border: 'border-[rgba(255,255,255,0.08)]', glow: '' },
+};
+
+function VerifyModal({ agent, onClose }: { agent: AgentInfo; onClose: () => void }) {
+  const name = agent.name || AGENT_NAMES[agent.objectId] || 'Unknown Agent';
+  const level = getTrustLevel(agent);
+  const badge = getBadgeTier(agent);
+  const successRate = agent.totalExecutions > 0
+    ? (agent.successfulExecutions / agent.totalExecutions) * 100 : 100;
+  const bc = BADGE_CONFIG[badge];
+  const isVerified = !agent.isFlagged;
+
+  useEffect(() => {
+    const handleKey = (e: KeyboardEvent) => { if (e.key === 'Escape') onClose(); };
+    window.addEventListener('keydown', handleKey);
+    return () => window.removeEventListener('keydown', handleKey);
+  }, [onClose]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+    >
+      <motion.div
+        className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <motion.div
+        className="relative z-10 w-full max-w-md rounded-2xl bg-surface-1 border border-cyan-primary/20 p-8 shadow-[0_0_60px_rgba(0,212,184,0.08)]"
+        initial={{ scale: 0.92, opacity: 0, y: 20 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.92, opacity: 0, y: 20 }}
+        transition={{ type: 'spring', damping: 22, stiffness: 320 }}
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-text-muted hover:text-text-primary transition-colors"
+        >
+          <X size={18} />
+        </button>
+
+        {/* Header */}
+        <p className="font-mono text-[10px] uppercase tracking-widest text-cyan-primary mb-1">Verify Agent</p>
+        <h2 className="font-display text-3xl font-bold text-text-primary mb-1">{name}</h2>
+        <p className="font-mono text-xs text-text-muted mb-6">
+          {agent.objectId.slice(0, 12)}...{agent.objectId.slice(-6)}
+        </p>
+
+        {/* Badge tier */}
+        <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-xl ${bc.bg} border ${bc.border} ${bc.glow} mb-6`}>
+          {isVerified
+            ? <ShieldCheck size={16} className={bc.color} />
+            : <ShieldX size={16} className="text-red-400" />
+          }
+          <span className={`font-mono font-bold text-sm ${isVerified ? bc.color : 'text-red-400'}`}>
+            {agent.isFlagged ? 'FLAGGED - NO BADGE' : `${bc.label} BADGE`}
+          </span>
+        </div>
+
+        {/* Trust level pill */}
+        <div className="mb-6">
+          <span className={`px-3 py-1.5 rounded-full text-[11px] font-bold border ${TRUST_PILL[level]}`}>
+            {level} TRUST
+          </span>
+        </div>
+
+        {/* Metrics grid */}
+        <div className="grid grid-cols-2 gap-3 mb-6">
+          <div className="rounded-xl p-4 bg-surface-2">
+            <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Uptime</p>
+            <p className="font-mono font-bold text-2xl text-cyan-primary">{agent.uptimeScore}%</p>
+          </div>
+          <div className="rounded-xl p-4 bg-surface-2">
+            <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Success Rate</p>
+            <p className="font-mono font-bold text-2xl text-mint-secondary">{Math.round(successRate)}%</p>
+          </div>
+          <div className="rounded-xl p-4 bg-surface-2">
+            <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Volume</p>
+            <p className="font-mono font-bold text-lg text-text-primary">{formatVolume(agent.totalVolume)}</p>
+          </div>
+          <div className="rounded-xl p-4 bg-surface-2">
+            <p className="text-text-muted text-[10px] uppercase tracking-wide mb-1">Executions</p>
+            <p className="font-mono font-bold text-2xl text-text-primary">{agent.totalExecutions}</p>
+          </div>
+        </div>
+
+        {/* Verdict */}
+        {isVerified ? (
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-cyan-primary/[0.06] border border-cyan-primary/20">
+            <ShieldCheck size={20} className="text-cyan-primary flex-shrink-0" />
+            <div>
+              <p className="font-display font-bold text-cyan-primary text-sm">AGENT VERIFIED</p>
+              <p className="text-text-secondary text-xs mt-0.5">Safe to delegate. Trust score recorded on Sui testnet.</p>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 p-4 rounded-xl bg-red-500/[0.06] border border-red-500/20">
+            <ShieldX size={20} className="text-red-400 flex-shrink-0" />
+            <div>
+              <p className="font-display font-bold text-red-400 text-sm">ACCESS REVOKED</p>
+              <p className="text-text-secondary text-xs mt-0.5">Agent flagged. Do not delegate funds to this agent.</p>
+            </div>
+          </div>
+        )}
+
+        <p className="text-text-muted text-[10px] font-mono text-center mt-6">Powered by Aegis Protocol · Sui Testnet</p>
+      </motion.div>
+    </motion.div>
+  );
+}
 
 type SortKey = 'uptime' | 'volume' | 'executions';
 
@@ -135,6 +268,7 @@ export default function AgentsPage() {
   const [sortBy, setSortBy] = useState<SortKey>('uptime');
   const [limit, setLimit] = useState<10 | 20 | 100>(10);
   const [demoAgent, setDemoAgent] = useState<AgentInfo | null>(null);
+  const [verifyAgent, setVerifyAgent] = useState<AgentInfo | null>(null);
 
   useEffect(() => {
     loadAgents();
@@ -208,7 +342,6 @@ export default function AgentsPage() {
           transition={{ delay: 0.1 }}
         >
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            {/* Left: Sort + Limit */}
             <div className="flex flex-wrap items-center gap-3">
               <div className="flex items-center gap-2">
                 <span className="text-text-muted text-xs uppercase tracking-wider">Sort by:</span>
@@ -249,7 +382,6 @@ export default function AgentsPage() {
               </div>
             </div>
 
-            {/* Right: Integrate CTA + count */}
             <div className="flex items-center gap-4">
               <span className="text-text-muted text-sm">{sortedAgents.length} of {agents.length} agent{agents.length !== 1 ? 's' : ''}</span>
               <Link
@@ -270,7 +402,7 @@ export default function AgentsPage() {
           transition={{ delay: 0.15 }}
           className="text-text-muted text-xs font-mono mb-8 -mt-4"
         >
-          Click on an agent for Full Analytics Dashboard
+          Click Verify on any agent to check trust score
         </motion.p>
 
         {/* Content */}
@@ -288,64 +420,74 @@ export default function AgentsPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.15 }}
           >
+            {/* Demo agent from localStorage */}
             {demoAgent && (() => {
               const demoSuccess = Math.round((demoAgent.successfulExecutions / demoAgent.totalExecutions) * 100);
               const demoLevel = getTrustLevel(demoAgent);
+              const demoName = demoAgent.name || 'Demo Agent';
               return (
                 <motion.div
                   initial={{ opacity: 0, y: 16 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0 }}
                 >
-                  <Link href={`/agent/${demoAgent.objectId}`} className="block h-full">
-                    <div className="relative h-full rounded-2xl p-6 glass-card-heavy border-cyan-primary/20 hover:border-cyan-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300 cursor-pointer">
-                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-primary/10 border border-cyan-primary/20 font-mono text-[9px] text-cyan-primary uppercase tracking-widest">
-                        DEMO
+                  <div className="relative h-full rounded-2xl p-6 glass-card-heavy border-cyan-primary/20 hover:border-cyan-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300">
+                    <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-primary/10 border border-cyan-primary/20 font-mono text-[9px] text-cyan-primary uppercase tracking-widest">
+                      DEMO
+                    </span>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-display text-3xl font-bold text-cyan-primary">★</span>
+                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${TRUST_PILL[demoLevel]}`}>
+                        {demoLevel}
                       </span>
-                      <div className="flex items-center justify-between mb-5">
-                        <span className="font-display text-3xl font-bold text-cyan-primary">★</span>
-                        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${TRUST_PILL[demoLevel]}`}>
-                          {demoLevel}
-                        </span>
+                    </div>
+                    <h3 className="font-display text-xl font-bold text-text-primary mb-3">{demoName}</h3>
+                    <div className="mb-4">
+                      <p className="text-text-muted text-[10px] uppercase tracking-wider mb-1">Agent ID</p>
+                      <p className="font-mono text-sm text-text-primary">
+                        {demoAgent.objectId.slice(0, 8)}...{demoAgent.objectId.slice(-4)}
+                      </p>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                      <div className="rounded-xl p-3 bg-cyan-primary/[0.06]">
+                        <div className="flex items-center gap-1 mb-1">
+                          <TrendingUp size={10} className="text-cyan-primary" />
+                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
+                        </div>
+                        <p className="font-mono font-bold text-sm text-cyan-primary">{demoAgent.uptimeScore}%</p>
                       </div>
-                      <div className="mb-4">
-                        <p className="text-text-muted text-[10px] uppercase tracking-wider mb-1">Agent ID</p>
-                        <p className="font-mono text-sm text-text-primary">
-                          {demoAgent.objectId.slice(0, 8)}...{demoAgent.objectId.slice(-4)}
-                        </p>
+                      <div className="rounded-xl p-3 bg-mint-secondary/[0.06]">
+                        <div className="flex items-center gap-1 mb-1">
+                          <BarChart2 size={10} className="text-mint-secondary" />
+                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
+                        </div>
+                        <p className="font-mono font-bold text-sm text-mint-secondary">{demoSuccess}%</p>
                       </div>
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="rounded-xl p-3 bg-cyan-primary/[0.06]">
-                          <div className="flex items-center gap-1 mb-1">
-                            <TrendingUp size={10} className="text-cyan-primary" />
-                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
-                          </div>
-                          <p className="font-mono font-bold text-sm text-cyan-primary">{demoAgent.uptimeScore}%</p>
+                      <div className="rounded-xl p-3 bg-surface-2">
+                        <div className="flex items-center gap-1 mb-1">
+                          <Layers size={10} className="text-text-muted" />
+                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Volume</p>
                         </div>
-                        <div className="rounded-xl p-3 bg-mint-secondary/[0.06]">
-                          <div className="flex items-center gap-1 mb-1">
-                            <BarChart2 size={10} className="text-mint-secondary" />
-                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
-                          </div>
-                          <p className="font-mono font-bold text-sm text-mint-secondary">{demoSuccess}%</p>
-                        </div>
-                        <div className="rounded-xl p-3 bg-surface-2">
-                          <div className="flex items-center gap-1 mb-1">
-                            <Layers size={10} className="text-text-muted" />
-                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Volume</p>
-                          </div>
-                          <p className="font-mono font-bold text-xs text-text-primary">{formatVolume(demoAgent.totalVolume)}</p>
-                        </div>
+                        <p className="font-mono font-bold text-xs text-text-primary">{formatVolume(demoAgent.totalVolume)}</p>
                       </div>
                     </div>
-                  </Link>
+                    <button
+                      onClick={() => setVerifyAgent(demoAgent)}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-cyan-primary/20 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
+                    >
+                      <Shield size={14} /> Verify Agent
+                    </button>
+                  </div>
                 </motion.div>
               );
             })()}
+
+            {/* Real agents */}
             {sortedAgents.map((agent, i) => {
               const level = getTrustLevel(agent);
               const successRate = agent.totalExecutions > 0
                 ? Math.round((agent.successfulExecutions / agent.totalExecutions) * 100) : 100;
+              const agentName = agent.name || AGENT_NAMES[agent.objectId] || `Agent #${i + 1}`;
 
               return (
                 <motion.div
@@ -354,57 +496,73 @@ export default function AgentsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.06 }}
                 >
-                  <Link href={`/agent/${agent.objectId}`} className="block h-full">
-                    <div className="h-full rounded-2xl p-6 glass-card-heavy hover:border-cyan-primary/20 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300 cursor-pointer">
+                  <div className="h-full rounded-2xl p-6 glass-card-heavy hover:border-cyan-primary/20 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300">
 
-                      {/* Rank + badge */}
-                      <div className="flex items-center justify-between mb-5">
-                        <span className="font-display text-3xl font-bold text-cyan-primary">#{i + 1}</span>
-                        <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${TRUST_PILL[level]}`}>
-                          {level}
-                        </span>
+                    {/* Rank + trust */}
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="font-display text-3xl font-bold text-cyan-primary">#{i + 1}</span>
+                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${TRUST_PILL[level]}`}>
+                        {level}
+                      </span>
+                    </div>
+
+                    {/* Agent name */}
+                    <h3 className="font-display text-xl font-bold text-text-primary mb-3">{agentName}</h3>
+
+                    {/* Agent ID */}
+                    <div className="mb-4">
+                      <p className="text-text-muted text-[10px] uppercase tracking-wider mb-1">Agent ID</p>
+                      <p className="font-mono text-sm text-text-primary">
+                        {agent.objectId.slice(0, 8)}...{agent.objectId.slice(-4)}
+                      </p>
+                    </div>
+
+                    {/* Metrics */}
+                    <div className="grid grid-cols-3 gap-2 mb-4">
+                      <div className="rounded-xl p-3 bg-cyan-primary/[0.06]">
+                        <div className="flex items-center gap-1 mb-1">
+                          <TrendingUp size={10} className="text-cyan-primary" />
+                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
+                        </div>
+                        <p className="font-mono font-bold text-sm text-cyan-primary">{agent.uptimeScore}%</p>
                       </div>
-
-                      {/* Agent ID */}
-                      <div className="mb-4">
-                        <p className="text-text-muted text-[10px] uppercase tracking-wider mb-1">Agent ID</p>
-                        <p className="font-mono text-sm text-text-primary">
-                          {agent.objectId.slice(0, 8)}...{agent.objectId.slice(-4)}
-                        </p>
+                      <div className="rounded-xl p-3 bg-mint-secondary/[0.06]">
+                        <div className="flex items-center gap-1 mb-1">
+                          <BarChart2 size={10} className="text-mint-secondary" />
+                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
+                        </div>
+                        <p className="font-mono font-bold text-sm text-mint-secondary">{successRate}%</p>
                       </div>
-
-                      {/* Metrics */}
-                      <div className="grid grid-cols-3 gap-2">
-                        <div className="rounded-xl p-3 bg-cyan-primary/[0.06]">
-                          <div className="flex items-center gap-1 mb-1">
-                            <TrendingUp size={10} className="text-cyan-primary" />
-                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
-                          </div>
-                          <p className="font-mono font-bold text-sm text-cyan-primary">{agent.uptimeScore}%</p>
+                      <div className="rounded-xl p-3 bg-surface-2">
+                        <div className="flex items-center gap-1 mb-1">
+                          <Layers size={10} className="text-text-muted" />
+                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Volume</p>
                         </div>
-                        <div className="rounded-xl p-3 bg-mint-secondary/[0.06]">
-                          <div className="flex items-center gap-1 mb-1">
-                            <BarChart2 size={10} className="text-mint-secondary" />
-                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
-                          </div>
-                          <p className="font-mono font-bold text-sm text-mint-secondary">{successRate}%</p>
-                        </div>
-                        <div className="rounded-xl p-3 bg-surface-2">
-                          <div className="flex items-center gap-1 mb-1">
-                            <Layers size={10} className="text-text-muted" />
-                            <p className="text-text-muted text-[10px] uppercase tracking-wide">Volume</p>
-                          </div>
-                          <p className="font-mono font-bold text-xs text-text-primary">{formatVolume(agent.totalVolume)}</p>
-                        </div>
+                        <p className="font-mono font-bold text-xs text-text-primary">{formatVolume(agent.totalVolume)}</p>
                       </div>
                     </div>
-                  </Link>
+
+                    {/* Verify button */}
+                    <button
+                      onClick={() => setVerifyAgent(agent)}
+                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-cyan-primary/20 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
+                    >
+                      <Shield size={14} /> Verify Agent
+                    </button>
+                  </div>
                 </motion.div>
               );
             })}
           </motion.div>
         )}
       </div>
+
+      {/* Verify modal */}
+      <AnimatePresence>
+        {verifyAgent && (
+          <VerifyModal agent={verifyAgent} onClose={() => setVerifyAgent(null)} />
+        )}
+      </AnimatePresence>
     </main>
   );
 }

@@ -443,6 +443,19 @@ function LiveDemo() {
         if (i === sim.lines.length - 1) {
           setRunning(false);
           setDone(true);
+          if (typeof window !== 'undefined') {
+            const agentName = sim.badge === 'gold' ? 'GoldBot' : sim.badge === 'silver' ? 'SilverBot' : 'DemoBot';
+            localStorage.setItem('aegis_demo_agent', JSON.stringify({
+              objectId: `0xdemo${Math.random().toString(16).slice(2, 14)}`,
+              agentId: `0x${Math.random().toString(16).slice(2, 10)}`,
+              name: agentName,
+              totalExecutions: sim.totalExecs,
+              successfulExecutions: sim.successes,
+              uptimeScore: Math.round(sim.successRate),
+              totalVolume: sim.totalVolumeSUI * 1_000_000_000,
+              isFlagged: sim.isFlagged,
+            }));
+          }
         }
       }, line.delay + 200);
       timersRef.current.push(t);
