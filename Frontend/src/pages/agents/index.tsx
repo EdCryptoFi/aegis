@@ -118,20 +118,32 @@ function formatVolume(mist: number): string {
   return `${sui.toFixed(4)} SUI`;
 }
 
-function getTrustLevel(agent: AgentInfo): string {
-  if (agent.isFlagged) return 'FLAGGED';
+function computeAgentScore(agent: AgentInfo): number {
   const successRate = agent.totalExecutions > 0
     ? (agent.successfulExecutions / agent.totalExecutions) * 100 : 100;
-  if (successRate >= 95 && agent.totalExecutions >= 50) return 'HIGH';
-  if (successRate >= 80 && agent.totalExecutions >= 10) return 'MEDIUM';
-  return 'LOW';
+  if (agent.isFlagged) return Math.round(Math.max(5, successRate * 0.12) * 10) / 10;
+  const perf = (successRate / 100) * 42;
+  const rel = (agent.uptimeScore / 100) * 28;
+  const execMat = Math.min(agent.totalExecutions / 200, 1) * 15;
+  const vol = Math.min((agent.totalVolume / 1_000_000_000) / 500, 1) * 15;
+  return Math.round(Math.min(100, perf + rel + execMat + vol) * 10) / 10;
 }
 
-const TRUST_PILL: Record<string, string> = {
-  HIGH:    'bg-mint-secondary/10 text-mint-secondary border-mint-secondary/30',
-  MEDIUM:  'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',
-  LOW:     'bg-orange-500/10 text-orange-400 border-orange-500/30',
-  FLAGGED: 'bg-red-500/10 text-red-400 border-red-500/30',
+function deriveAgentBadge(agent: AgentInfo): string {
+  if (agent.isFlagged) return 'revoked';
+  const score = computeAgentScore(agent);
+  if (score >= 90) return 'gold';
+  if (score >= 70) return 'silver';
+  if (score >= 50) return 'bronze';
+  return 'none';
+}
+
+const BADGE_PILL: Record<string, string> = {
+  gold:    'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',
+  silver:  'bg-slate-400/10 text-slate-300 border-slate-400/30',
+  bronze:  'bg-amber-700/10 text-amber-600 border-amber-700/30',
+  revoked: 'bg-red-500/10 text-red-400 border-red-500/30',
+  none:    'bg-surface-2 text-text-muted border-[rgba(255,255,255,0.08)]',
 };
 
 type SortKey = 'uptime' | 'volume' | 'executions';
@@ -297,7 +309,7 @@ export default function AgentsPage() {
             {/* Demo agent from localStorage */}
             {demoAgent && (() => {
               const demoSuccess = Math.round((demoAgent.successfulExecutions / demoAgent.totalExecutions) * 100);
-              const demoLevel = getTrustLevel(demoAgent);
+              const demoBadge = deriveAgentBadge(demoAgent);
               const demoName = demoAgent.name || 'Demo Agent';
               return (
                 <motion.div
@@ -311,8 +323,8 @@ export default function AgentsPage() {
                     </span>
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-display text-3xl font-bold text-cyan-primary">★</span>
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${TRUST_PILL[demoLevel]}`}>
-                        {demoLevel}
+                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${BADGE_PILL[demoBadge]}`}>
+                        {demoBadge.toUpperCase()}
                       </span>
                     </div>
                     <h3 className="font-display text-xl font-bold text-text-primary mb-3">{demoName}</h3>
@@ -358,7 +370,7 @@ export default function AgentsPage() {
 
             {/* Real agents */}
             {sortedAgents.map((agent, i) => {
-              const level = getTrustLevel(agent);
+              const level = deriveAgentBadge(agent);
               const successRate = agent.totalExecutions > 0
                 ? Math.round((agent.successfulExecutions / agent.totalExecutions) * 100) : 100;
               const agentName = agent.name || AGENT_NAMES[agent.objectId] || `Agent #${i + 1}`;
@@ -375,8 +387,8 @@ export default function AgentsPage() {
                     {/* Rank + trust */}
                     <div className="flex items-center justify-between mb-2">
                       <span className="font-display text-3xl font-bold text-cyan-primary">#{i + 1}</span>
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${TRUST_PILL[level]}`}>
-                        {level}
+                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${BADGE_PILL[level]}`}>
+                        {level.toUpperCase()}
                       </span>
                     </div>
 
@@ -391,13 +403,13 @@ export default function AgentsPage() {
                       </p>
                       {!agent.objectId.startsWith('0xdemo') && !agent.objectId.startsWith('0xSIM') && (
                         <a
-                          href={`https://suiscan.xyz/testnet/object/${agent.objectId}`}
+                          href={`https://suivision.xyz/object/${agent.objectId}?network=testnet`}
                           target="_blank"
                           rel="noopener noreferrer"
                           className="inline-flex items-center gap-1 mt-1 text-[10px] font-mono text-cyan-primary/50 hover:text-cyan-primary transition-colors"
                           onClick={e => e.stopPropagation()}
                         >
-                          <ExternalLink size={9} /> SuiScan ↗
+                          <ExternalLink size={9} /> SuiVision ↗
                         </a>
                       )}
                     </div>

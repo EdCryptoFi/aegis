@@ -491,11 +491,155 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
             <div className="flex items-center gap-2 text-text-muted text-xs font-mono mb-3">
               <span>Docs</span><ChevronRight size={12} /><span className="text-text-primary">Security</span>
             </div>
-            <h2 className="font-display text-2xl font-bold text-text-primary mb-2">Security Best Practices</h2>
-            <p className="text-text-secondary text-sm mb-5">Essential checklist for DeFi protocols integrating Aegis.</p>
+            <h2 className="font-display text-2xl font-bold text-text-primary mb-2">Security & Contract Audit</h2>
+            <p className="text-text-secondary text-sm mb-6">Full validation matrix for Aegis API, Move contracts, and integration patterns.</p>
 
+            {/* API Security */}
+            <h3 className="font-display font-bold text-text-primary text-base mb-3 flex items-center gap-2">
+              <Lock size={14} className="text-cyan-primary" /> API Security Layer
+            </h3>
+            <div className="rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)] mb-6">
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="bg-surface-0 border-b border-[rgba(255,255,255,0.06)]">
+                    {['Endpoint', 'Rate Limit Tier', 'Window', 'Validation'].map(h => (
+                      <th key={h} className="text-left px-4 py-3 text-text-muted font-semibold uppercase tracking-wider text-[10px]">{h}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-[rgba(255,255,255,0.04)]">
+                  {[
+                    { ep: 'GET /api/agents', tier: 'Relaxed', window: '100 req/min', val: 'sort enum allowlist · minExecutions ≥ 0 · trust sanitized' },
+                    { ep: 'GET /api/agents/[id]', tier: 'Moderate', window: '30 req/min', val: '0x hex format · length 10–100 chars · rejects demo/SIM IDs' },
+                    { ep: 'GET /api/agents/demo', tier: 'Relaxed', window: '100 req/min', val: 'objectId ≤ 100 chars · badge enum ∈ {none,bronze,silver,gold}' },
+                    { ep: 'POST /api/agents/demo', tier: 'Moderate', window: '30 req/min', val: 'all ints validated · isFlagged bool-coerced · name ≤ 60 chars' },
+                    { ep: 'DELETE /api/agents/demo', tier: 'Strict', window: '10 req/min', val: 'no body accepted' },
+                    { ep: 'POST /api/agents/register', tier: 'Strict', window: '10 req/min', val: 'name sanitized ≤ 50 chars · private key from env only' },
+                    { ep: 'POST /api/chat', tier: 'Moderate', window: '30 req/min', val: 'messages array · role ∈ {user,assistant,system} · content ≤ 2000 chars' },
+                  ].map(({ ep, tier, window: w, val }) => (
+                    <tr key={ep} className="bg-surface-1/40">
+                      <td className="px-4 py-3 font-mono text-[11px] text-cyan-primary">{ep}</td>
+                      <td className="px-4 py-3">
+                        <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${tier === 'Strict' ? 'bg-red-500/10 text-red-400' : tier === 'Moderate' ? 'bg-yellow-400/10 text-yellow-400' : 'bg-mint-secondary/10 text-mint-secondary'}`}>{tier}</span>
+                      </td>
+                      <td className="px-4 py-3 font-mono text-text-muted text-[10px]">{w}</td>
+                      <td className="px-4 py-3 text-text-secondary leading-relaxed">{val}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <div className="rounded-2xl border border-cyan-primary/20 bg-cyan-primary/[0.04] p-4 mb-6 text-xs text-text-secondary leading-relaxed">
+              <strong className="text-cyan-primary">Rate limit behaviour:</strong> IP extracted from <code className="text-cyan-primary">X-Forwarded-For</code> header (first value). Graceful <code className="text-cyan-primary">429</code> with <code className="text-cyan-primary">Retry-After</code> header. Keys stored in process memory per tier window — no external dependency.
+            </div>
+
+            {/* API Key Handling */}
+            <h3 className="font-display font-bold text-text-primary text-base mb-3 flex items-center gap-2">
+              <Shield size={14} className="text-cyan-primary" /> API Key Handling
+            </h3>
+            <div className="rounded-2xl border border-[rgba(255,255,255,0.08)] p-5 mb-6">
+              <ul className="space-y-2.5">
+                {[
+                  { ok: true,  t: 'GROQ_API_KEY stored in server-side environment variable only — never exposed to client bundle' },
+                  { ok: true,  t: 'DEMO_WALLET_PRIVATE_KEY loaded from .env.local — falls back to ephemeral keypair + faucet if absent' },
+                  { ok: true,  t: 'NEXT_PUBLIC_CONVEX_SITE_URL is public-safe (no secrets) — prefixed correctly per Next.js convention' },
+                  { ok: true,  t: 'No hard-coded keys found in any source file across /api/* and /lib/*' },
+                  { ok: false, t: 'X-Forwarded-For header is trusted without CIDR validation — behind a proxy, consider allowlisting trusted proxy IPs' },
+                ].map(({ ok, t }) => (
+                  <li key={t} className="flex items-start gap-2.5 text-sm text-text-secondary">
+                    {ok
+                      ? <CheckCircle size={13} className="text-mint-secondary flex-shrink-0 mt-0.5" />
+                      : <AlertTriangle size={13} className="text-yellow-400 flex-shrink-0 mt-0.5" />}
+                    {t}
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Contract Audit */}
+            <h3 className="font-display font-bold text-text-primary text-base mb-3 flex items-center gap-2">
+              <Code2 size={14} className="text-cyan-primary" /> Move Contract Audit — <span className="text-text-muted font-normal text-sm">reputation.move · badge_registry.move</span>
+            </h3>
+            <div className="space-y-3 mb-6">
+              {[
+                {
+                  status: 'pass', label: 'Input bounds — volume',
+                  detail: 'assert!(volume < 1_000_000_000_000, E_INVALID_VOLUME) — caps volume at 1T MIST per execution.',
+                },
+                {
+                  status: 'pass', label: 'Input bounds — slippage',
+                  detail: 'assert!(slippage < 100_000, E_INVALID_SLIPPAGE) — rejects values ≥ 1000% slippage.',
+                },
+                {
+                  status: 'pass', label: 'Epoch-based rate limiting',
+                  detail: 'assert!(current_epoch >= rep.last_update + 1, E_RATE_LIMITED) — enforces minimum 1 epoch between executions per object.',
+                },
+                {
+                  status: 'pass', label: 'Auto-flag: low success rate',
+                  detail: 'Flagged when success_rate < 50% and total_executions > 0. Emits AgentFlagged event on-chain.',
+                },
+                {
+                  status: 'pass', label: 'Auto-flag: consecutive failures',
+                  detail: 'Flagged after 5+ consecutive failures. consecutive_failures resets to 0 on any successful execution.',
+                },
+                {
+                  status: 'pass', label: 'Auto-flag: high slippage',
+                  detail: 'Flagged when single execution slippage ≥ 500 BPS (5%). Checked on every record_execution call.',
+                },
+                {
+                  status: 'pass', label: 'Badge eligibility double-check (badge_registry)',
+                  detail: 'grant_badge asserts no duplicate or higher badge already exists (E_ALREADY_HAS_BADGE, E_HAS_HIGHER_BADGE). Badge type validated ∈ {1,2,3}.',
+                },
+                {
+                  status: 'pass', label: 'Revocation criteria enforced on-chain',
+                  detail: 'check_and_revoke_invalid re-validates all badge thresholds on each call. Revoked entries emit BadgeRevoked event.',
+                },
+                {
+                  status: 'warn', label: 'Recovery logic uses wrong field',
+                  detail: 'check_and_unflag checks consecutive_failures >= 100, but this counter resets to 0 on success — so a flagged agent can never meet this condition through normal operation. The contract lacks a consecutive_successes counter. Recovery is effectively disabled until this is patched.',
+                },
+                {
+                  status: 'warn', label: 'Gold badge volume threshold (badge_registry vs reputation)',
+                  detail: 'badge_registry uses GOLD_MIN_VOLUME = 1_000_000 MIST (0.001 SUI). reputation.is_eligible_for_badge uses the same value. Both should be 1_000_000_000_000 MIST (1M SUI) to match the documented $1M volume requirement.',
+                },
+              ].map(({ status, label, detail }) => (
+                <div key={label} className={`rounded-xl border p-4 ${status === 'pass' ? 'border-mint-secondary/20 bg-mint-secondary/[0.03]' : 'border-yellow-400/25 bg-yellow-400/[0.04]'}`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    {status === 'pass'
+                      ? <CheckCircle size={13} className="text-mint-secondary flex-shrink-0" />
+                      : <AlertTriangle size={13} className="text-yellow-400 flex-shrink-0" />}
+                    <span className={`text-xs font-bold ${status === 'pass' ? 'text-mint-secondary' : 'text-yellow-400'}`}>{status === 'pass' ? 'PASS' : 'WARN'}</span>
+                    <span className="text-text-primary text-xs font-semibold">{label}</span>
+                  </div>
+                  <p className="text-text-secondary text-xs leading-relaxed pl-5">{detail}</p>
+                </div>
+              ))}
+            </div>
+
+            {/* Component Architecture Note */}
+            <h3 className="font-display font-bold text-text-primary text-base mb-3 flex items-center gap-2">
+              <Layers size={14} className="text-cyan-primary" /> Component Architecture — Separation of Concerns
+            </h3>
+            <div className="rounded-2xl border border-[rgba(255,255,255,0.08)] p-5 mb-6">
+              <p className="text-text-secondary text-xs mb-4 leading-relaxed">The following pages mix data fetching with presentation. Recommended refactor: extract data access into custom hooks or a container component, leaving the JSX as pure presentational output.</p>
+              <div className="space-y-3">
+                {[
+                  { file: '/pages/agents/index.tsx', issue: 'getAllAgents() defined inline — move to useAgents() hook. Agent card JSX duplicated for demo and real agents — extract to AgentListCard component.' },
+                  { file: '/pages/leaderboard/index.tsx', issue: 'getLeaderboard() defined inline with 200+ lines of data-merge logic. Extract to useLeaderboard() hook. Row rendering is a candidate for LeaderboardRow component.' },
+                  { file: '/pages/agent/[address].tsx', issue: 'fetchReputation() called directly in useEffect — move to useReputation(address) hook. buildChartData() and generateActivity() are pure functions that belong in /lib/.' },
+                  { file: '/components/AgentCard.tsx', issue: 'getAgentReputation() fetches RPC directly inside a presentational component. This violates container/presentation separation — AgentCard should receive ReputationData as a prop.' },
+                ].map(({ file, issue }) => (
+                  <div key={file} className="rounded-xl border border-[rgba(255,255,255,0.06)] p-3">
+                    <p className="font-mono text-[11px] text-cyan-primary mb-1">{file}</p>
+                    <p className="text-text-secondary text-xs leading-relaxed">{issue}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Protocol Integrator Checklist */}
+            <h3 className="font-display font-bold text-text-primary text-base mb-3">Protocol Integrator Checklist</h3>
             <div className="rounded-2xl border border-[rgba(255,255,255,0.08)] p-5 mb-5">
-              <h3 className="font-semibold text-text-primary text-sm mb-3">Protocol Integrator Checklist</h3>
               <ul className="space-y-2">
                 {[
                   'Always validate agent via contract_address - never trust display name alone',

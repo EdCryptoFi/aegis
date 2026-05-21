@@ -389,13 +389,13 @@ export default function LeaderboardPage() {
                     <span className="font-mono text-text-muted text-[11px]">{agent.objectId.slice(0, 6)}...{agent.objectId.slice(-4)}</span>
                     {!agent.objectId.startsWith('0xdemo') && !agent.objectId.startsWith('0xSIM') && (
                       <a
-                        href={`https://suiscan.xyz/testnet/object/${agent.objectId}`}
+                        href={`https://suivision.xyz/object/${agent.objectId}?network=testnet`}
                         target="_blank"
                         rel="noopener noreferrer"
                         onClick={e => e.stopPropagation()}
                         className="inline-flex items-center gap-0.5 mt-0.5 text-[9px] font-mono text-cyan-primary/40 hover:text-cyan-primary transition-colors"
                       >
-                        <ExternalLink size={8} /> SuiScan
+                        <ExternalLink size={8} /> SuiVision
                       </a>
                     )}
                   </span>

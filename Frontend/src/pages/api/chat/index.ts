@@ -1,4 +1,5 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
+import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
 
 const SYSTEM_CONTEXT = `You are the official Aegis assistant — an on-chain reputation oracle for AI agents on the Sui blockchain.
 
@@ -37,6 +38,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
+
+  const { limited, remaining, resetInMs } = checkRateLimit(req, 'moderate');
+  if (limited) return rateLimitResponse(res, resetInMs);
+  res.setHeader('X-RateLimit-Remaining', String(remaining));
 
   const { messages } = req.body;
 
