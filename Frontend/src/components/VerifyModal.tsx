@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Shield, ShieldCheck, ShieldX, X, ExternalLink } from 'lucide-react';
+import { Shield, ShieldCheck, ShieldX, X, ExternalLink, Copy, Check } from 'lucide-react';
 
 export interface VerifyAgentData {
   objectId: string;
@@ -95,6 +95,18 @@ function buildCliLines(
   return lines;
 }
 
+function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <button
+      onClick={() => { navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1500); }}
+      className="text-text-muted hover:text-cyan-primary transition-colors flex-shrink-0"
+    >
+      {copied ? <Check size={11} className="text-mint-secondary" /> : <Copy size={11} />}
+    </button>
+  );
+}
+
 interface VerifyModalProps {
   agent: VerifyAgentData;
   onClose: () => void;
@@ -181,7 +193,7 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
               <div className="mb-5" />
             )}
 
-            {/* Badge + Trust pill in one row */}
+            {/* Badge pill */}
             <div className="flex items-center flex-wrap gap-3 mb-5">
               <div className={`inline-flex items-center gap-2 px-3 py-1.5 rounded-xl ${bc.bg} border ${bc.border} ${bc.glow}`}>
                 {isVerified
@@ -191,9 +203,6 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
                   {agent.isFlagged ? 'FLAGGED' : `${bc.label} BADGE`}
                 </span>
               </div>
-              <span className={`px-3 py-1.5 rounded-full text-[11px] font-bold border ${TRUST_PILL[level]}`}>
-                {level} TRUST
-              </span>
             </div>
 
             {/* Metrics — 2×3 grid */}
@@ -284,6 +293,21 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
               {visibleCli < cliLines.length && (
                 <span className="inline-block w-2 h-4 bg-cyan-primary animate-pulse align-middle" />
               )}
+            </div>
+            <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.08)]">
+              <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-2">Try it yourself</p>
+              <div className="space-y-1.5">
+                {[
+                  `aegis verify --agent ${agent.objectId}`,
+                  `aegis trust-score --agent ${agent.objectId}`,
+                  `aegis logs --agent ${agent.objectId} --limit 10`,
+                ].map((cmd) => (
+                  <div key={cmd} className="flex items-center justify-between gap-2 bg-black/40 rounded-lg px-3 py-1.5">
+                    <span className="font-mono text-[10px] text-cyan-primary/80 truncate">$ {cmd}</span>
+                    <CopyButton text={cmd} />
+                  </div>
+                ))}
+              </div>
             </div>
             <p className="text-text-muted text-[9px] font-mono mt-4 text-right">
               Powered by Aegis · Sui Testnet

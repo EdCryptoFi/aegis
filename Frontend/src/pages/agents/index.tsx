@@ -158,17 +158,29 @@ export default function AgentsPage() {
 
   useEffect(() => {
     loadAgents();
-    if (typeof window !== 'undefined') {
-      const raw = localStorage.getItem('aegis_demo_agent');
-      if (raw) {
-        try { setDemoAgent(JSON.parse(raw)); } catch {}
-      }
-    }
   }, []);
 
   async function loadAgents() {
     setLoading(true);
     const data = await getAllAgents();
+
+    let localDemo: AgentInfo | null = null;
+    if (typeof window !== 'undefined') {
+      const raw = localStorage.getItem('aegis_demo_agent');
+      if (raw) {
+        try { localDemo = JSON.parse(raw); } catch {}
+      }
+    }
+
+    // Merge local demo agent into the list so it participates in sort/count
+    if (localDemo) {
+      const alreadyPresent = data.some(a => a.objectId === localDemo!.objectId);
+      if (!alreadyPresent) {
+        setDemoAgent(localDemo);
+        data.unshift(localDemo);
+      }
+    }
+
     setAgents(data);
     setLoading(false);
   }
@@ -306,74 +318,12 @@ export default function AgentsPage() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.15 }}
           >
-            {/* Demo agent from localStorage */}
-            {demoAgent && (() => {
-              const demoSuccess = Math.round((demoAgent.successfulExecutions / demoAgent.totalExecutions) * 100);
-              const demoBadge = deriveAgentBadge(demoAgent);
-              const demoName = demoAgent.name || 'Demo Agent';
-              return (
-                <motion.div
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0 }}
-                >
-                  <div className="relative h-full rounded-2xl p-6 glass-card-heavy border-cyan-primary/20 hover:border-cyan-primary/40 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300">
-                    <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-primary/10 border border-cyan-primary/20 font-mono text-[9px] text-cyan-primary uppercase tracking-widest">
-                      DEMO
-                    </span>
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="font-display text-3xl font-bold text-cyan-primary">★</span>
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${BADGE_PILL[demoBadge]}`}>
-                        {demoBadge.toUpperCase()}
-                      </span>
-                    </div>
-                    <h3 className="font-display text-xl font-bold text-text-primary mb-3">{demoName}</h3>
-                    <div className="mb-4">
-                      <p className="text-text-muted text-[10px] uppercase tracking-wider mb-1">Agent ID</p>
-                      <p className="font-mono text-sm text-text-primary">
-                        {demoAgent.objectId.slice(0, 8)}...{demoAgent.objectId.slice(-4)}
-                      </p>
-                    </div>
-                    <div className="grid grid-cols-3 gap-2 mb-4">
-                      <div className="rounded-xl p-3 bg-cyan-primary/[0.06]">
-                        <div className="flex items-center gap-1 mb-1">
-                          <TrendingUp size={10} className="text-cyan-primary" />
-                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Uptime</p>
-                        </div>
-                        <p className="font-mono font-bold text-sm text-cyan-primary">{demoAgent.uptimeScore}%</p>
-                      </div>
-                      <div className="rounded-xl p-3 bg-mint-secondary/[0.06]">
-                        <div className="flex items-center gap-1 mb-1">
-                          <BarChart2 size={10} className="text-mint-secondary" />
-                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Success</p>
-                        </div>
-                        <p className="font-mono font-bold text-sm text-mint-secondary">{demoSuccess}%</p>
-                      </div>
-                      <div className="rounded-xl p-3 bg-surface-2">
-                        <div className="flex items-center gap-1 mb-1">
-                          <Layers size={10} className="text-text-muted" />
-                          <p className="text-text-muted text-[10px] uppercase tracking-wide">Volume</p>
-                        </div>
-                        <p className="font-mono font-bold text-xs text-text-primary">{formatVolume(demoAgent.totalVolume)}</p>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => setVerifyAgent({ ...demoAgent, name: demoName })}
-                      className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-cyan-primary/20 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
-                    >
-                      <Shield size={14} /> Verify Agent
-                    </button>
-                  </div>
-                </motion.div>
-              );
-            })()}
-
-            {/* Real agents */}
             {sortedAgents.map((agent, i) => {
               const level = deriveAgentBadge(agent);
               const successRate = agent.totalExecutions > 0
                 ? Math.round((agent.successfulExecutions / agent.totalExecutions) * 100) : 100;
               const agentName = agent.name || AGENT_NAMES[agent.objectId] || `Agent #${i + 1}`;
+              const isDemo = demoAgent?.objectId === agent.objectId;
 
               return (
                 <motion.div
@@ -382,12 +332,19 @@ export default function AgentsPage() {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.06 }}
                 >
-                  <div className="h-full rounded-2xl p-6 glass-card-heavy hover:border-cyan-primary/20 hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300">
+                  <div className={`relative h-full rounded-2xl p-6 glass-card-heavy hover:-translate-y-1 hover:shadow-card-hover transition-all duration-300 ${isDemo ? 'border-cyan-primary/20 hover:border-cyan-primary/40' : 'hover:border-cyan-primary/20'}`}>
+                    {isDemo && (
+                      <span className="absolute top-2 right-2 px-2 py-0.5 rounded-full bg-cyan-primary/10 border border-cyan-primary/20 font-mono text-[9px] text-cyan-primary uppercase tracking-widest">
+                        DEMO
+                      </span>
+                    )}
 
-                    {/* Rank + trust */}
+                    {/* Rank + badge */}
                     <div className="flex items-center justify-between mb-2">
-                      <span className="font-display text-3xl font-bold text-cyan-primary">#{i + 1}</span>
-                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${BADGE_PILL[level]}`}>
+                      <span className="font-display text-3xl font-bold text-cyan-primary">
+                        {isDemo ? '★' : `#${i + 1}`}
+                      </span>
+                      <span className={`px-2.5 py-1 rounded-full text-[11px] font-bold border ${BADGE_PILL[level]} ${isDemo ? 'mr-6' : ''}`}>
                         {level.toUpperCase()}
                       </span>
                     </div>

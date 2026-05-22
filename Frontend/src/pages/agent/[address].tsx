@@ -184,13 +184,18 @@ function generateActivity(rep: ReputationData): { success: boolean; time: string
   });
 }
 
-/* ─── Trust badge ─── */
-function trustLevel(rep: ReputationData): { label: string; pill: string } {
-  if (rep.isFlagged) return { label: 'Flagged', pill: 'bg-red-500/10 text-red-400 border-red-500/30' };
+/* ─── Badge tier ─── */
+function agentBadge(rep: ReputationData): { label: string; pill: string } {
+  if (rep.isFlagged) return { label: 'Revoked', pill: 'bg-red-500/10 text-red-400 border-red-500/30' };
   const sr = rep.totalExecutions > 0 ? (rep.successfulExecutions / rep.totalExecutions) * 100 : 100;
-  if (sr >= 95 && rep.totalExecutions >= 50) return { label: 'High Trust', pill: 'bg-mint-secondary/10 text-mint-secondary border-mint-secondary/30' };
-  if (sr >= 80 && rep.totalExecutions >= 10) return { label: 'Medium Trust', pill: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30' };
-  return { label: 'Low Trust', pill: 'bg-orange-500/10 text-orange-400 border-orange-500/30' };
+  const vol = rep.totalVolume / 1_000_000_000;
+  if (rep.totalExecutions >= 200 && sr >= 95 && vol >= 1000)
+    return { label: 'Gold Badge', pill: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30' };
+  if (rep.totalExecutions >= 50 && sr >= 90)
+    return { label: 'Silver Badge', pill: 'bg-slate-300/10 text-slate-300 border-slate-300/30' };
+  if (rep.totalExecutions >= 10 && sr >= 80)
+    return { label: 'Bronze Badge', pill: 'bg-orange-400/10 text-orange-400 border-orange-400/30' };
+  return { label: 'Unranked', pill: 'bg-surface-2 text-text-muted border-[rgba(255,255,255,0.08)]' };
 }
 
 /* ─── Chart tabs ─── */
@@ -227,7 +232,7 @@ export default function AgentPage() {
   const avgSlippage = rep && rep.totalExecutions > 0
     ? rep.totalSlippage / rep.totalExecutions : 0;
 
-  const trust = rep ? trustLevel(rep) : { label: '-', pill: '' };
+  const trust = rep ? agentBadge(rep) : { label: '-', pill: '' };
 
   return (
     <main className="min-h-screen bg-bg-base px-4 py-12">
