@@ -31,3 +31,19 @@ npm-debug.log*
 # Sui keys / secrets
 *.key
 *.pem
+
+# Internal planning & cleanup docs
+CLEANUP_REPORT.txt
+DEEPBOOK_CONSOLIDATION_SUMMARY.md
+PROJECT_STATUS.md
+SIMPLIFICATION_COMPLETE.md
+VERCEL_SETUP.md
+
+# Old snapshots / checkpoints
+checkpoints/
+
+# Deprecated Walrus (replaced by MemWal)
+Walrus/
+
+# Claude AI config
+.claude/
