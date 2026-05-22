@@ -22,7 +22,7 @@ interface AgentStats {
   successRate: number;
   averageSlippage: number;
   estimatedUptime: string;
-  trustLevel: 'High' | 'Medium' | 'Low' | 'Flagged';
+  badge: string;
 }
 
 function formatVolume(mist: number): string {
@@ -79,30 +79,31 @@ function calculateAgentStats(data: ReputationData): AgentStats {
     ? data.totalSlippage / data.totalExecutions
     : 0;
 
-  let trustLevel: 'High' | 'Medium' | 'Low' | 'Flagged';
+  let badge: string;
   if (data.isFlagged) {
-    trustLevel = 'Flagged';
-  } else if (successRate >= 95 && data.totalExecutions >= 50) {
-    trustLevel = 'High';
-  } else if (successRate >= 80 && data.totalExecutions >= 10) {
-    trustLevel = 'Medium';
+    badge = 'revoked';
   } else {
-    trustLevel = 'Low';
+    const vol = data.totalVolume / 1_000_000_000;
+    if (data.totalExecutions >= 200 && successRate >= 95 && vol >= 1000) badge = 'gold';
+    else if (data.totalExecutions >= 50 && successRate >= 90) badge = 'silver';
+    else if (data.totalExecutions >= 10 && successRate >= 80) badge = 'bronze';
+    else badge = 'none';
   }
 
   return {
     successRate: Math.round(successRate * 100) / 100,
     averageSlippage: Math.round(averageSlippage * 100) / 100,
     estimatedUptime: `${data.uptimeScore}%`,
-    trustLevel,
+    badge,
   };
 }
 
-const TRUST_STYLES: Record<string, { pill: string; color: string }> = {
-  High: { pill: 'bg-mint-secondary/10 text-mint-secondary border-mint-secondary/30', color: 'text-mint-secondary' },
-  Medium: { pill: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30', color: 'text-yellow-400' },
-  Low: { pill: 'bg-orange-500/10 text-orange-400 border-orange-500/30', color: 'text-orange-400' },
-  Flagged: { pill: 'bg-red-500/10 text-red-400 border-red-500/30', color: 'text-red-400' },
+const BADGE_STYLES: Record<string, { pill: string; label: string }> = {
+  gold:    { pill: 'bg-yellow-400/10 text-yellow-400 border-yellow-400/30',              label: 'Gold Badge'   },
+  silver:  { pill: 'bg-slate-300/10 text-slate-300 border-slate-300/30',                 label: 'Silver Badge' },
+  bronze:  { pill: 'bg-orange-400/10 text-orange-400 border-orange-400/30',              label: 'Bronze Badge' },
+  revoked: { pill: 'bg-red-500/10 text-red-400 border-red-500/30',                       label: 'Revoked'      },
+  none:    { pill: 'bg-surface-2 text-text-muted border-[rgba(255,255,255,0.08)]',       label: 'Unranked'     },
 };
 
 export default function AgentCard({ agentAddress }: { agentAddress: string }) {
@@ -149,7 +150,7 @@ export default function AgentCard({ agentAddress }: { agentAddress: string }) {
     );
   }
 
-  const trustStyle = TRUST_STYLES[stats?.trustLevel || 'Low'];
+  const badgeStyle = BADGE_STYLES[stats?.badge || 'none'];
 
   const metrics = [
     { icon: Activity, label: 'Uptime Score', value: stats?.estimatedUptime, color: 'text-cyan-primary', bg: 'bg-cyan-primary/[0.06]' },
@@ -175,8 +176,8 @@ export default function AgentCard({ agentAddress }: { agentAddress: string }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <h3 className="font-display text-lg font-bold text-text-primary">Agent Reputation</h3>
-        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${trustStyle.pill}`}>
-          {stats?.trustLevel}
+        <span className={`px-3 py-1 rounded-full text-xs font-bold border ${badgeStyle.pill}`}>
+          {badgeStyle.label}
         </span>
       </div>
 

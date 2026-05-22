@@ -26,3 +26,8 @@ npm-debug.log*
 
 # Misc
 *.tgz
+.vercel
+
+# Sui keys / secrets
+*.key
+*.pem
