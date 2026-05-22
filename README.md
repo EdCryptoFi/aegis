@@ -28,47 +28,28 @@ Autonomous AI agents operate without any verifiable mechanism of trustworthiness
 | BetaBot | ⚠️ MEDIUM | 🥈 Silver | 80 | Active |
 | GammaScam | ❌ FLAGGED | 🚫 Revoked | 0 | Auto-Revoked |
 
-## Quick Start
-
-### Setup
+## Installation
 
 ```bash
-# Install Sui CLI
-curl -sSfL https://raw.githubusercontent.com/Mystenlabs/suiup/main/install.sh | sh
-suiup install sui@testnet
+npm install @aegis/sdk
 
-# Clone repo
-git clone https://github.com/EdCryptoFi/aegis.git
-cd aegis
+# or
+
+pnpm add @aegis/sdk
 ```
 
-### Deploy
-
-```bash
-cd Move
-mv build
-mv deploy --network testnet --epochs 50
-```
-
-### Integrate Your Agent
+## Basic Usage
 
 ```typescript
-import { AegisClient } from './Agent/src/index.ts';
+import { createClient } from '@aegis/sdk';
 
-const client = new AegisClient({
-  network: 'testnet',
-  packageId: '0xdcfe62a45e5eb19edefc1bf246b23e6bf97c38004805bc7890f8a5bd09e6bc57'
+const client = createClient({
+  network: 'testnet'
 });
 
-// Register your agent (one-time)
-const agentId = await client.register();
-
-// Report executions
-await client.recordExecution(agentId, {
-  success: true,
-  volume: 500000000,  // 0.5 SUI
-  slippage: 25        // 0.25% in BPS
-});
+// Fetch agent reputation
+const agent = await client.getAgentReputation('0x...');
+console.log(agent.badge); // 'bronze' | 'silver' | 'gold' | null
 ```
 
 ## Architecture

@@ -202,6 +202,50 @@ export default function DocsPage() {
             </div>
           </section>
 
+          {/* ── Installation ── */}
+          <section id="installation">
+            <div className="flex items-center gap-2 text-text-muted text-xs font-mono mb-3">
+              <span>Docs</span><ChevronRight size={12} /><span className="text-text-primary">Installation</span>
+            </div>
+            <h2 className="font-display text-2xl font-bold text-text-primary mb-2">Installation</h2>
+            <p className="text-text-secondary text-sm mb-6">Install the Aegis SDK via npm or pnpm.</p>
+            <CodeBlock lang="bash" code={`npm install @aegis/sdk
+
+# or
+
+pnpm add @aegis/sdk`} />
+            <div className="mt-3 flex justify-center">
+              <a
+                href="#basic-usage"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs text-cyan-primary hover:text-mint-secondary transition-colors font-mono"
+                onClick={(e) => {
+                  e.preventDefault();
+                  document.getElementById('basic-usage')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }}
+              >
+                See Basic Usage <span className="text-base">↓</span>
+              </a>
+            </div>
+          </section>
+
+          {/* ── Basic Usage ── */}
+          <section id="basic-usage">
+            <div className="flex items-center gap-2 text-text-muted text-xs font-mono mb-3">
+              <span>Docs</span><ChevronRight size={12} /><span className="text-text-primary">Basic Usage</span>
+            </div>
+            <h2 className="font-display text-2xl font-bold text-text-primary mb-2">Basic Usage</h2>
+            <p className="text-text-secondary text-sm mb-6">Import the client and fetch agent reputation.</p>
+            <CodeBlock lang="typescript" code={`import { createClient } from '@aegis/sdk';
+
+const client = createClient({
+  network: 'testnet'
+});
+
+// Fetch agent reputation
+const agent = await client.getAgentReputation('0x...');
+console.log(agent.badge); // 'bronze' | 'silver' | 'gold' | null`} />
+          </section>
+
           {/* ── Key Concepts ── */}
           <section>
             <h2 className="font-display text-2xl font-bold text-text-primary mb-5">Key Concepts</h2>

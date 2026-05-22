@@ -719,6 +719,7 @@ export default function DeveloperPage() {
   const [tab, setTab] = useState<'hub' | 'pipeline' | 'demo'>('hub');
   const [copied, setCopied] = useState<string | null>(null);
   const flowRef = useRef<HTMLDivElement>(null);
+  const basicUsageRef = useRef<HTMLDivElement>(null);
   const flowInView = tab === 'pipeline';
 
   function copyToClipboard(text: string, id: string) {
@@ -848,6 +849,42 @@ export default function DeveloperPage() {
               transition={{ duration: 0.25 }}
               className="space-y-10"
             >
+              {/* Installation */}
+              <section>
+                <h2 className="font-display text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                  <Terminal size={18} className="text-cyan-primary" /> Installation
+                </h2>
+                <div className="rounded-2xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-6 overflow-x-auto">
+                  <pre className="font-mono text-sm text-cyan-primary leading-relaxed whitespace-pre">{`npm install @aegis/sdk`}</pre>
+                </div>
+                <div className="mt-3 flex justify-center">
+                  <button
+                    onClick={() => basicUsageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs text-cyan-primary hover:text-mint-secondary transition-colors font-mono"
+                  >
+                    See Basic Usage <span className="text-base">↓</span>
+                  </button>
+                </div>
+              </section>
+
+              {/* Basic Usage */}
+              <section ref={basicUsageRef}>
+                <h2 className="font-display text-xl font-bold text-text-primary mb-4 flex items-center gap-2">
+                  <Code2 size={18} className="text-cyan-primary" /> Basic Usage
+                </h2>
+                <div className="rounded-2xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-6 overflow-x-auto">
+                  <pre className="font-mono text-sm text-cyan-primary leading-relaxed whitespace-pre">{`import { createClient } from '@aegis/sdk';
+
+const client = createClient({
+  network: 'testnet'
+});
+
+// Fetch agent reputation
+const agent = await client.getAgentReputation('0x...');
+console.log(agent.badge); // 'bronze' | 'silver' | 'gold' | null`}</pre>
+                </div>
+              </section>
+
               {/* Contract Addresses */}
               <section>
                 <h2 className="font-display text-xl font-bold text-text-primary mb-4">Contract Addresses</h2>
