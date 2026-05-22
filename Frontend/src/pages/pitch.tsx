@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import { motion, useInView } from 'framer-motion';
-import { Shield, XCircle, CheckCircle2, TrendingUp, Users, Zap, Award, ArrowRight } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { motion } from 'framer-motion';
+import { Shield, XCircle, CheckCircle2, TrendingUp } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
 import AegisLogo from '@/components/AegisLogo';
@@ -10,21 +10,12 @@ import Footer from '@/components/Footer';
 
 const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0 } };
 
-function Section({ children, className = '' }: { children: React.ReactNode; className?: string }) {
-  return (
-    <section className={`relative py-20 px-6 ${className}`}>
-      <div className="max-w-4xl mx-auto">{children}</div>
-    </section>
-  );
+function Divider() {
+  return <div className="w-full h-px bg-gradient-to-r from-transparent via-cyan-primary/15 to-transparent" />;
 }
 
-function SectionTitle({ children, sub }: { children: React.ReactNode; sub?: string }) {
-  return (
-    <div className="text-center mb-12">
-      {sub && <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-4">{sub}</span>}
-      <h2 className="font-display text-[28px] md:text-[36px] font-bold text-text-primary leading-tight">{children}</h2>
-    </div>
-  );
+function Section({ children }: { children: React.ReactNode }) {
+  return <section className="py-12 px-6"><div className="max-w-4xl mx-auto">{children}</div></section>;
 }
 
 export default function PitchPage() {
@@ -36,7 +27,7 @@ export default function PitchPage() {
       <ParticleBackground />
       <GlowOrbs />
 
-      {/* ═══════ HERO ═══════ */}
+      {/* HERO */}
       <section className="relative min-h-screen flex flex-col items-center justify-center px-6">
         <div className="absolute inset-0 pointer-events-none ambient-breathe" />
         <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg-base to-transparent z-10" />
@@ -62,12 +53,11 @@ export default function PitchPage() {
             AEGIS
           </motion.h1>
 
-          <motion.p variants={fadeUp} className="font-display text-xl md:text-2xl text-text-secondary mb-4">
+          <motion.p variants={fadeUp} className="font-display text-xl md:text-2xl text-text-secondary">
             Verifiable Reputation for AI Agents on Sui
           </motion.p>
         </motion.div>
 
-        {/* Scroll indicator */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={mounted ? { opacity: 1 } : { opacity: 0 }}
@@ -78,57 +68,30 @@ export default function PitchPage() {
         </motion.div>
       </section>
 
-      {/* ═══════ THE PROBLEM ═══════ */}
+      <Divider />
+
+      {/* PROBLEM */}
       <Section>
-        <SectionTitle sub="The Problem">Autonomous AI agents operate in DeFi without:</SectionTitle>
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">The Problem</span>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Autonomous AI agents operate in DeFi without:</h2>
+        </div>
+
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true }}
           variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8"
+          className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5"
         >
           {[
             { icon: XCircle, text: 'Verifiable on-chain reputation', color: 'text-error' },
             { icon: XCircle, text: 'Accountability for failures', color: 'text-error' },
             { icon: XCircle, text: 'Trust mechanisms for protocols', color: 'text-error' },
           ].map(({ icon: Icon, text, color }) => (
-            <motion.div key={text} variants={fadeUp} className="glass-card-heavy rounded-2xl p-6 flex items-center gap-4">
-              <Icon size={24} className={`${color} shrink-0`} />
+            <motion.div key={text} variants={fadeUp} className="glass-card-heavy rounded-2xl p-5 flex items-center gap-3">
+              <Icon size={22} className={`${color} shrink-0`} />
               <span className="font-display font-semibold text-text-primary text-sm">{text}</span>
-            </motion.div>
-          ))}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="rounded-2xl bg-error/[0.06] border border-error/20 p-6 text-center"
-        >
-          <p className="text-text-primary font-display font-bold text-lg">Result: Capital at risk, blind trust, irreversible losses</p>
-        </motion.div>
-      </Section>
-
-      {/* ═══════ THE SOLUTION ═══════ */}
-      <Section>
-        <SectionTitle sub="The Solution: AEGIS">Aegis solves all four</SectionTitle>
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={{ visible: { transition: { staggerChildren: 0.12 } } }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-5"
-        >
-          {[
-            { icon: CheckCircle2, text: 'Track on-chain performance (success rate, slippage, uptime)', color: 'text-mint-secondary' },
-            { icon: CheckCircle2, text: 'Issue dynamic badges (Gold / Silver / Bronze)', color: 'text-mint-secondary' },
-            { icon: CheckCircle2, text: 'Auto-revoke access in &lt;60s if thresholds breached', color: 'text-mint-secondary' },
-            { icon: CheckCircle2, text: 'Enable protocols to verify before delegating capital', color: 'text-mint-secondary' },
-          ].map(({ icon: Icon, text, color }) => (
-            <motion.div key={text} variants={fadeUp} className="glass-card-heavy rounded-2xl p-6 flex items-start gap-4">
-              <Icon size={22} className={`${color} shrink-0 mt-0.5`} />
-              <span className="text-text-primary text-sm leading-relaxed">{text}</span>
             </motion.div>
           ))}
         </motion.div>
@@ -137,19 +100,51 @@ export default function PitchPage() {
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="mt-6 rounded-2xl glass-card-matte p-6 text-center"
+          className="rounded-2xl bg-error/[0.06] border border-error/20 p-5 text-center"
         >
-          <p className="font-display text-lg text-cyan-primary font-bold">
-            Think &ldquo;Credit Score for AI Agents&rdquo; — but on-chain
-          </p>
+          <p className="text-text-primary font-display font-bold">Result: Capital at risk, blind trust, irreversible losses</p>
         </motion.div>
       </Section>
 
-      {/* ═══════ HOW IT WORKS ═══════ */}
+      <Divider />
+
+      {/* SOLUTION */}
       <Section>
-        <SectionTitle sub="How It Works">Four-step flow</SectionTitle>
-        <div className="space-y-5">
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">The Solution: AEGIS</span>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Think "Credit Score for AI Agents" — but on-chain</h2>
+        </div>
+
+        <motion.div
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={{ visible: { transition: { staggerChildren: 0.1 } } }}
+          className="grid grid-cols-1 md:grid-cols-2 gap-4"
+        >
+          {[
+            { text: 'Track on-chain performance (success rate, slippage, uptime)' },
+            { text: 'Issue dynamic badges (Gold / Silver / Bronze)' },
+            { text: 'Auto-revoke access in &lt;60s if thresholds breached' },
+            { text: 'Enable protocols to verify before delegating capital' },
+          ].map(({ text }) => (
+            <motion.div key={text} variants={fadeUp} className="glass-card-heavy rounded-2xl p-5 flex items-start gap-3">
+              <CheckCircle2 size={20} className="text-mint-secondary shrink-0 mt-0.5" />
+              <span className="text-text-primary text-sm">{text}</span>
+            </motion.div>
+          ))}
+        </motion.div>
+      </Section>
+
+      <Divider />
+
+      {/* HOW IT WORKS */}
+      <Section>
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">How It Works</span>
+        </div>
+
+        <div className="space-y-3 mb-5">
           {[
             { num: '1', text: 'Agent executes → Metrics tracked on-chain' },
             { num: '2', text: 'Aegis Score computed → Badge issued (Move contract)' },
@@ -158,13 +153,13 @@ export default function PitchPage() {
           ].map((step, i) => (
             <motion.div
               key={step.num}
-              initial={{ opacity: 0, x: -20 }}
+              initial={{ opacity: 0, x: -16 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              className="flex items-center gap-5 glass-card-heavy rounded-2xl p-5"
+              transition={{ delay: i * 0.08 }}
+              className="flex items-center gap-4 glass-card-heavy rounded-2xl p-4"
             >
-              <span className="w-10 h-10 rounded-full bg-gradient-cyan-mint text-bg-base font-display font-bold text-sm flex items-center justify-center shrink-0 shadow-glow-cyan">
+              <span className="w-9 h-9 rounded-full bg-gradient-cyan-mint text-bg-base font-display font-bold text-xs flex items-center justify-center shrink-0 shadow-glow-cyan">
                 {step.num}
               </span>
               <span className="text-text-primary text-sm font-display font-semibold">{step.text}</span>
@@ -172,52 +167,46 @@ export default function PitchPage() {
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-5 rounded-xl bg-cyan-primary/[0.04] border border-cyan-primary/15 px-6 py-4 font-mono text-xs leading-relaxed"
-        >
+        <div className="rounded-xl bg-cyan-primary/[0.04] border border-cyan-primary/15 px-5 py-3 font-mono text-xs text-center">
           <span className="text-text-muted">Tech: </span>
           <span className="text-cyan-primary">Move contracts</span>
           <span className="text-text-muted"> + </span>
           <span className="text-mint-secondary">TypeScript SDK</span>
           <span className="text-text-muted"> + </span>
           <span className="text-yellow-400">MemWal</span>
-        </motion.div>
+        </div>
       </Section>
 
-      {/* ═══════ CURRENT STATUS ═══════ */}
-      <Section>
-        <SectionTitle sub="Current Status">📊 Testnet Live</SectionTitle>
+      <Divider />
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      {/* STATUS */}
+      <Section>
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">Current Status</span>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Testnet Live</h2>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-5">
           {[
             { value: '94,000+', label: 'executions tracked' },
             { value: '847+', label: 'badges issued' },
-            { value: '3', label: 'demo agents running' },
+            { value: '3', label: 'demo agents' },
             { value: '100%', label: 'uptime' },
           ].map((stat) => (
             <motion.div
               key={stat.label}
-              initial={{ opacity: 0, y: 16 }}
+              initial={{ opacity: 0, y: 12 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass-card-heavy rounded-2xl p-6 text-center"
+              className="glass-card-heavy rounded-2xl p-5 text-center"
             >
-              <p className="font-display text-3xl md:text-4xl font-black gradient-text-cyan mb-1">{stat.value}</p>
-              <p className="text-text-muted font-mono text-xs uppercase tracking-wider">{stat.label}</p>
+              <p className="font-display text-2xl md:text-3xl font-black gradient-text-cyan mb-1">{stat.value}</p>
+              <p className="text-text-muted font-mono text-[10px] uppercase tracking-wider">{stat.label}</p>
             </motion.div>
           ))}
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center"
-        >
+        <div className="text-center">
           <span className="inline-flex items-center gap-2 px-4 py-2 rounded-pill bg-mint-secondary/10 border border-mint-secondary/20 text-mint-secondary font-mono text-xs uppercase tracking-wider">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-mint-secondary opacity-75" />
@@ -225,20 +214,22 @@ export default function PitchPage() {
             </span>
             Live on Testnet
           </span>
-          <p className="mt-3 font-mono text-xs text-text-muted">
+          <p className="mt-2 font-mono text-xs text-text-muted">
             <span className="text-cyan-primary">🔗</span>{' '}
-            <a href="https://aegisonchain.xyz" target="_blank" rel="noopener noreferrer" className="text-cyan-primary hover:underline">
-              aegisonchain.xyz
-            </a>
+            <a href="https://aegisonchain.xyz" target="_blank" rel="noopener noreferrer" className="text-cyan-primary hover:underline">aegisonchain.xyz</a>
           </p>
-        </motion.div>
+        </div>
       </Section>
 
-      {/* ═══════ ROADMAP ═══════ */}
-      <Section>
-        <SectionTitle sub="Roadmap">What&apos;s next</SectionTitle>
+      <Divider />
 
-        <div className="space-y-4">
+      {/* ROADMAP */}
+      <Section>
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">Roadmap</span>
+        </div>
+
+        <div className="space-y-3 mb-4">
           {[
             { phase: 'Phase 1 (Now)', items: ['Testnet + Hackathon Submission ✓'], color: 'text-mint-secondary' },
             { phase: 'Phase 2 (Q3)', items: ['Dynamic leaderboard + Protocol SDK'], color: 'text-cyan-primary' },
@@ -246,37 +237,34 @@ export default function PitchPage() {
           ].map(({ phase, items, color }) => (
             <motion.div
               key={phase}
-              initial={{ opacity: 0, y: 12 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="glass-card-heavy rounded-2xl p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4"
+              className="glass-card-heavy rounded-2xl p-5 flex flex-col sm:flex-row items-start sm:items-center gap-3"
             >
               <span className={`font-display font-bold text-sm ${color} min-w-[160px]`}>{phase}</span>
               <div className="flex flex-wrap gap-2">
                 {items.map((item) => (
-                  <span key={item} className="px-3 py-1 rounded-[8px] bg-bg-base border border-[rgba(255,255,255,0.08)] text-text-secondary text-xs font-mono">
-                    {item}
-                  </span>
+                  <span key={item} className="px-3 py-1 rounded-[8px] bg-bg-base border border-[rgba(255,255,255,0.08)] text-text-secondary text-xs font-mono">{item}</span>
                 ))}
               </div>
             </motion.div>
           ))}
         </div>
 
-        <motion.p
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 text-center font-display text-sm text-text-secondary italic"
-        >
+        <p className="text-center font-display text-sm text-text-secondary italic">
           Vision: Default trust layer for AI x DeFi on Sui
-        </motion.p>
+        </p>
       </Section>
 
-      {/* ═══════ TEAM ═══════ */}
+      <Divider />
+
+      {/* TEAM */}
       <Section>
-        <SectionTitle sub="Team">Who&apos;s building this</SectionTitle>
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">Team</span>
+        </div>
+
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -287,26 +275,35 @@ export default function PitchPage() {
             <span className="font-display font-black text-bg-base text-xl">E</span>
           </div>
           <p className="font-display font-bold text-text-primary text-lg">Ed (@EdCriptoFi)</p>
-          <p className="text-text-muted text-sm font-mono mb-4">Founder / Builder</p>
-          <p className="text-text-secondary text-sm">Building verifiable autonomy for AI agents on Sui</p>
+          <p className="text-text-muted text-sm font-mono mb-1">Founder / Builder</p>
+          <p className="text-text-secondary text-sm mb-4">Building verifiable autonomy for AI agents on Sui</p>
+          <a
+            href="https://x.com/EdCriptoFi"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-[10px] border border-cyan-primary/20 bg-cyan-primary/[0.04] text-cyan-primary font-mono text-xs hover:bg-cyan-primary/[0.1] hover:border-cyan-primary/40 hover:shadow-glow-cyan transition-all"
+          >
+            <TrendingUp size={13} />
+            @EdCriptoFi
+          </a>
         </motion.div>
       </Section>
 
-      {/* ═══════ LET'S BUILD TOGETHER ═══════ */}
-      <section className="relative py-28 px-6">
+      <Divider />
+
+      {/* LET'S BUILD TOGETHER */}
+      <section className="py-16 px-6">
         <div className="max-w-3xl mx-auto text-center">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
           >
-            <h2 className="font-display text-[36px] md:text-[52px] font-black text-text-primary mb-4 tracking-tight">
-              LET&apos;S BUILD
-              <br />
-              <span className="gradient-text-cyan">TOGETHER</span>
+            <h2 className="font-display text-[32px] md:text-[48px] font-black text-text-primary mb-3 tracking-tight">
+              LET&apos;S BUILD <span className="gradient-text-cyan">TOGETHER</span>
             </h2>
 
-            <div className="flex flex-wrap justify-center gap-4 mt-10 mb-10">
+            <div className="flex flex-wrap justify-center gap-3 my-8">
               {[
                 { emoji: '🔗', label: 'Demo', href: 'https://aegisonchain.xyz' },
                 { emoji: '📚', label: 'Docs', href: 'https://aegisonchain.xyz/docs' },
@@ -318,18 +315,16 @@ export default function PitchPage() {
                   href={link.href}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="group inline-flex items-center gap-2.5 px-6 py-3.5 rounded-[14px] border border-cyan-primary/25 bg-cyan-primary/[0.05] text-text-primary font-display font-semibold text-sm hover:bg-cyan-primary/[0.12] hover:border-cyan-primary/50 hover:shadow-glow-cyan hover:scale-[1.04] transition-all"
+                  className="group inline-flex items-center gap-2.5 px-5 py-3 rounded-[14px] border border-cyan-primary/25 bg-cyan-primary/[0.05] text-text-primary font-display font-semibold text-sm hover:bg-cyan-primary/[0.12] hover:border-cyan-primary/50 hover:shadow-glow-cyan hover:scale-[1.04] transition-all"
                 >
                   <span className="text-lg">{link.emoji}</span>
                   <span>{link.label}</span>
-                  <span className="text-cyan-primary/30 group-hover:text-cyan-primary/60 transition-colors text-[10px] font-mono ml-1">
-                    {link.href.replace('https://', '')}
-                  </span>
+                  <span className="text-cyan-primary/30 group-hover:text-cyan-primary/60 transition-colors text-[10px] font-mono ml-1">{link.href.replace('https://', '')}</span>
                 </a>
               ))}
             </div>
 
-            <p className="font-display text-xl text-text-secondary">
+            <p className="font-display text-lg text-text-secondary">
               Feedback welcome! <span className="inline-block hover:scale-125 transition-transform">🙏</span>
             </p>
           </motion.div>
