@@ -3,19 +3,23 @@ import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Transaction } from '@mysten/sui/transactions';
 import { SuiJsonRpcClient } from '@mysten/sui/jsonRpc';
 import { requestSuiFromFaucetV2, getFaucetHost } from '@mysten/sui/faucet';
+import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
+import { methodNotAllowed, serverError, sanitizeString } from '../../../lib/api-utils';
+import { config } from '../../../config';
 
 const client = new SuiJsonRpcClient({ url: 'https://fullnode.testnet.sui.io:443', network: 'testnet' });
-const PACKAGE_ID = '0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d';
-const BADGE_REGISTRY_ID = '0xd7f704c15109a42a56b74e962745831af33fb05cece15103b928bc7d9bd4adb3';
+const PACKAGE_ID = config.packageId;
+const BADGE_REGISTRY_ID = config.badgeRegistry;
 
 function rand(min: number, max: number) {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method !== 'POST') return methodNotAllowed(res, ['POST']);
+
+  const { limited, resetInMs } = checkRateLimit(req, 'strict');
+  if (limited) return rateLimitResponse(res, resetInMs);
 
   try {
     let keypair: Ed25519Keypair;
@@ -35,16 +39,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         await requestSuiFromFaucetV2({ host: getFaucetHost('testnet'), recipient: address });
         await new Promise(r => setTimeout(r, 2000));
       } catch {
-        return res.status(200).json({
+        return res.status(429).json({
           success: false,
-          demo: true,
-          agents: [],
-          note: 'faucet_unavailable',
+          error: 'Faucet rate limit reached. Try again later or configure DEMO_WALLET_PRIVATE_KEY.',
         });
       }
     }
 
-    const agentLabel = `Demo Agent ${req.body?.name || `#${Date.now().toString(36).toUpperCase()}`}`;
+    const agentName = sanitizeString(req.body?.name, 50) || `Demo #${Date.now().toString(36).toUpperCase()}`;
     const tx = new Transaction();
     tx.moveCall({
       target: `${PACKAGE_ID}::reputation::register_agent`,
@@ -61,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     )?.objectId || '';
 
     if (!objectId) {
-      return res.status(500).json({ error: 'Failed to get objectId from registration' });
+      return res.status(500).json({ error: 'Failed to create agent on-chain' });
     }
 
     const totalExecs = rand(15, 40);
@@ -140,33 +142,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     }
 
-    return res.status(200).json({
+    return res.status(201).json({
       success: true,
-      demo: true,
       agent: {
         objectId,
         address: keypair.getPublicKey().toSuiAddress(),
-        label: agentLabel,
+        label: agentName,
         totalExecutions: totalExecs,
         successfulExecutions: successes,
         failedExecutions: failures,
-        totalVolume: totalVolume,
+        totalVolume,
         successRate,
-        avgSlippage: avgSlippage,
+        avgSlippage,
         isFlagged,
         badge,
         digest: result.digest,
         execDigests: execDigests.slice(0, 5),
       },
     });
-  } catch (error: any) {
-    console.error('Demo agent registration failed:', error);
-    return res.status(200).json({
-      success: false,
-      demo: true,
-      agents: [],
-      error: error.message,
-      note: 'registration_failed',
-    });
+  } catch (error: unknown) {
+    serverError(res, error, 'POST /api/agents/register');
   }
 }

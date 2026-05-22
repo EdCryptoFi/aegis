@@ -1,17 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { SuiJsonRpcClient, getJsonRpcFullnodeUrl } from '@mysten/sui/jsonRpc';
+import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
+import { methodNotAllowed, badRequest, notFound, serverError, validateId } from '../../../lib/api-utils';
+import { config } from '../../../config';
 
-const client = new SuiJsonRpcClient({ url: getJsonRpcFullnodeUrl('testnet'), network: 'testnet' });
+const client = new SuiJsonRpcClient({ url: getJsonRpcFullnodeUrl(config.network as 'testnet' | 'mainnet' | 'devnet' | 'localnet'), network: config.network });
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method !== 'GET') return methodNotAllowed(res, ['GET']);
+
+  const { limited, resetInMs } = checkRateLimit(req, 'moderate');
+  if (limited) return rateLimitResponse(res, resetInMs);
 
   const { id } = req.query;
 
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'Invalid agent ID' });
+  if (!id || !validateId(id)) {
+    return badRequest(res, 'Invalid agent ID format');
   }
 
   try {
@@ -21,7 +25,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     });
 
     if (!data.data || data.data.content?.dataType !== 'moveObject') {
-      return res.status(404).json({ error: 'Agent not found' });
+      return notFound(res, 'Agent not found');
     }
 
     const fields = data.data.content.fields as any;
@@ -65,7 +69,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         owner: data.data.owner,
       },
     });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    serverError(res, error, `GET /api/agents/${id}`);
   }
 }

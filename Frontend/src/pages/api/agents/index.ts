@@ -1,7 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { SuiJsonRpcClient, getJsonRpcFullnodeUrl } from '@mysten/sui/jsonRpc';
+import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
+import { methodNotAllowed, serverError, sanitizeString, validatePositiveInt } from '../../../lib/api-utils';
+import { config } from '../../../config';
 
-const client = new SuiJsonRpcClient({ url: getJsonRpcFullnodeUrl('testnet'), network: 'testnet' });
+const client = new SuiJsonRpcClient({ url: getJsonRpcFullnodeUrl(config.network as 'testnet' | 'mainnet' | 'devnet' | 'localnet'), network: config.network });
 
 const KNOWN_AGENTS = [
   '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc',
@@ -9,13 +12,19 @@ const KNOWN_AGENTS = [
   '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6',
 ];
 
+const VALID_SORTS = ['uptime', 'volume', 'executions'];
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
+  if (req.method !== 'GET') return methodNotAllowed(res, ['GET']);
+
+  const { limited, remaining, resetInMs } = checkRateLimit(req, 'relaxed');
+  if (limited) return rateLimitResponse(res, resetInMs);
 
   try {
-    const { sort = 'uptime', trust, minExecutions } = req.query;
+    const sort = VALID_SORTS.includes(req.query.sort as string) ? req.query.sort as string : 'uptime';
+    const trust = sanitizeString(req.query.trust);
+    const minExecutions = validatePositiveInt(req.query.minExecutions);
+
     const agents: any[] = [];
 
     for (const objectId of KNOWN_AGENTS) {
@@ -42,7 +51,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           }
 
           if (trust && trust !== 'all' && trustLevel !== trust) continue;
-          if (minExecutions && totalExecutions < parseInt(minExecutions as string)) continue;
+          if (minExecutions !== null && totalExecutions < minExecutions) continue;
 
           agents.push({
             objectId,
@@ -58,8 +67,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             walrusBlobId: fields.walrus_blob_id?.fields?.vec?.[0] || null,
           });
         }
-      } catch (e) {
-        console.error('Error fetching agent:', e);
+      } catch {
+        // Silently skip agents that fail to fetch
       }
     }
 
@@ -71,12 +80,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       }
     });
 
+    res.setHeader('X-RateLimit-Remaining', String(remaining));
     res.status(200).json({
       success: true,
       count: agents.length,
       data: agents,
     });
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
+  } catch (error: unknown) {
+    serverError(res, error, 'GET /api/agents');
   }
 }

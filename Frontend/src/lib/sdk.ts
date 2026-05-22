@@ -6,8 +6,8 @@ import { config } from '../config';
 const TESTNET_URL = 'https://fullnode.testnet.sui.io:443';
 const client = new SuiJsonRpcClient({ url: TESTNET_URL, network: 'testnet' });
 
-export const PACKAGE_ID = '0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d';
-export const BADGE_REGISTRY_ID = '0xd7f704c15109a42a56b74e962745831af33fb05cece15103b928bc7d9bd4adb3';
+export const PACKAGE_ID = config.packageId;
+export const BADGE_REGISTRY_ID = config.badgeRegistry;
 
 export interface ReputationData {
   agentId: string;
@@ -75,12 +75,10 @@ export async function getAgentReputation(objectId: string): Promise<ReputationDa
   }
 }
 
-const PACKAGE_ID_OBJ = '0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d';
-
 export async function getAllAgents(): Promise<AgentInfo[]> {
   try {
     const events = await client.queryEvents({
-      query: { MoveEventModule: { module: 'reputation', package: PACKAGE_ID_OBJ } },
+      query: { MoveEventModule: { module: 'reputation', package: PACKAGE_ID } },
       limit: 50,
     });
 
