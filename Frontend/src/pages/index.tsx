@@ -152,16 +152,16 @@ const NaviIcon = () => (
     className="w-full h-full flex items-center justify-center pointer-events-none"
   >
     <svg viewBox="0 0 100 100" className="w-[62%] h-[62%] overflow-visible drop-shadow-[0_0_14px_rgba(0,212,184,0.35)]">
-      {/* N shape — two diagonal strokes */}
+      {/* N shape: left vertical ↓, diagonal top-left → bottom-right, right vertical ↓ */}
       <motion.polyline
-        points="22,72 22,28 50,58 78,28 78,72"
-        fill="none" stroke="#00D4B8" strokeWidth="8" strokeLinecap="round" strokeLinejoin="round"
+        points="20,72 20,28 80,72 80,28"
+        fill="none" stroke="#00D4B8" strokeWidth="9" strokeLinecap="round" strokeLinejoin="round"
         initial={{ pathLength: 0, opacity: 0 }}
         whileInView={{ pathLength: 1, opacity: 1 }}
         viewport={{ once: true }}
         transition={{ pathLength: { duration: 1.6, ease: 'easeInOut' }, opacity: { duration: 0.4 } }}
       />
-      {[{ cx: 22, cy: 28 }, { cx: 78, cy: 28 }, { cx: 22, cy: 72 }, { cx: 78, cy: 72 }].map(({ cx, cy }, i) => (
+      {[{ cx: 20, cy: 28 }, { cx: 80, cy: 28 }, { cx: 20, cy: 72 }, { cx: 80, cy: 72 }].map(({ cx, cy }, i) => (
         <motion.circle key={i} cx={cx} cy={cy} r="2.5" fill="#b3ebff"
           initial={{ opacity: 0, scale: 0 }}
           whileInView={{ opacity: 1, scale: 1 }}

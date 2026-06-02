@@ -61,9 +61,23 @@ export default function Footer() {
 
         {/* Bottom bar */}
         <div className="mt-16 pt-8 border-t border-[rgba(255,255,255,0.06)] flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-xs text-text-muted font-mono">
-            Built for Sui Overflow 2026
-          </p>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <p className="text-xs text-text-muted font-mono">
+              Built for Sui Overflow 2026
+            </p>
+            <span className="hidden sm:block text-[rgba(255,255,255,0.12)]">·</span>
+            <p className="text-xs text-text-muted font-mono">
+              Created by{' '}
+              <a
+                href="https://x.com/EdCriptoFi"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-cyan-primary hover:underline transition-colors"
+              >
+                Ed
+              </a>
+            </p>
+          </div>
           <div className="flex items-center gap-6">
             <a
               href="https://x.com/aegisonchain"
