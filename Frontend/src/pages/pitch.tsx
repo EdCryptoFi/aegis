@@ -1,8 +1,32 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { motion } from 'framer-motion';
 import { Shield, XCircle, CheckCircle2, TrendingUp } from 'lucide-react';
+
+const MermaidDiagram = dynamic(() => import('@/components/MermaidDiagram'), { ssr: false });
+
+const AEGIS_FLOW = `flowchart TD
+    A([🤖 AI Agent]) --> B[register_agent]
+    B --> C[(ReputationObject\\non-chain)]
+    C --> D[record_execution\\nsuccess · volume · slippage]
+    D -->|assert sender == agent_id| D
+    D --> C
+    C --> E{auto_check}
+    E -->|executions ≥ 10 · success ≥ 80%| F[🥉 Bronze]
+    E -->|executions ≥ 50 · success ≥ 90%| G[🥈 Silver]
+    E -->|executions ≥ 200 · success ≥ 95% · vol ≥ 1M SUI| H[🥇 Gold]
+    E -->|not eligible| I[❌ No badge]
+    F & G & H --> J[(BadgeRegistry\\nshared object)]
+    J --> K{check_and_revoke\\nAdminCap required}
+    K -->|metrics drop| L[🚫 Revoked]
+    K -->|metrics ok| M[✅ Kept]
+    C --> N[update_walrus_blob_id\\nassert sender == agent_id]
+    N --> O[(Walrus Storage\\npersistent memory)]
+    J & O & C --> P[🌐 aegisonchain.xyz]
+    P --> Q[TypeScript SDK]
+    Q --> A`;
 import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
 import AegisLogo from '@/components/AegisLogo';
@@ -175,6 +199,24 @@ export default function PitchPage() {
           <span className="text-text-muted"> + </span>
           <span className="text-yellow-400">MemWal</span>
         </div>
+      </Section>
+
+      <Divider />
+
+      {/* ARCHITECTURE FLOW */}
+      <Section>
+        <div className="text-center mb-6">
+          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">System Architecture</span>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Full On-Chain Flow</h2>
+        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 16 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="glass-card-heavy rounded-2xl p-6 overflow-hidden"
+        >
+          <MermaidDiagram chart={AEGIS_FLOW} />
+        </motion.div>
       </Section>
 
       <Divider />
