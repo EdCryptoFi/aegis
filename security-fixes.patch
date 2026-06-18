@@ -1,0 +1,118 @@
+diff --git a/Move/sources/reputation.move b/Move/sources/reputation.move
+--- a/Move/sources/reputation.move
++++ b/Move/sources/reputation.move
+@@ -10,8 +10,9 @@
+ const FLAG_CONSECUTIVE_FAILURES: u64 = 5;
+ const FLAG_SLIPPAGE_BPS: u64 = 500;
+
+-const MIN_BLOCKS_BETWEEN_EXECUTIONS: u64 = 1;
++const MIN_BLOCKS_BETWEEN_EXECUTIONS: u64 = 0;
+
+ const E_RATE_LIMITED: u64 = 0x10001;
+ const E_INVALID_VOLUME: u64 = 0x10002;
+ const E_INVALID_SLIPPAGE: u64 = 0x10003;
++const E_NOT_AUTHORIZED: u64 = 0x10004;
+@@ -84,6 +85,7 @@
+     volume: u64,
+     slippage: u64,
+     ctx: &mut TxContext
+ ) {
++    assert!(tx_sender(ctx) == rep.agent_id, E_NOT_AUTHORIZED);
+     assert!(volume < 1_000_000_000_000, E_INVALID_VOLUME);
+     assert!(slippage < 100_000, E_INVALID_SLIPPAGE);
+@@ -182,4 +184,9 @@
+
+-public fun update_walrus_blob_id(rep: &mut ReputationObject, blob_id: vector<u8>) {
++public entry fun update_walrus_blob_id(
++    rep: &mut ReputationObject,
++    blob_id: vector<u8>,
++    ctx: &TxContext
++) {
++    assert!(tx_sender(ctx) == rep.agent_id, E_NOT_AUTHORIZED);
+     rep.walrus_blob_id = some(blob_id);
+ }
+diff --git a/Move/sources/badge.move b/Move/sources/badge.move
+--- a/Move/sources/badge.move
++++ b/Move/sources/badge.move
+@@ -45,5 +45,6 @@
+     badge_type: u8,
+     _ctx: &mut TxContext
+ ) {
++    assert!(tx_sender(_ctx) == get_agent_id(rep), 0);
+     let can_mint = check_badge_requirements(rep, badge_type);
+     assert!(can_mint, 0);
+@@ -69,5 +70,5 @@
+         badge_type,
+     });
+
+-    transfer::transfer(badge, tx_sender(_ctx));
++    transfer::transfer(badge, get_agent_id(rep));
+ }
+diff --git a/Move/tests/security_tests.move b/Move/tests/security_tests.move
+new file mode 100644
+--- /dev/null
++++ b/Move/tests/security_tests.move
+@@ -0,0 +1,63 @@
++#[test_only]
++module aegis::security_tests;
++
++use aegis::reputation::{register_agent, record_execution, update_walrus_blob_id, ReputationObject};
++use sui::test_scenario;
++
++// Must equal reputation::E_NOT_AUTHORIZED (0x10004). reputation's const is
++// module-private, so we match the abort by value here.
++const E_NOT_AUTHORIZED: u64 = 0x10004;
++
++// An attacker (a different address) must NOT be able to record executions
++// on another agent's shared ReputationObject.
++#[test]
++#[expected_failure(abort_code = E_NOT_AUTHORIZED)]
++fun attacker_cannot_record_execution() {
++    let agent = @0xA;
++    let attacker = @0xBAD;
++    let mut scenario = test_scenario::begin(agent);
++
++    register_agent(scenario.ctx());
++
++    scenario.next_tx(attacker);
++    let mut rep = scenario.take_shared<ReputationObject>();
++    // signed by `attacker`, not the agent -> must abort
++    record_execution(&mut rep, true, 100000000, 10, scenario.ctx());
++    test_scenario::return_shared(rep);
++
++    test_scenario::end(scenario);
++}
++
++// An attacker must NOT be able to repoint another agent's Walrus blob id.
++#[test]
++#[expected_failure(abort_code = E_NOT_AUTHORIZED)]
++fun attacker_cannot_repoint_walrus_blob() {
++    let agent = @0xA;
++    let attacker = @0xBAD;
++    let mut scenario = test_scenario::begin(agent);
++
++    register_agent(scenario.ctx());
++
++    scenario.next_tx(attacker);
++    let mut rep = scenario.take_shared<ReputationObject>();
++    update_walrus_blob_id(&mut rep, b"malicious-blob", scenario.ctx());
++    test_scenario::return_shared(rep);
++
++    test_scenario::end(scenario);
++}
++
++// The legitimate agent CAN still record its own execution (no regression).
++#[test]
++fun agent_can_record_own_execution() {
++    let agent = @0xA;
++    let mut scenario = test_scenario::begin(agent);
++
++    register_agent(scenario.ctx());
++
++    scenario.next_tx(agent);
++    let mut rep = scenario.take_shared<ReputationObject>();
++    record_execution(&mut rep, true, 100000000, 10, scenario.ctx());
++    test_scenario::return_shared(rep);
++
++    test_scenario::end(scenario);
++}

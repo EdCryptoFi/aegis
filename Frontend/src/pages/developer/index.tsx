@@ -255,8 +255,8 @@ function generateSimulation(): SimResult {
     add(`$ sui client call \\`, 'cmd', 200);
     add(`    --package ${SIM_PKG} \\`, 'cmd');
     add(`    --module badge_registry \\`, 'cmd');
-    add(`    --function grant_badge \\`, 'cmd');
-    add(`    --args ${SIM_REGISTRY} ${SIM_AGENT.slice(0, 16)}... ${b.num} \\`, 'cmd');
+    add(`    --function auto_check \\`, 'cmd');
+    add(`    --args ${SIM_REGISTRY} ${SIM_AGENT.slice(0, 16)}... <REPUTATION_OBJECT_ID> \\`, 'cmd');
     add(`    --gas-budget 20000000`, 'cmd');
     add('', 'spacer');
     add('Minting badge NFT in Kiosk registry...', 'output', 400);
@@ -339,7 +339,7 @@ async function tryRealRegistration(): Promise<SimResult | null> {
       lines.push(add(`✓  Agent qualifies for ${badgeLabel} badge on-chain`, 'success', 300));
       lines.push(add('', 'spacer'));
       lines.push(add(`# ── STEP 4: Mint ${badgeLabel} Badge ──────────────`, 'section'));
-      lines.push(add(`\$ sui client call --module badge_registry --function grant_badge --gas-budget 20000000`, 'cmd', 200));
+      lines.push(add(`\$ sui client call --module badge_registry --function auto_check --gas-budget 20000000`, 'cmd', 200));
       lines.push(add('', 'spacer'));
       lines.push(add(`🥇  ${badgeLabel} Badge minted on-chain!  Token: ${a.objectId.slice(0, 10)}...`, 'success', 400));
     } else {
@@ -934,10 +934,10 @@ await aegis.recordExecution({
 const eligible = await aegis.isEligibleForBadge(objectId, 1);
 // Returns: true/false (for Bronze badge)
 
-// 4. Request badge
-await aegis.grantBadge({
+// 4. Claim badge (auto-verified against your reputation)
+await aegis.autoCheckBadge({
   agentId: '0x...',
-  badgeType: 1  // Bronze
+  reputationObjectId: '0x...'
 });`}</pre>
                 </div>
               </section>
@@ -950,7 +950,7 @@ await aegis.grantBadge({
                     { name: 'registerAgent()', desc: 'Create a new ReputationObject for your agent', tag: 'Returns', code: '{ digest: string, objectId: string }' },
                     { name: 'recordExecution()', desc: 'Report execution results to build reputation', tag: 'Params', code: 'success: bool, volume: u64, slippage: u64' },
                     { name: 'isEligibleForBadge()', desc: 'Check if agent meets badge requirements', tag: 'Params', code: 'badgeType: 1|2|3 (Bronze|Silver|Gold)' },
-                    { name: 'grantBadge()', desc: 'Request a badge from the registry', tag: 'Params', code: 'agentId, badgeType' },
+                    { name: 'autoCheckBadge()', desc: 'Claim a badge — verified on-chain against your reputation', tag: 'Params', code: 'agentId, reputationObjectId' },
                     { name: 'getAgentReputation()', desc: 'Fetch agent metrics from blockchain', tag: 'Returns', code: 'ReputationData' },
                     { name: 'checkAndRevokeInvalid()', desc: 'Trigger auto-revocation check - anyone can call', tag: null, code: null },
                   ].map(({ name, desc, tag, code }) => (
@@ -1038,12 +1038,12 @@ sui client call \\
   --args <OBJECT_ID> true 1000000000 50 \\
   --gas-budget 20000000
 
-# Grant badge
+# Claim badge (auto-verified against on-chain reputation)
 sui client call \\
   --package ${config.packageId} \\
   --module badge_registry \\
-  --function grant_badge \\
-  --args ${config.badgeRegistry} <AGENT_ID> <BADGE_TYPE> \\
+  --function auto_check \\
+  --args ${config.badgeRegistry} <AGENT_ID> <REPUTATION_OBJECT_ID> \\
   --gas-budget 20000000
 
 # Check badge validity

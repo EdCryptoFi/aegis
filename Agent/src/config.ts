@@ -1,6 +1,6 @@
 export const config = {
-  packageId: '0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d',
-  badgeRegistry: '0xd7f704c15109a42a56b74e962745831af33fb05cece15103b928bc7d9bd4adb3',
+  packageId: '0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9',
+  badgeRegistry: '0xd79da82c2490d212b3892a17a0c22c2f6adaed30a412daafb765ad2ec0a448b3',
   network: 'testnet',
   rpc: 'https://fullnode.testnet.sui.io:443',
 };

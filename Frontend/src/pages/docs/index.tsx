@@ -632,7 +632,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                 },
                 {
                   status: 'pass', label: 'Badge eligibility double-check (badge_registry)',
-                  detail: 'grant_badge asserts no duplicate or higher badge already exists (E_ALREADY_HAS_BADGE, E_HAS_HIGHER_BADGE). Badge type validated ∈ {1,2,3}.',
+                  detail: 'auto_check verifies reputation eligibility on-chain before granting. Asserts no duplicate or higher badge (E_ALREADY_HAS_BADGE, E_HAS_HIGHER_BADGE). Badge type validated ∈ {1,2,3}.',
                 },
                 {
                   status: 'pass', label: 'Revocation criteria enforced on-chain',

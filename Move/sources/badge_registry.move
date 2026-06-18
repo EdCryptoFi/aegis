@@ -2,9 +2,10 @@ module aegis::badge_registry;
 
 use std::vector;
 use sui::object::UID;
-use sui::tx_context::{TxContext, sender as tx_sender, epoch as tx_epoch};
+use sui::tx_context::{TxContext, epoch as tx_epoch};
 use sui::transfer;
 use sui::event::emit;
+use aegis::reputation::{ReputationObject, get_agent_id, is_eligible_for_badge};
 
 const BADGE_BRONZE: u8 = 1;
 const BADGE_SILVER: u8 = 2;
@@ -24,6 +25,10 @@ const E_ALREADY_HAS_BADGE: u64 = 0x20001;
 const E_HAS_HIGHER_BADGE: u64 = 0x20002;
 const E_INVALID_BADGE_TYPE: u64 = 0x20003;
 const E_NOT_ELIGIBLE: u64 = 0x20004;
+
+public struct AdminCap has key, store {
+    id: UID,
+}
 
 public struct BadgeRegistry has key {
     id: UID,
@@ -49,7 +54,10 @@ public struct BadgeRevoked has copy, drop {
     reason: vector<u8>,
 }
 
-public entry fun init_registry(ctx: &mut TxContext) {
+fun init(ctx: &mut TxContext) {
+    let cap = AdminCap { id: object::new(ctx) };
+    transfer::transfer(cap, ctx.sender());
+
     let registry = BadgeRegistry {
         id: object::new(ctx),
         entries: vector[],
@@ -57,40 +65,52 @@ public entry fun init_registry(ctx: &mut TxContext) {
     transfer::share_object(registry);
 }
 
+#[test_only]
+public fun init_registry(ctx: &mut TxContext) {
+    init(ctx);
+}
+
+// Admin-only: manually grant a badge without reputation check.
 public entry fun grant_badge(
+    _cap: &AdminCap,
     registry: &mut BadgeRegistry,
     agent_id: address,
     badge_type: u8,
     ctx: &mut TxContext
 ) {
-    assert!(badge_type >= BADGE_BRONZE && badge_type <= BADGE_GOLD, E_INVALID_BADGE_TYPE);
-
-    assert!(
-        !has_valid_badge_of_type(registry, agent_id, badge_type),
-        E_ALREADY_HAS_BADGE
-    );
-
-    assert!(
-        !has_higher_badge(registry, agent_id, badge_type),
-        E_HAS_HIGHER_BADGE
-    );
-
-    let entry = BadgeEntry {
-        agent_id,
-        badge_type,
-        issued_at: tx_epoch(ctx),
-        is_valid: true,
-        revoked_reason: vector[],
-    };
-    vector::push_back(&mut registry.entries, entry);
-
-    emit(BadgeMinted {
-        agent_id,
-        badge_type,
-    });
+    grant_badge_internal(registry, agent_id, badge_type, ctx);
 }
 
+// Public: grant the highest badge the agent's ReputationObject qualifies for.
+public entry fun auto_check(
+    registry: &mut BadgeRegistry,
+    agent_id: address,
+    rep: &ReputationObject,
+    ctx: &mut TxContext
+) {
+    assert!(get_agent_id(rep) == agent_id, E_NOT_ELIGIBLE);
+
+    let badge_type = if (is_eligible_for_badge(rep, BADGE_GOLD)
+        && !has_valid_badge_of_type(registry, agent_id, BADGE_GOLD)) {
+        BADGE_GOLD
+    } else if (is_eligible_for_badge(rep, BADGE_SILVER)
+        && !has_valid_badge_of_type(registry, agent_id, BADGE_SILVER)
+        && !has_higher_badge(registry, agent_id, BADGE_SILVER)) {
+        BADGE_SILVER
+    } else if (is_eligible_for_badge(rep, BADGE_BRONZE)
+        && !has_valid_badge_of_type(registry, agent_id, BADGE_BRONZE)
+        && !has_higher_badge(registry, agent_id, BADGE_BRONZE)) {
+        BADGE_BRONZE
+    } else {
+        return
+    };
+
+    grant_badge_internal(registry, agent_id, badge_type, ctx);
+}
+
+// Admin-only: revoke a badge with a reason.
 public entry fun revoke_badge(
+    _cap: &AdminCap,
     registry: &mut BadgeRegistry,
     agent_id: address,
     badge_type: u8,
@@ -123,7 +143,9 @@ public entry fun revoke_badge(
     });
 }
 
+// Admin-only: revoke a badge if the agent no longer meets the requirements.
 public entry fun check_and_revoke_invalid(
+    _cap: &AdminCap,
     registry: &mut BadgeRegistry,
     agent_id: address,
     badge_type: u8,
@@ -175,6 +197,28 @@ public entry fun check_and_revoke_invalid(
     if (needs_revoke) {
         revoke_entry_internal(registry, agent_id, badge_type, reason, ctx);
     };
+}
+
+fun grant_badge_internal(
+    registry: &mut BadgeRegistry,
+    agent_id: address,
+    badge_type: u8,
+    ctx: &mut TxContext
+) {
+    assert!(badge_type >= BADGE_BRONZE && badge_type <= BADGE_GOLD, E_INVALID_BADGE_TYPE);
+    assert!(!has_valid_badge_of_type(registry, agent_id, badge_type), E_ALREADY_HAS_BADGE);
+    assert!(!has_higher_badge(registry, agent_id, badge_type), E_HAS_HIGHER_BADGE);
+
+    let entry = BadgeEntry {
+        agent_id,
+        badge_type,
+        issued_at: tx_epoch(ctx),
+        is_valid: true,
+        revoked_reason: vector[],
+    };
+    vector::push_back(&mut registry.entries, entry);
+
+    emit(BadgeMinted { agent_id, badge_type });
 }
 
 fun revoke_entry_internal(

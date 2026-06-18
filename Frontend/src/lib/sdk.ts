@@ -241,9 +241,8 @@ export async function getBlobMetadata(blobId: string): Promise<{ size: number } 
 export interface WriteFunctions {
   registerAgent: (signer: any) => Promise<{ digest: string; objectId: string }>;
   recordExecution: (signer: any, objectId: string, success: boolean, volume: number, slippage: number) => Promise<string>;
-  grantBadge: (signer: any, agentId: string, badgeType: number) => Promise<string>;
+  autoCheckBadge: (signer: any, agentId: string, reputationObjectId: string) => Promise<string>;
   updateWalrusBlob: (signer: any, objectId: string, blobId: string) => Promise<string>;
-  linkMemWalSession: (signer: any, objectId: string, sessionId: string) => Promise<string>;
   autoCheck: (signer: any, agentId: string) => Promise<string>;
 }
 
@@ -304,19 +303,19 @@ export async function recordExecution(
   }
 }
 
-export async function grantBadge(
+export async function autoCheckBadge(
   signer: any,
   agentId: string,
-  badgeType: number
+  reputationObjectId: string
 ): Promise<string> {
   try {
     const tx = new Transaction();
     tx.moveCall({
-      target: `${PACKAGE_ID}::badge_registry::grant_badge`,
+      target: `${PACKAGE_ID}::badge_registry::auto_check`,
       arguments: [
         tx.object(BADGE_REGISTRY_ID),
         tx.pure.address(agentId),
-        tx.pure.u8(badgeType),
+        tx.object(reputationObjectId),
       ],
     });
 
@@ -328,7 +327,7 @@ export async function grantBadge(
 
     return result.digest;
   } catch (error) {
-    console.error('Failed to grant badge:', error);
+    console.error('Failed to auto-check badge:', error);
     throw error;
   }
 }
@@ -358,35 +357,6 @@ export async function updateWalrusBlob(
     return result.digest;
   } catch (error) {
     console.error('Failed to update Walrus blob ID:', error);
-    throw error;
-  }
-}
-
-export async function linkMemWalSession(
-  signer: any,
-  reputationObjectId: string,
-  sessionId: string
-): Promise<string> {
-  try {
-    const sessionBytes = new Uint8Array(Array.from(new TextEncoder().encode(sessionId)));
-    const tx = new Transaction();
-    tx.moveCall({
-      target: `${PACKAGE_ID}::reputation::link_memwal_session`,
-      arguments: [
-        tx.object(reputationObjectId),
-        tx.pure(sessionBytes),
-      ],
-    });
-
-    const result = await client.signAndExecuteTransaction({
-      signer,
-      transaction: tx,
-      options: { showEffects: true },
-    });
-
-    return result.digest;
-  } catch (error) {
-    console.error('Failed to link MemWal session:', error);
     throw error;
   }
 }

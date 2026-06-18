@@ -45,6 +45,7 @@ public entry fun mint_badge(
     badge_type: u8,
     _ctx: &mut TxContext
 ) {
+    assert!(tx_sender(_ctx) == get_agent_id(rep), 0);
     let can_mint = check_badge_requirements(rep, badge_type);
     assert!(can_mint, 0);
 
@@ -69,7 +70,7 @@ public entry fun mint_badge(
         badge_type,
     });
 
-    transfer::transfer(badge, tx_sender(_ctx));
+    transfer::transfer(badge, get_agent_id(rep));
 }
 
 fun check_badge_requirements(rep: &ReputationObject, badge_type: u8): bool {

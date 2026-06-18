@@ -125,11 +125,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       try {
         const badgeTx = new Transaction();
         badgeTx.moveCall({
-          target: `${PACKAGE_ID}::badge_registry::grant_badge`,
+          target: `${PACKAGE_ID}::badge_registry::auto_check`,
           arguments: [
             badgeTx.object(BADGE_REGISTRY_ID),
             badgeTx.pure.address(keypair.getPublicKey().toSuiAddress()),
-            badgeTx.pure.u8(badgeMap[badge]),
+            badgeTx.object(objectId),
           ],
         });
         await client.signAndExecuteTransaction({

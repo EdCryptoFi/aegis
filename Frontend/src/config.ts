@@ -1,7 +1,7 @@
 export const config = {
   network: process.env.NEXT_PUBLIC_SUI_NETWORK || 'testnet',
-  packageId: process.env.NEXT_PUBLIC_PACKAGE_ID || '0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d',
-  badgeRegistry: process.env.NEXT_PUBLIC_BADGE_REGISTRY || '0xd7f704c15109a42a56b74e962745831af33fb05cece15103b928bc7d9bd4adb3',
+  packageId: process.env.NEXT_PUBLIC_PACKAGE_ID || '0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9',
+  badgeRegistry: process.env.NEXT_PUBLIC_BADGE_REGISTRY || '0xd79da82c2490d212b3892a17a0c22c2f6adaed30a412daafb765ad2ec0a448b3',
   walrus: {
     uploadRelay: process.env.NEXT_PUBLIC_WALRUS_UPLOAD_RELAY || 'https://upload-relay.testnet.walrus.space',
   },

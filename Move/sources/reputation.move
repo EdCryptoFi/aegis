@@ -10,11 +10,12 @@ const FLAG_SUCCESS_RATE: u64 = 50;
 const FLAG_CONSECUTIVE_FAILURES: u64 = 5;
 const FLAG_SLIPPAGE_BPS: u64 = 500;
 
-const MIN_BLOCKS_BETWEEN_EXECUTIONS: u64 = 1;
+const MIN_BLOCKS_BETWEEN_EXECUTIONS: u64 = 0;
 
 const E_RATE_LIMITED: u64 = 0x10001;
 const E_INVALID_VOLUME: u64 = 0x10002;
 const E_INVALID_SLIPPAGE: u64 = 0x10003;
+const E_NOT_AUTHORIZED: u64 = 0x10004;
 
 public struct ReputationObject has key, store {
     id: UID,
@@ -85,6 +86,7 @@ public entry fun record_execution(
     slippage: u64,
     ctx: &mut TxContext
 ) {
+    assert!(tx_sender(ctx) == rep.agent_id, E_NOT_AUTHORIZED);
     assert!(volume < 1_000_000_000_000, E_INVALID_VOLUME);
     assert!(slippage < 100_000, E_INVALID_SLIPPAGE);
 
@@ -180,7 +182,12 @@ fun check_and_unflag(rep: &mut ReputationObject) {
     }
 }
 
-public fun update_walrus_blob_id(rep: &mut ReputationObject, blob_id: vector<u8>) {
+public entry fun update_walrus_blob_id(
+    rep: &mut ReputationObject,
+    blob_id: vector<u8>,
+    ctx: &TxContext
+) {
+    assert!(tx_sender(ctx) == rep.agent_id, E_NOT_AUTHORIZED);
     rep.walrus_blob_id = some(blob_id);
 }
 

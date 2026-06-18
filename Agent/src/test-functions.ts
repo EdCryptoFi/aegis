@@ -3,7 +3,7 @@ import { Transaction } from '@mysten/sui/transactions';
 import { Ed25519Keypair } from '@mysten/walrus/keypair';
 
 // Test Configuration
-const PACKAGE_ID = '0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d';
+const PACKAGE_ID = '0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9';
 const NETWORK = 'testnet';
 
 const client = new SuiClient({ url: getFullNodeUrl(NETWORK) });
