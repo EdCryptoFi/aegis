@@ -17,12 +17,22 @@
 
 ---
 
-## Deployed Contracts (v2 - Active)
+## Deployed Contracts (v2 - Deprecated)
 
 | Package | Address | Status |
 |---------|---------|--------|
-| **Aegis v2 Package** | `0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d` | ✅ Active |
-| **UpgradeCap** | `0xf7b9e65e712262ab0cb6ec8a7cc2f574a3941d6789b959da6d06fa4c37175a8a` | 🔐 For upgrades |
+| **Aegis v2 Package** | `0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d` | ❌ Deprecated |
+| **UpgradeCap** | `0xf7b9e65e712262ab0cb6ec8a7cc2f574a3941d6789b959da6d06fa4c37175a8a` | ❌ Deprecated |
+
+---
+
+## Deployed Contracts (v3 - Active / Security Fix)
+
+| Package | Address | Status |
+|---------|---------|--------|
+| **Aegis v3 Package** | `0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9` | ✅ Active |
+| **BadgeRegistry v3** | `0xd79da82c2490d212b3892a17a0c22c2f6adaed30a412daafb765ad2ec0a448b3` | ✅ Active (shared) |
+| **UpgradeCap v3** | `0xe6e207fbf707823e349ac024332dc718209979ae4de2999a00071803ec5013c3` | 🔐 For upgrades |
 
 ---
 
@@ -70,7 +80,9 @@ All transactions in this session signed by this wallet.
 | Short ID | Full Address | Usage |
 |----------|--------------|-------|
 | `0x8c85...` | `0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1` | Primary wallet |
-| `0x6472...` | `0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d` | v2 Package |
+| `0x6472...` | `0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d` | v2 Package (deprecated) |
+| `0x5b0b...` | `0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9` | v3 Package (active) |
+| `0xd79d...` | `0xd79da82c2490d212b3892a17a0c22c2f6adaed30a412daafb765ad2ec0a448b3` | BadgeRegistry v3 (active) |
 | `0xdcfe...` | `0xdcfe62a45e5eb19edefc1bf246b23e6bf97c38004805bc7890f8a5bd09e6bc57` | v1 Package (old) |
 | `0x8da4...` | `0x8da4eb777bcef3b0cbc65fdbe02868c30b73245d852bd24ab61a783520a0fcb8` | BadgeRegistry v1 |
 | `0xf7b9...` | `0xf7b9e65e712262ab0cb6ec8a7cc2f574a3941d6789b959da6d06fa4c37175a8a` | UpgradeCap |
@@ -88,7 +100,9 @@ All transactions in this session signed by this wallet.
 | Resource | URL |
 |----------|-----|
 | Primary Wallet | https://suivision.xyz/account/0x8c8598aba05e5c2998a17c4d726c209221d021a71cc77a3f5809bc0009edf6c1 |
-| v2 Package | https://suivision.xyz/package/0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d |
+| v2 Package (deprecated) | https://testnet.suivision.xyz/package/0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d |
+| v3 Package (active) | https://testnet.suivision.xyz/package/0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9 |
+| BadgeRegistry v3 | https://testnet.suivision.xyz/object/0xd79da82c2490d212b3892a17a0c22c2f6adaed30a412daafb765ad2ec0a448b3 |
 | UpgradeCap | https://suivision.xyz/object/0xf7b9e65e712262ab0cb6ec8a7cc2f574a3941d6789b959da6d06fa4c37175a8a |
 | AlphaTrader | https://suivision.xyz/object/0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc |
 | BetaBot | https://suivision.xyz/object/0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec |

@@ -11,7 +11,8 @@ Agent/setup-demo-agents.ts: 0x10914ba0e821ac6581660a323bde632d0a98e614fd1cbe4bbe
 Agent/test-functions.ts:    0x10914ba0e821ac6581660a323bde632d0a98e614fd1cbe4bbebda2171554489a  ❌ STALE
 
 Active Contracts:
-  v2 Package:              0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d  ✅ CURRENT
+  v2 Package:              0x6472bb19be1908b8c948169c5627e625e54419b10138519e1caf5be4502d9e7d  ❌ DEPRECATED
+  v3 Package (active):     0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9  ✅ CURRENT
   v1 Package:              0xdcfe62a45e5eb19edefc1bf246b23e6bf97c38004805bc7890f8a5bd09e6bc57  ❌ DEPRECATED
 ```
 
