@@ -10,6 +10,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
 import AegisLogo from '@/components/AegisLogo';
 import AgentCard from '@/components/AgentCard';
+import CliWalkthrough from '@/components/CliWalkthrough';
 import Footer from '@/components/Footer';
 import { config } from '@/config';
 
@@ -25,7 +26,6 @@ const SLIDES = [
   { id: 'demo', label: 'Demo' },
   { id: 'why-sui', label: 'Why Sui' },
   { id: 'traction', label: 'Traction' },
-  { id: 'team', label: 'Team' },
   { id: 'business', label: 'Business' },
   { id: 'ask', label: 'Ask' },
   { id: 'close', label: 'Close' },
@@ -43,11 +43,13 @@ function formatTime(totalSeconds: number) {
   return `${m}:${s}`;
 }
 
-/* ─── Presenter timer, target 3'20" per the rehearsal script ─── */
+/* ─── Presenter timer. Official Demo Day rule: 5:00 hard cap, strictly
+   enforced, no grace period. Target delivery is 4'20", leaving buffer. ─── */
 function PresenterTimer() {
   const [seconds, setSeconds] = useState(0);
   const [running, setRunning] = useState(false);
-  const targetSeconds = 200; // 3'20"
+  const targetSeconds = 260; // 4'20" rehearsal target
+  const hardCapSeconds = 300; // 5:00 official limit
 
   useEffect(() => {
     if (!running) return;
@@ -55,12 +57,13 @@ function PresenterTimer() {
     return () => clearInterval(id);
   }, [running]);
 
-  const over = seconds > targetSeconds;
+  const overTarget = seconds > targetSeconds;
+  const overCap = seconds > hardCapSeconds;
 
   return (
     <div className="fixed top-4 left-4 z-50 flex items-center gap-2 rounded-full glass-card-heavy px-3 py-2">
-      <span className={`font-mono text-sm tabular-nums ${over ? 'text-error' : 'text-cyan-primary'}`}>
-        {formatTime(seconds)} <span className="text-text-muted">/ {formatTime(targetSeconds)}</span>
+      <span className={`font-mono text-sm tabular-nums ${overCap ? 'text-error animate-pulse' : overTarget ? 'text-yellow-400' : 'text-cyan-primary'}`}>
+        {formatTime(seconds)} <span className="text-text-muted">/ {formatTime(targetSeconds)} (cap {formatTime(hardCapSeconds)})</span>
       </span>
       <button
         onClick={() => setRunning((r) => !r)}
@@ -210,6 +213,9 @@ export default function DemoPage() {
             <p className="font-display text-lg md:text-xl text-text-secondary max-w-xl">
               Aegis — the reputation oracle for AI agents on Sui.
             </p>
+            <p className="mt-4 text-text-muted text-sm font-mono">
+              Ed · building on Sui for 1+ year · winner of 2 hackathons this year · built solo
+            </p>
             <p className="mt-8 font-mono text-[10px] text-text-muted uppercase tracking-widest animate-pulse">
               ↓ scroll or press → to advance
             </p>
@@ -268,15 +274,17 @@ export default function DemoPage() {
           </div>
         </Slide>
 
-        {/* 4. DEMO — live feature: real AgentCard reads from testnet */}
+        {/* 4. DEMO — live feature: real AgentCard reads + a real signed tx with explorer proof */}
         <Slide id="demo" eyebrow="Live Demo" tall>
           <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary text-center mb-2">
             Trust that updates itself — and can&rsquo;t be faked after the fact
           </h2>
-          <p className="text-text-secondary text-sm text-center mb-8">
+          <p className="text-text-secondary text-sm text-center mb-6">
             Live on-chain reads, Sui Testnet. Package <code className="font-mono text-cyan-primary">{config.packageId.slice(0, 10)}…</code>
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+
+          <p className="text-text-muted text-[11px] font-mono uppercase tracking-wider text-center mb-3">Existing on-chain agents</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-4">
             {DEMO_AGENTS.map((agent) => (
               <div key={agent.address} className="flex flex-col items-center">
                 <p className="font-display font-bold text-text-primary text-sm mb-3">{agent.name}</p>
@@ -284,9 +292,14 @@ export default function DemoPage() {
               </div>
             ))}
           </div>
-          <p className="mt-6 text-center text-text-muted text-xs font-mono">
+          <p className="text-center text-text-muted text-xs font-mono mb-10">
             GammaScam auto-revoked — high slippage crossed the on-chain threshold, zero manual intervention.
           </p>
+
+          <p className="text-text-muted text-[11px] font-mono uppercase tracking-wider text-center mb-3">
+            Run it live now — a real signed transaction, verifiable on Sui Explorer
+          </p>
+          <CliWalkthrough compact />
         </Slide>
 
         {/* 5. WHY SUI */}
@@ -348,48 +361,31 @@ export default function DemoPage() {
           </div>
         </Slide>
 
-        {/* 7. TEAM */}
-        <Slide id="team" eyebrow="Team">
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary text-center mb-8">
-            Who&rsquo;s building this
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-2xl mx-auto">
-            <div className="glass-card-heavy rounded-2xl p-6 text-center">
-              <div className="w-14 h-14 rounded-full bg-gradient-cyan-mint flex items-center justify-center mx-auto mb-3 shadow-glow-cyan">
-                <span className="font-display font-black text-bg-base text-lg">E</span>
-              </div>
-              <p className="font-display font-bold text-text-primary">Ed (@EdCriptoFi)</p>
-              <p className="text-text-muted text-xs font-mono">Founder / Builder</p>
-            </div>
-            <div className="rounded-2xl border border-dashed border-text-muted/20 p-6 text-center flex flex-col items-center justify-center opacity-60">
-              <p className="font-display font-bold text-text-secondary text-sm">+ Add teammate</p>
-              <p className="text-text-muted text-xs font-mono mt-1">Move · Frontend · Video roles open per SPEC.md</p>
-            </div>
-          </div>
-          <p className="text-center text-text-muted text-[11px] font-mono mt-6">
-            Fill in real names before Demo Day — placeholders will read as incomplete to judges.
-          </p>
-        </Slide>
-
-        {/* 8. BUSINESS MODEL */}
+        {/* 7. BUSINESS MODEL — who actually pays, per .suiperpower/business-model.md */}
         <Slide id="business" eyebrow="Business Model">
           <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary text-center mb-3">
-            A trust layer wallets and marketplaces pay to use
+            The agent operator pays, not the wallet
           </h2>
           <div className="flex justify-center mb-6">
             <span className="px-3 py-1 rounded-pill bg-yellow-400/10 border border-yellow-400/30 text-yellow-400 text-[11px] font-mono uppercase tracking-wider">
               Hypothesis — not yet validated
             </span>
           </div>
-          <div className="glass-card-heavy rounded-2xl p-6 max-w-xl mx-auto text-center">
+          <div className="glass-card-heavy rounded-2xl p-6 max-w-xl mx-auto text-center mb-4">
             <p className="text-text-secondary text-sm leading-relaxed">
-              Usage-based API for reputation lookups, plus a revenue share on badge-gated marketplace listings.
-              Next step: a design-partner pilot to test willingness to pay.
+              An agent needs a portable, on-chain, third-party-verifiable badge to attract delegated capital.
+              So the operator pays for a <strong className="text-text-primary">Verified Agent</strong> tier: premium badge
+              placement, a performance analytics dashboard, and a Walrus-anchored audit report.
+              Wallets and marketplaces become the second paying side later, once there&rsquo;s enough badge volume
+              to make a query API worth integrating.
             </p>
           </div>
+          <p className="text-center text-text-muted text-[11px] font-mono">
+            Next 2 weeks: DM outreach to other Sui agent-builder teams to test willingness to pay before building more.
+          </p>
         </Slide>
 
-        {/* 9. ASK */}
+        {/* 8. ASK */}
         <Slide id="ask" eyebrow="Ask">
           <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary text-center mb-8">
             What we need from you
@@ -407,12 +403,12 @@ export default function DemoPage() {
               href="mailto:hello@aegisonchain.xyz?subject=Aegis%20pilot%20intro"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-[12px] border border-cyan-primary/30 bg-cyan-primary/[0.04] text-text-primary font-display font-bold text-sm hover:bg-cyan-primary/[0.08] transition-all"
             >
-              <Mail size={16} /> Intro us to a wallet/marketplace
+              <Mail size={16} /> Intro us to an agent builder
             </a>
           </div>
         </Slide>
 
-        {/* 10. CLOSE */}
+        {/* 9. CLOSE */}
         <Slide id="close">
           <div className="flex flex-col items-center text-center">
             <h2 className="font-display text-[28px] md:text-[40px] font-black text-text-primary mb-4 tracking-tight">
