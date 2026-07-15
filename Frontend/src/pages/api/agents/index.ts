@@ -1,10 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { SuiJsonRpcClient, getJsonRpcFullnodeUrl } from '@mysten/sui/jsonRpc';
 import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
 import { methodNotAllowed, serverError, sanitizeString, validatePositiveInt } from '../../../lib/api-utils';
-import { config } from '../../../config';
-
-const client = new SuiJsonRpcClient({ url: getJsonRpcFullnodeUrl(config.network as 'testnet' | 'mainnet' | 'devnet' | 'localnet'), network: config.network });
+import { getObjectFields } from '../../../lib/sui-client';
 
 const KNOWN_AGENTS = [
   '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc',
@@ -29,14 +26,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     for (const objectId of KNOWN_AGENTS) {
       try {
-        const data = await client.getObject({
-          id: objectId,
-          options: { showContent: true },
-        });
+        const fields = await getObjectFields(objectId);
 
-        if (data.data?.content?.dataType === 'moveObject') {
-          const fields = data.data.content.fields as any;
-
+        if (fields) {
           const totalExecutions = Number(fields.total_executions);
           const successfulExecutions = Number(fields.successful_executions);
           const successRate = totalExecutions > 0 ? (successfulExecutions / totalExecutions) * 100 : 100;
@@ -64,7 +56,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             successRate: Math.round(successRate),
             isFlagged: fields.is_flagged,
             trustLevel,
-            walrusBlobId: fields.walrus_blob_id?.fields?.vec?.[0] || null,
+            walrusBlobId: fields.walrus_blob_id?.vec?.[0] || fields.walrus_blob_id?.fields?.vec?.[0] || null,
           });
         }
       } catch {

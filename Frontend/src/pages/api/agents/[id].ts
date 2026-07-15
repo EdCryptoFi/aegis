@@ -1,10 +1,7 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { SuiJsonRpcClient, getJsonRpcFullnodeUrl } from '@mysten/sui/jsonRpc';
 import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
 import { methodNotAllowed, badRequest, notFound, serverError, validateId } from '../../../lib/api-utils';
-import { config } from '../../../config';
-
-const client = new SuiJsonRpcClient({ url: getJsonRpcFullnodeUrl(config.network as 'testnet' | 'mainnet' | 'devnet' | 'localnet'), network: config.network });
+import { suiClient as client } from '../../../lib/sui-client';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') return methodNotAllowed(res, ['GET']);
@@ -20,15 +17,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   try {
     const data = await client.getObject({
-      id,
-      options: { showContent: true, showOwner: true },
+      objectId: id,
+      include: { json: true },
     });
 
-    if (!data.data || data.data.content?.dataType !== 'moveObject') {
+    const fields = data.object.json as any;
+    if (!fields) {
       return notFound(res, 'Agent not found');
     }
-
-    const fields = data.data.content.fields as any;
 
     const totalExecutions = Number(fields.total_executions);
     const successfulExecutions = Number(fields.successful_executions);
@@ -64,9 +60,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         lastUpdate: Number(fields.last_update),
         isFlagged: fields.is_flagged,
         executionNonce: Number(fields.execution_nonce),
-        walrusBlobId: fields.walrus_blob_id?.fields?.vec?.[0] || null,
+        walrusBlobId: fields.walrus_blob_id?.vec?.[0] || fields.walrus_blob_id?.fields?.vec?.[0] || null,
         trustLevel,
-        owner: data.data.owner,
+        owner: data.object.owner,
       },
     });
   } catch (error: unknown) {

@@ -1,10 +1,7 @@
-import { SuiJsonRpcClient } from '@mysten/sui/jsonRpc';
 import { Transaction } from '@mysten/sui/transactions';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { config } from '../config';
-
-const TESTNET_URL = 'https://fullnode.testnet.sui.io:443';
-const client = new SuiJsonRpcClient({ url: TESTNET_URL, network: 'testnet' });
+import { getObjectFields, signAndExecute, findCreatedObjectId } from './sui-client';
 
 export const PACKAGE_ID = config.packageId;
 export const BADGE_REGISTRY_ID = config.badgeRegistry;
@@ -42,19 +39,11 @@ export interface AgentInfo {
 
 export async function getAgentReputation(objectId: string): Promise<ReputationData | null> {
   try {
-    const objectData = await client.getObject({
-      id: objectId,
-      options: { showContent: true, showOwner: true },
-    });
-
-    if (!objectData.data || objectData.data.content?.dataType !== 'moveObject') {
-      return null;
-    }
-
-    const fields = objectData.data.content.fields as any;
+    const fields = await getObjectFields(objectId);
+    if (!fields) return null;
 
     return {
-      agentId: fields.agent_id,
+      agentId: fields.agent_id as string,
       objectId: objectId,
       totalExecutions: Number(fields.total_executions),
       successfulExecutions: Number(fields.successful_executions),
@@ -63,11 +52,11 @@ export async function getAgentReputation(objectId: string): Promise<ReputationDa
       totalSlippage: Number(fields.total_slippage),
       uptimeScore: Number(fields.uptime_score),
       lastUpdate: Number(fields.last_update),
-      isFlagged: fields.is_flagged,
+      isFlagged: Boolean(fields.is_flagged),
       consecutiveFailures: Number(fields.consecutive_failures),
       executionNonce: Number(fields.execution_nonce),
-      walrusBlobId: fields.walrus_blob_id?.fields?.vec?.[0] || null,
-    memwalSessionId: fields.memwal_session_id || null,
+      walrusBlobId: (fields.walrus_blob_id as any)?.vec?.[0] || (fields.walrus_blob_id as any)?.fields?.vec?.[0] || null,
+      memwalSessionId: (fields.memwal_session_id as string) || null,
     };
   } catch (error) {
     console.error('Failed to get agent reputation:', error);
@@ -75,54 +64,18 @@ export async function getAgentReputation(objectId: string): Promise<ReputationDa
   }
 }
 
+/**
+ * Historical "list every registered agent" discovery relied on JSON-RPC's
+ * queryEvents (suix_queryEvents), which was backed by an indexer. gRPC full
+ * nodes don't expose an equivalent module-wide event query, and GraphQL RPC
+ * (which has the general-purpose indexer) is mainnet-only as of 2026-07.
+ * Until a testnet indexer is wired up, this returns an empty list rather
+ * than crashing — callers (leaderboard, /agents) should render an empty
+ * state, not "all agents lost".
+ */
 export async function getAllAgents(): Promise<AgentInfo[]> {
-  try {
-    const events = await client.queryEvents({
-      query: { MoveEventModule: { module: 'reputation', package: PACKAGE_ID } },
-      limit: 50,
-    });
-
-    const seenIds = new Set<string>();
-    const agents: AgentInfo[] = [];
-
-    for (const event of events.data) {
-      const parsed = event.parsedJson as any;
-      if (parsed?.agent_id && !seenIds.has(parsed.agent_id)) {
-        seenIds.add(parsed.agent_id);
-        const objs = await client.getObject({ id: parsed.agent_id, options: { showContent: true } });
-        const data = objs.data?.content as any;
-        if (data?.fields) {
-          const rep: ReputationData = {
-            agentId: data.fields.agent_id,
-            objectId: parsed.agent_id,
-            totalExecutions: parseInt(data.fields.total_executions) || 0,
-            successfulExecutions: parseInt(data.fields.successful_executions) || 0,
-            failedExecutions: parseInt(data.fields.failed_executions) || 0,
-            totalVolume: parseInt(data.fields.total_volume) || 0,
-            totalSlippage: parseInt(data.fields.total_slippage) || 0,
-            uptimeScore: parseFloat(data.fields.uptime_score) || 0,
-            lastUpdate: parseInt(data.fields.last_update) || 0,
-            isFlagged: data.fields.is_flagged || false,
-            consecutiveFailures: parseInt(data.fields.consecutive_failures) || 0,
-            executionNonce: parseInt(data.fields.execution_nonce) || 0,
-            walrusBlobId: data.fields.walrus_blob_id?.fields?.vec?.[0] || null,
-            memwalSessionId: data.fields.memwal_session_id || null,
-          };
-          const stats = calculateAgentStats(rep);
-          agents.push({
-            objectId: parsed.agent_id,
-            agentId: rep.agentId,
-            reputation: rep,
-            stats,
-          });
-        }
-      }
-    }
-    return agents;
-  } catch (error) {
-    console.error('Failed to get all agents:', error);
-    return [];
-  }
+  console.warn('getAllAgents: no event-query API available for Sui testnet post JSON-RPC sunset — returning empty list.');
+  return [];
 }
 
 export function calculateAgentStats(data: ReputationData): AgentStats {
@@ -254,15 +207,8 @@ export async function registerAgent(signer: any): Promise<{ digest: string; obje
       arguments: [],
     });
 
-    const result = await client.signAndExecuteTransaction({
-      signer,
-      transaction: tx,
-      options: { showEffects: true, showObjectChanges: true },
-    });
-
-    const objectId = (result.objectChanges as any[])?.find(
-      (change: any) => change.type === 'created' && change.objectType?.includes('ReputationObject')
-    )?.objectId || '';
+    const result = await signAndExecute({ signer, transaction: tx });
+    const objectId = findCreatedObjectId(result, 'ReputationObject') || '';
 
     return { digest: result.digest, objectId };
   } catch (error) {
@@ -290,11 +236,7 @@ export async function recordExecution(
       ],
     });
 
-    const result = await client.signAndExecuteTransaction({
-      signer,
-      transaction: tx,
-      options: { showEffects: true },
-    });
+    const result = await signAndExecute({ signer, transaction: tx });
 
     return result.digest;
   } catch (error) {
@@ -319,11 +261,7 @@ export async function autoCheckBadge(
       ],
     });
 
-    const result = await client.signAndExecuteTransaction({
-      signer,
-      transaction: tx,
-      options: { showEffects: true },
-    });
+    const result = await signAndExecute({ signer, transaction: tx });
 
     return result.digest;
   } catch (error) {
@@ -348,11 +286,7 @@ export async function updateWalrusBlob(
       ],
     });
 
-    const result = await client.signAndExecuteTransaction({
-      signer,
-      transaction: tx,
-      options: { showEffects: true },
-    });
+    const result = await signAndExecute({ signer, transaction: tx });
 
     return result.digest;
   } catch (error) {
@@ -384,11 +318,7 @@ export async function autoCheck(
       ],
     });
 
-    const result = await client.signAndExecuteTransaction({
-      signer,
-      transaction: tx,
-      options: { showEffects: true },
-    });
+    const result = await signAndExecute({ signer, transaction: tx });
 
     return result.digest;
   } catch (error) {

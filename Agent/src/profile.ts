@@ -1,6 +1,4 @@
-import { SuiJsonRpcClient, getJsonRpcFullnodeUrl } from '@mysten/sui/jsonRpc';
-
-const client = new SuiJsonRpcClient({ url: getJsonRpcFullnodeUrl('testnet'), network: 'testnet' });
+import { suiClient as client } from './sui-client';
 
 export interface AgentProfile {
   objectId: string;

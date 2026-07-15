@@ -160,32 +160,22 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
   // Fallback: try direct RPC for known agents
   if (blockchainAgents.length === 0) {
     try {
+      const { getObjectFields } = await import('../../lib/sui-client');
       for (const demo of DEMO_LEADERBOARD) {
-        const res = await fetch('https://fullnode.testnet.sui.io:443', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'sui_getObject',
-            params: [demo.objectId, { showContent: true }],
-          }),
-        });
-        const d = await res.json();
-        if (d.result?.data?.content?.dataType === 'moveObject') {
-          const fields = d.result.data.content.fields;
+        const fields = await getObjectFields(demo.objectId);
+        if (fields) {
           const totalEx = Number(fields.total_executions);
           const successEx = Number(fields.successful_executions);
           const entry: LeaderboardEntry = {
             rank: 0,
             objectId: demo.objectId,
-            agentId: fields.agent_id,
+            agentId: fields.agent_id as string,
             name: demo.name,
             uptimeScore: Number(fields.uptime_score),
             successRate: totalEx > 0 ? Math.round((successEx / totalEx) * 100) : 100,
             totalExecutions: totalEx,
             totalVolume: Number(fields.total_volume),
-            isFlagged: fields.is_flagged,
+            isFlagged: Boolean(fields.is_flagged),
             badge: demo.badge,
             aegisScore: 0,
             status: 'Active',

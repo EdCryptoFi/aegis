@@ -51,54 +51,31 @@ async function getAllAgents(): Promise<AgentInfo[]> {
   } catch {}
 
   try {
-    const response = await fetch('https://fullnode.testnet.sui.io:443', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'sui_getObject',
-        params: [DEMO_AGENTS[0].objectId, { showContent: true }],
-      }),
-    });
-    const data = await response.json();
-    if (data.result?.data?.content?.dataType === 'moveObject') {
-      const agents: AgentInfo[] = [];
-      for (const demo of DEMO_AGENTS) {
-        const res = await fetch('https://fullnode.testnet.sui.io:443', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            jsonrpc: '2.0',
-            id: 1,
-            method: 'sui_getObject',
-            params: [demo.objectId, { showContent: true }],
-          }),
-        });
-        const d = await res.json();
-        if (d.result?.data?.content?.dataType === 'moveObject') {
-          const fields = d.result.data.content.fields;
-          // Merge blockchain + demo data: prefer whichever has richer execution history
-          const chainExecs = Number(fields.total_executions);
-          agents.push({
-            objectId: demo.objectId,
-            agentId: fields.agent_id,
-            totalExecutions: Math.max(chainExecs, demo.totalExecutions),
-            successfulExecutions: Math.max(Number(fields.successful_executions), demo.successfulExecutions),
-            uptimeScore: Math.max(Number(fields.uptime_score), demo.uptimeScore),
-            totalVolume: Math.max(Number(fields.total_volume), demo.totalVolume),
-            isFlagged: fields.is_flagged,
-          });
-        }
-      }
-      if (agents.length > 0) {
-        const seen = new Set<string>();
-        return [...agents, ...demoAgents].filter(a => {
-          if (seen.has(a.objectId)) return false;
-          seen.add(a.objectId);
-          return true;
+    const { getObjectFields } = await import('../../lib/sui-client');
+    const agents: AgentInfo[] = [];
+    for (const demo of DEMO_AGENTS) {
+      const fields = await getObjectFields(demo.objectId);
+      if (fields) {
+        // Merge blockchain + demo data: prefer whichever has richer execution history
+        const chainExecs = Number(fields.total_executions);
+        agents.push({
+          objectId: demo.objectId,
+          agentId: fields.agent_id as string,
+          totalExecutions: Math.max(chainExecs, demo.totalExecutions),
+          successfulExecutions: Math.max(Number(fields.successful_executions), demo.successfulExecutions),
+          uptimeScore: Math.max(Number(fields.uptime_score), demo.uptimeScore),
+          totalVolume: Math.max(Number(fields.total_volume), demo.totalVolume),
+          isFlagged: Boolean(fields.is_flagged),
         });
       }
+    }
+    if (agents.length > 0) {
+      const seen = new Set<string>();
+      return [...agents, ...demoAgents].filter(a => {
+        if (seen.has(a.objectId)) return false;
+        seen.add(a.objectId);
+        return true;
+      });
     }
   } catch (e) {
     console.log('Using demo data (fetch failed):', e);

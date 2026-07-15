@@ -1,13 +1,11 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { Ed25519Keypair } from '@mysten/sui/keypairs/ed25519';
 import { Transaction } from '@mysten/sui/transactions';
-import { SuiJsonRpcClient } from '@mysten/sui/jsonRpc';
 import { requestSuiFromFaucetV2, getFaucetHost } from '@mysten/sui/faucet';
 import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
 import { methodNotAllowed, serverError, sanitizeString } from '../../../lib/api-utils';
 import { config } from '../../../config';
-
-const client = new SuiJsonRpcClient({ url: 'https://fullnode.testnet.sui.io:443', network: 'testnet' });
+import { signAndExecute, findCreatedObjectId } from '../../../lib/sui-client';
 const PACKAGE_ID = config.packageId;
 const BADGE_REGISTRY_ID = config.badgeRegistry;
 
@@ -52,15 +50,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       target: `${PACKAGE_ID}::reputation::register_agent`,
       arguments: [],
     });
-    const result = await client.signAndExecuteTransaction({
-      signer: keypair,
-      transaction: tx,
-      options: { showEffects: true, showObjectChanges: true },
-    });
-
-    const objectId = (result.objectChanges as any[])?.find(
-      (change: any) => change.type === 'created' && change.objectType?.includes('ReputationObject')
-    )?.objectId || '';
+    const result = await signAndExecute({ signer: keypair, transaction: tx });
+    const objectId = findCreatedObjectId(result, 'ReputationObject') || '';
 
     if (!objectId) {
       return res.status(500).json({ error: 'Failed to create agent on-chain' });
@@ -89,11 +80,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             execTx.pure.u64(slip),
           ],
         });
-        const execResult = await client.signAndExecuteTransaction({
-          signer: keypair,
-          transaction: execTx,
-          options: { showEffects: true },
-        });
+        const execResult = await signAndExecute({ signer: keypair, transaction: execTx });
         execDigests.push(execResult.digest);
       } catch {
         // skip failed execution recordings
@@ -132,11 +119,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             badgeTx.object(objectId),
           ],
         });
-        await client.signAndExecuteTransaction({
-          signer: keypair,
-          transaction: badgeTx,
-          options: { showEffects: true },
-        });
+        await signAndExecute({ signer: keypair, transaction: badgeTx });
       } catch {
         // badge mint failed, ignore
       }

@@ -38,32 +38,20 @@ function formatSlippage(basisPoints: number): string {
 
 async function getAgentReputation(objectId: string): Promise<ReputationData | null> {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SUI_RPC || 'https://fullnode.testnet.sui.io'}/rpc`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'sui_getObject',
-        params: [objectId, { showContent: true }],
-      }),
-    });
-    const data = await response.json();
-    if (data.result?.data?.content?.dataType === 'moveObject') {
-      const fields = data.result.data.content.fields;
-      return {
-        agentId: fields.agent_id,
-        totalExecutions: Number(fields.total_executions),
-        successfulExecutions: Number(fields.successful_executions),
-        failedExecutions: Number(fields.failed_executions),
-        totalVolume: Number(fields.total_volume),
-        totalSlippage: Number(fields.total_slippage),
-        uptimeScore: Number(fields.uptime_score),
-        lastUpdate: Number(fields.last_update),
-        isFlagged: fields.is_flagged,
-      };
-    }
-    return null;
+    const { getObjectFields } = await import('../lib/sui-client');
+    const fields = await getObjectFields(objectId);
+    if (!fields) return null;
+    return {
+      agentId: fields.agent_id as string,
+      totalExecutions: Number(fields.total_executions),
+      successfulExecutions: Number(fields.successful_executions),
+      failedExecutions: Number(fields.failed_executions),
+      totalVolume: Number(fields.total_volume),
+      totalSlippage: Number(fields.total_slippage),
+      uptimeScore: Number(fields.uptime_score),
+      lastUpdate: Number(fields.last_update),
+      isFlagged: Boolean(fields.is_flagged),
+    };
   } catch (error) {
     console.error('Failed to get agent reputation:', error);
     return null;

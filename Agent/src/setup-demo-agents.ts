@@ -1,11 +1,11 @@
 #!/usr/bin/env node
-import { SuiClient, getFullNodeUrl } from '@mysten/sui/client';
+import { SuiJsonRpcClient as SuiClient, getJsonRpcFullnodeUrl as getFullNodeUrl } from '@mysten/sui/jsonRpc';
 import { Transaction } from '@mysten/sui/transactions';
 
 const PACKAGE_ID = '0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9';
 const NETWORK = 'testnet';
 
-const client = new SuiClient({ url: getFullNodeUrl(NETWORK) });
+const client = new SuiClient({ url: getFullNodeUrl(NETWORK as 'testnet'), network: NETWORK as 'testnet' });
 
 interface AgentDemo {
   name: string;

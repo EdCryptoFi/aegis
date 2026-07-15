@@ -1,8 +1,6 @@
-import { SuiClient, getFullNodeUrl } from '@mysten/sui/client';
 import { Transaction } from '@mysten/sui/transactions';
 import type { ReputationData, AgentStats, AgentLog, AegisScoreResult } from './types';
-
-const client = new SuiClient({ url: getFullNodeUrl('testnet') });
+import { suiClient as client } from './sui-client';
 
 export const PACKAGE_ID = '0x5b0b03884fd52a1c36d21b486fe44ddf016837e413c94b469a24bf5f2887c5f9';
 
@@ -200,25 +198,12 @@ export async function getBadgeEligibility(objectId: string): Promise<{ bronze: b
 
 export async function checkBadgeStatus(agentId: string): Promise<{ badge: number | null; isValid: boolean }> {
   try {
-    const response = await fetch('https://fullnode.testnet.sui.io:443', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0',
-        id: 1,
-        method: 'sui_getObject',
-        params: [config.badgeRegistry, { showContent: true }],
-      }),
-    });
-    const data = await response.json();
-    if (data.result?.data?.content?.dataType === 'moveObject') {
-      const entries = data.result.data.content.fields.entries || [];
+    const data = await client.getObject({ id: config.badgeRegistry, options: { showContent: true } });
+    if (data.data?.content?.dataType === 'moveObject') {
+      const entries = (data.data.content.fields as any).entries || [];
       for (const entry of entries) {
         if (entry.fields?.agent_id === agentId) {
-          return {
-            badge: entry.fields.badge_type,
-            isValid: entry.fields.is_valid,
-          };
+          return { badge: entry.fields.badge_type, isValid: entry.fields.is_valid };
         }
       }
     }

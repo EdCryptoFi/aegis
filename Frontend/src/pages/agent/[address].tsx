@@ -94,31 +94,20 @@ function formatSlippage(bps: number): string {
 
 async function fetchReputation(objectId: string): Promise<ReputationData | null> {
   try {
-    const res = await fetch('https://fullnode.testnet.sui.io:443', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        jsonrpc: '2.0', id: 1,
-        method: 'sui_getObject',
-        params: [objectId, { showContent: true }],
-      }),
-    });
-    const data = await res.json();
-    if (data.result?.data?.content?.dataType === 'moveObject') {
-      const f = data.result.data.content.fields;
-      return {
-        agentId: f.agent_id,
-        totalExecutions: Number(f.total_executions),
-        successfulExecutions: Number(f.successful_executions),
-        failedExecutions: Number(f.failed_executions),
-        totalVolume: Number(f.total_volume),
-        totalSlippage: Number(f.total_slippage),
-        uptimeScore: Number(f.uptime_score),
-        lastUpdate: Number(f.last_update),
-        isFlagged: f.is_flagged,
-      };
-    }
-    return null;
+    const { getObjectFields } = await import('../../lib/sui-client');
+    const f = await getObjectFields(objectId);
+    if (!f) return null;
+    return {
+      agentId: f.agent_id as string,
+      totalExecutions: Number(f.total_executions),
+      successfulExecutions: Number(f.successful_executions),
+      failedExecutions: Number(f.failed_executions),
+      totalVolume: Number(f.total_volume),
+      totalSlippage: Number(f.total_slippage),
+      uptimeScore: Number(f.uptime_score),
+      lastUpdate: Number(f.last_update),
+      isFlagged: Boolean(f.is_flagged),
+    };
   } catch { return null; }
 }
 
