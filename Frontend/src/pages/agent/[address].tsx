@@ -28,9 +28,9 @@ interface ReputationData {
 
 /* ─── Fallback data for known on-chain agents (used when blockchain returns low counts) ─── */
 const AGENT_FALLBACK: Record<string, Partial<ReputationData>> = {
-  '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc': { totalExecutions: 247, successfulExecutions: 244, failedExecutions: 3,  uptimeScore: 99, totalVolume: 1_450_000_000_000 },
-  '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec': { totalExecutions: 67,  successfulExecutions: 62,  failedExecutions: 5,  uptimeScore: 95, totalVolume: 320_000_000_000  },
-  '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6': { totalExecutions: 34,  successfulExecutions: 14,  failedExecutions: 20, uptimeScore: 41, totalVolume: 45_000_000_000   },
+  '0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a': { totalExecutions: 247, successfulExecutions: 244, failedExecutions: 3,  uptimeScore: 99, totalVolume: 1_450_000_000_000 },
+  '0xf0f9bb84452f9e401383a80b25b36b7643d5ee2c548338ad9899f5f7105af8ed': { totalExecutions: 67,  successfulExecutions: 62,  failedExecutions: 5,  uptimeScore: 95, totalVolume: 320_000_000_000  },
+  '0x32247adc0cb1a5aef74657c1be09f5b87d5effbc6b7ff7fd96fcc929d72377ca': { totalExecutions: 34,  successfulExecutions: 14,  failedExecutions: 20, uptimeScore: 41, totalVolume: 45_000_000_000   },
 };
 
 /* ─── Static metadata per known agent ─── */
@@ -45,7 +45,7 @@ const AGENT_META: Record<string, {
   model: string;
   tags: string[];
 }> = {
-  '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc': {
+  '0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a': {
     name: 'AlphaTrader',
     type: 'Autonomous Trading Bot',
     protocol: 'DeepBook v2',
@@ -56,7 +56,7 @@ const AGENT_META: Record<string, {
     model: 'GPT-4 Opus + Logic Engine',
     tags: ['Autonomous', 'DeFi', 'Arbitrage', 'High-Frequency'],
   },
-  '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec': {
+  '0xf0f9bb84452f9e401383a80b25b36b7643d5ee2c548338ad9899f5f7105af8ed': {
     name: 'BetaBot',
     type: 'Supervised Analytics Agent',
     protocol: 'Aegis SDK v1',
@@ -67,7 +67,7 @@ const AGENT_META: Record<string, {
     model: 'Claude 3.5 Sonnet',
     tags: ['Supervised', 'Analytics', 'Risk Scoring', 'Multi-Pool'],
   },
-  '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6': {
+  '0x32247adc0cb1a5aef74657c1be09f5b87d5effbc6b7ff7fd96fcc929d72377ca': {
     name: 'GammaScam',
     type: 'Restricted - Read Only',
     protocol: 'Unknown Protocol',

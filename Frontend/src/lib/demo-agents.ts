@@ -12,10 +12,17 @@ export interface DemoAgentRef {
   address: string; // ReputationObject id (shared object) on Sui testnet
 }
 
+// Re-seeded 2026-07-17 via scripts/seed-fresh-demo-agents.mjs: the original
+// three (registered back in May) only had 5/5/3 executions each — below the
+// real Bronze threshold (10+), so every card showed "Unranked" instead of
+// the Gold/Silver/Revoked story the pitch tells. These are fresh
+// ReputationObjects, same demo wallet, with enough real recorded executions
+// to have genuinely earned each badge on-chain (verified via getObjectFields
+// before wiring them in — see .suiperpower/pitch-deck.md notes).
 export const DEMO_AGENTS: DemoAgentRef[] = [
-  { name: 'AlphaTrader', address: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc' },
-  { name: 'BetaBot', address: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec' },
-  { name: 'GammaScam', address: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6' },
+  { name: 'AlphaTrader', address: '0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a' }, // Gold: 200 execs, 100% success, 1100 SUI volume
+  { name: 'BetaBot', address: '0xf0f9bb84452f9e401383a80b25b36b7643d5ee2c548338ad9899f5f7105af8ed' }, // Silver: 60 execs, 98% success
+  { name: 'GammaScam', address: '0x32247adc0cb1a5aef74657c1be09f5b87d5effbc6b7ff7fd96fcc929d72377ca' }, // Flagged: 1 failed exec, 550 bps slippage
 ];
 
 export const AGENT_NAMES: Record<string, string> = Object.fromEntries(

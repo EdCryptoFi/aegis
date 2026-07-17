@@ -43,9 +43,9 @@ import { AGENT_NAMES as KNOWN_NAMES } from '../../lib/demo-agents';
 // Offline-only fallback (used when the chain read fails). Values mirror the
 // real seeded on-chain state — keep in sync with scripts/seed-pitch-data.sh.
 const DEMO_LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 0, objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 100, successRate: 100, totalExecutions: 200, totalVolume: 1_075_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
-  { rank: 0, objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 98, successRate: 98, totalExecutions: 60, totalVolume: 52_700_000_000, isFlagged: false, badge: 'silver', aegisScore: 78.0, status: 'Supervised' as const },
-  { rank: 0, objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 0, successRate: 0, totalExecutions: 3, totalVolume: 0, isFlagged: true, badge: 'revoked', aegisScore: 5.0, status: 'Quarantined' as const },
+  { rank: 0, objectId: '0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 100, successRate: 100, totalExecutions: 200, totalVolume: 1_075_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
+  { rank: 0, objectId: '0xf0f9bb84452f9e401383a80b25b36b7643d5ee2c548338ad9899f5f7105af8ed', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 98, successRate: 98, totalExecutions: 60, totalVolume: 52_700_000_000, isFlagged: false, badge: 'silver', aegisScore: 78.0, status: 'Supervised' as const },
+  { rank: 0, objectId: '0x32247adc0cb1a5aef74657c1be09f5b87d5effbc6b7ff7fd96fcc929d72377ca', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 0, successRate: 0, totalExecutions: 3, totalVolume: 0, isFlagged: true, badge: 'revoked', aegisScore: 5.0, status: 'Quarantined' as const },
 ];
 
 function deriveBadge(score: number, isFlagged: boolean): string {

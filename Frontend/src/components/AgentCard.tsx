@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { AlertTriangle, Activity, TrendingUp, Layers, BarChart2, Hash } from 'lucide-react';
+import { AlertTriangle, Activity, TrendingUp, Layers, BarChart2, ExternalLink } from 'lucide-react';
 import { config } from '../config';
 
 interface ReputationData {
@@ -125,12 +125,6 @@ export default function AgentCard({ agentAddress, name }: { agentAddress: string
   const [stats, setStats] = useState<AgentStats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  const successRate = reputation && reputation.totalExecutions > 0
-    ? Math.round((reputation.successfulExecutions / reputation.totalExecutions) * 100)
-    : 100;
-  const totalExecutions = reputation?.totalExecutions || 0;
-  const totalVolume = reputation?.totalVolume || 0;
-
   useEffect(() => {
     loadReputation();
   }, [agentAddress]);
@@ -172,14 +166,9 @@ export default function AgentCard({ agentAddress, name }: { agentAddress: string
     { icon: Layers, label: 'Total Executions', value: reputation.totalExecutions, color: 'text-text-primary', bg: 'bg-surface-2' },
     { icon: BarChart2, label: 'Total Volume', value: formatVolume(reputation.totalVolume), color: 'text-text-primary', bg: 'bg-surface-2' },
     { icon: TrendingUp, label: 'Avg Slippage', value: formatSlippage(stats?.averageSlippage || 0), color: 'text-text-secondary', bg: 'bg-surface-2' },
-    { icon: Hash, label: 'Agent ID', value: `${reputation.agentId?.slice(0, 10)}...`, color: 'text-text-muted', bg: 'bg-surface-2', mono: true },
   ];
 
-  const badgeChecks = [
-    { emoji: '🥉', name: 'Bronze', eligible: successRate >= 80 && totalExecutions >= 10 },
-    { emoji: '🥈', name: 'Silver', eligible: successRate >= 90 && totalExecutions >= 50 },
-    { emoji: '🥇', name: 'Gold', eligible: successRate >= 95 && totalExecutions >= 200 && totalVolume >= 1_000_000_000_000 },
-  ];
+  const suiscanUrl = `https://suiscan.xyz/testnet/object/${agentAddress}`;
 
   return (
     <motion.div
@@ -200,13 +189,13 @@ export default function AgentCard({ agentAddress, name }: { agentAddress: string
 
       {/* Metrics grid */}
       <div className="grid grid-cols-2 gap-3 mb-5">
-        {metrics.map(({ icon: Icon, label, value, color, bg, mono }) => (
+        {metrics.map(({ icon: Icon, label, value, color, bg }) => (
           <div key={label} className={`rounded-xl p-4 ${bg}`}>
             <div className="flex items-center gap-1.5 mb-1">
               <Icon size={12} className="text-text-muted" />
               <p className="text-text-muted text-[10px] uppercase tracking-wide">{label}</p>
             </div>
-            <p className={`${mono ? 'font-mono text-xs' : 'font-display font-bold text-base'} ${color}`}>
+            <p className={`font-display font-bold text-base ${color}`}>
               {value}
             </p>
           </div>
@@ -221,30 +210,16 @@ export default function AgentCard({ agentAddress, name }: { agentAddress: string
         </div>
       )}
 
-      {/* Badge eligibility */}
-      <div className="border-t border-[rgba(255,255,255,0.06)] pt-5">
-        <p className="text-text-muted text-xs uppercase tracking-wide mb-3">Badge Eligibility</p>
-        <div className="grid grid-cols-3 gap-2">
-          {badgeChecks.map(({ emoji, name, eligible }) => (
-            <div
-              key={name}
-              className={`
-                rounded-xl p-3 flex flex-col items-center gap-1 border
-                ${eligible
-                  ? 'bg-mint-secondary/[0.06] border-mint-secondary/30'
-                  : 'bg-surface-2 border-[rgba(255,255,255,0.06)] opacity-50'
-                }
-              `}
-            >
-              <span className="text-xl">{emoji}</span>
-              <span className="text-text-muted text-[10px]">{name}</span>
-              <span className={`text-sm font-bold ${eligible ? 'text-mint-secondary' : 'text-red-400'}`}>
-                {eligible ? '✓' : '✗'}
-              </span>
-            </div>
-          ))}
-        </div>
-      </div>
+      {/* Object ID — links straight to the ReputationObject on Suiscan */}
+      <a
+        href={suiscanUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-between gap-2 rounded-xl p-4 bg-surface-2 border border-[rgba(255,255,255,0.06)] hover:border-cyan-primary/30 transition-colors group"
+      >
+        <span className="font-mono text-xs text-text-muted truncate">{agentAddress}</span>
+        <ExternalLink size={14} className="text-text-muted group-hover:text-cyan-primary transition-colors shrink-0" />
+      </a>
     </motion.div>
   );
 }

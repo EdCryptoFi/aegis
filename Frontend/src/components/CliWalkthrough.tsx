@@ -451,7 +451,7 @@ export default function CliWalkthrough({ compact = false }: { compact?: boolean 
           </div>
         </div>
 
-        <div ref={termRef} className="h-[380px] overflow-y-auto p-6 font-mono text-xs leading-6 scroll-smooth">
+        <div ref={termRef} className="h-[640px] overflow-y-auto p-6 font-mono text-xs leading-6 scroll-smooth">
           {visibleLines === 0 && !running && (
             <div className="flex flex-col items-center justify-center h-full gap-4 text-center">
               <Terminal size={40} className="text-text-muted opacity-40" />
