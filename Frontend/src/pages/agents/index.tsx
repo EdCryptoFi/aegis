@@ -20,16 +20,14 @@ interface AgentInfo {
   name?: string;
 }
 
-const AGENT_NAMES: Record<string, string> = {
-  '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc': 'AlphaTrader',
-  '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec': 'BetaBot',
-  '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6': 'GammaScam',
-};
+import { AGENT_NAMES } from '../../lib/demo-agents';
 
+// Offline-only fallback (used when the chain read fails). Values mirror the
+// real seeded on-chain state — keep in sync with scripts/seed-pitch-data.sh.
 const DEMO_AGENTS: AgentInfo[] = [
-  { objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', totalExecutions: 247, successfulExecutions: 244, uptimeScore: 99, totalVolume: 1_450_000_000_000, isFlagged: false },
-  { objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', totalExecutions: 67, successfulExecutions: 62, uptimeScore: 95, totalVolume: 320_000_000_000, isFlagged: false },
-  { objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', totalExecutions: 34, successfulExecutions: 14, uptimeScore: 41, totalVolume: 45_000_000_000, isFlagged: true },
+  { objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', totalExecutions: 200, successfulExecutions: 200, uptimeScore: 100, totalVolume: 1_075_000_000_000, isFlagged: false },
+  { objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', totalExecutions: 60, successfulExecutions: 59, uptimeScore: 98, totalVolume: 52_700_000_000, isFlagged: false },
+  { objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', totalExecutions: 3, successfulExecutions: 0, uptimeScore: 0, totalVolume: 0, isFlagged: true },
 ];
 
 async function getAllAgents(): Promise<AgentInfo[]> {
@@ -56,15 +54,15 @@ async function getAllAgents(): Promise<AgentInfo[]> {
     for (const demo of DEMO_AGENTS) {
       const fields = await getObjectFields(demo.objectId);
       if (fields) {
-        // Merge blockchain + demo data: prefer whichever has richer execution history
-        const chainExecs = Number(fields.total_executions);
+        // Real on-chain values only — never inflate with local demo numbers,
+        // so every page shows exactly what a judge can verify on Sui Explorer.
         agents.push({
           objectId: demo.objectId,
           agentId: fields.agent_id as string,
-          totalExecutions: Math.max(chainExecs, demo.totalExecutions),
-          successfulExecutions: Math.max(Number(fields.successful_executions), demo.successfulExecutions),
-          uptimeScore: Math.max(Number(fields.uptime_score), demo.uptimeScore),
-          totalVolume: Math.max(Number(fields.total_volume), demo.totalVolume),
+          totalExecutions: Number(fields.total_executions),
+          successfulExecutions: Number(fields.successful_executions),
+          uptimeScore: Number(fields.uptime_score),
+          totalVolume: Number(fields.total_volume),
           isFlagged: Boolean(fields.is_flagged),
         });
       }

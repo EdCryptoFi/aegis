@@ -21,6 +21,23 @@ interface DemoAgentEntry {
 }
 const fallbackStore: DemoAgentEntry[] = [];
 
+/** Convex dev deployments sleep/expire; a dead upstream must never hang the
+ *  API (it was blocking /leaderboard and /agents renders). Hard 4s timeout,
+ *  and callers fall back to the in-memory store on any failure. */
+async function convexFetch(path: string, init?: RequestInit): Promise<any | null> {
+  if (!CONVEX_SITE_URL) return null;
+  try {
+    const upstream = await fetch(`${CONVEX_SITE_URL}${path}`, {
+      ...init,
+      signal: AbortSignal.timeout(4000),
+    });
+    if (!upstream.ok) return null;
+    return await upstream.json();
+  } catch {
+    return null;
+  }
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   try {
     switch (req.method) {
@@ -29,11 +46,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         if (limited) return rateLimitResponse(res, 60_000);
         res.setHeader('X-RateLimit-Remaining', String(remaining));
 
-        if (CONVEX_SITE_URL) {
-          const upstream = await fetch(`${CONVEX_SITE_URL}/agents`);
-          const data = await upstream.json();
-          return res.status(200).json(data);
-        }
+        const data = await convexFetch('/agents');
+        if (data) return res.status(200).json(data);
 
         const sorted = [...fallbackStore].sort((a, b) => b.createdAt - a.createdAt);
         return res.status(200).json({ success: true, count: sorted.length, agents: sorted });
@@ -59,15 +73,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           badge: ['none', 'bronze', 'silver', 'gold'].includes(body.badge) ? body.badge : 'none',
         };
 
-        if (CONVEX_SITE_URL) {
-          const upstream = await fetch(`${CONVEX_SITE_URL}/agents`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(entry),
-          });
-          const data = await upstream.json();
-          return res.status(201).json(data);
-        }
+        const data = await convexFetch('/agents', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(entry),
+        });
+        if (data) return res.status(201).json(data);
 
         const fallbackEntry = { id: `demo_${Date.now()}`, ...entry, createdAt: Date.now() };
         fallbackStore.push(fallbackEntry);
@@ -78,11 +89,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const { limited } = checkRateLimit(req, 'strict');
         if (limited) return rateLimitResponse(res, 120_000);
 
-        if (CONVEX_SITE_URL) {
-          const upstream = await fetch(`${CONVEX_SITE_URL}/agents`, { method: 'DELETE' });
-          const data = await upstream.json();
-          return res.status(200).json(data);
-        }
+        const deleted = await convexFetch('/agents', { method: 'DELETE' });
+        if (deleted) return res.status(200).json(deleted);
 
         fallbackStore.length = 0;
         return res.status(200).json({ success: true, message: 'Store cleared' });

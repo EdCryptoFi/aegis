@@ -38,16 +38,14 @@ function deriveStatus(badge: string, isFlagged: boolean): LeaderboardEntry['stat
   return 'Read Only';
 }
 
-const KNOWN_NAMES: Record<string, string> = {
-  '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc': 'AlphaTrader',
-  '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec': 'BetaBot',
-  '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6': 'GammaScam',
-};
+import { AGENT_NAMES as KNOWN_NAMES } from '../../lib/demo-agents';
 
+// Offline-only fallback (used when the chain read fails). Values mirror the
+// real seeded on-chain state — keep in sync with scripts/seed-pitch-data.sh.
 const DEMO_LEADERBOARD: LeaderboardEntry[] = [
-  { rank: 0, objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 99, successRate: 99, totalExecutions: 247, totalVolume: 2_100_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
-  { rank: 0, objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 95, successRate: 91, totalExecutions: 67, totalVolume: 450_000_000_000, isFlagged: false, badge: 'silver', aegisScore: 82.1, status: 'Supervised' as const },
-  { rank: 0, objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 41, successRate: 41, totalExecutions: 34, totalVolume: 45_000_000_000, isFlagged: true, badge: 'revoked', aegisScore: 12.0, status: 'Quarantined' as const },
+  { rank: 0, objectId: '0x4cd8be48b4e1e0b1bdf01e93fedeac7de29f350b8ea1085367cc9d91367bfefc', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 100, successRate: 100, totalExecutions: 200, totalVolume: 1_075_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
+  { rank: 0, objectId: '0xabeddc0a2835b6db914b4b06eb246f643076960bdc8bffc2d9ff120abda90dec', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 98, successRate: 98, totalExecutions: 60, totalVolume: 52_700_000_000, isFlagged: false, badge: 'silver', aegisScore: 78.0, status: 'Supervised' as const },
+  { rank: 0, objectId: '0xb3fa170083a4bbe952a83147ed3839e75ba008558f8f017aee58c9bc89c9ffb6', agentId: '0x8c8598ab', name: 'GammaScam', uptimeScore: 0, successRate: 0, totalExecutions: 3, totalVolume: 0, isFlagged: true, badge: 'revoked', aegisScore: 5.0, status: 'Quarantined' as const },
 ];
 
 function deriveBadge(score: number, isFlagged: boolean): string {
@@ -176,11 +174,14 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
             totalExecutions: totalEx,
             totalVolume: Number(fields.total_volume),
             isFlagged: Boolean(fields.is_flagged),
-            badge: demo.badge,
+            badge: 'none',
             aegisScore: 0,
             status: 'Active',
           };
+          // Badge derived from the real on-chain fields, not from the static
+          // fallback — keeps the leaderboard consistent with /demo and /agents.
           entry.aegisScore = computeScore(entry);
+          entry.badge = deriveBadge(entry.aegisScore, entry.isFlagged);
           entry.status = deriveStatus(entry.badge, entry.isFlagged);
           blockchainAgents.push(entry);
         }

@@ -58,6 +58,32 @@ async function getAgentReputation(objectId: string): Promise<ReputationData | nu
   }
 }
 
+/** Fallback path: same on-chain data, read server-side via our own API.
+ *  Keeps the card working even if the browser→fullnode gRPC-web read is
+ *  blocked (CORS, network) — critical for Demo Day reliability. */
+async function getAgentReputationViaApi(objectId: string): Promise<ReputationData | null> {
+  try {
+    const res = await fetch(`/api/agents/${objectId}`);
+    if (!res.ok) return null;
+    const json = await res.json();
+    const d = json?.data;
+    if (!d) return null;
+    return {
+      agentId: d.agentId,
+      totalExecutions: Number(d.totalExecutions),
+      successfulExecutions: Number(d.successfulExecutions),
+      failedExecutions: Number(d.failedExecutions),
+      totalVolume: Number(d.totalVolume),
+      totalSlippage: Number(d.totalSlippage),
+      uptimeScore: Number(d.uptimeScore),
+      lastUpdate: Number(d.lastUpdate),
+      isFlagged: Boolean(d.isFlagged),
+    };
+  } catch {
+    return null;
+  }
+}
+
 function calculateAgentStats(data: ReputationData): AgentStats {
   const successRate = data.totalExecutions > 0
     ? (data.successfulExecutions / data.totalExecutions) * 100
@@ -94,7 +120,7 @@ const BADGE_STYLES: Record<string, { pill: string; label: string }> = {
   none:    { pill: 'bg-surface-2 text-text-muted border-[rgba(255,255,255,0.08)]',       label: 'Unranked'     },
 };
 
-export default function AgentCard({ agentAddress }: { agentAddress: string }) {
+export default function AgentCard({ agentAddress, name }: { agentAddress: string; name?: string }) {
   const [reputation, setReputation] = useState<ReputationData | null>(null);
   const [stats, setStats] = useState<AgentStats | null>(null);
   const [loading, setLoading] = useState(true);
@@ -111,7 +137,7 @@ export default function AgentCard({ agentAddress }: { agentAddress: string }) {
 
   async function loadReputation() {
     setLoading(true);
-    const rep = await getAgentReputation(agentAddress);
+    const rep = (await getAgentReputation(agentAddress)) ?? (await getAgentReputationViaApi(agentAddress));
     if (rep) {
       setReputation(rep);
       setStats(calculateAgentStats(rep));
@@ -163,7 +189,10 @@ export default function AgentCard({ agentAddress }: { agentAddress: string }) {
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
-        <h3 className="font-display text-lg font-bold text-text-primary">Agent Reputation</h3>
+        <div>
+          <h3 className="font-display text-lg font-bold text-text-primary">{name || 'Agent Reputation'}</h3>
+          {name && <p className="text-text-muted text-[10px] font-mono uppercase tracking-wider mt-0.5">Agent Reputation · on-chain</p>}
+        </div>
         <span className={`px-3 py-1 rounded-full text-xs font-bold border ${badgeStyle.pill}`}>
           {badgeStyle.label}
         </span>
