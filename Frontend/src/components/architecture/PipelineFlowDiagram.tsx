@@ -119,7 +119,7 @@ export default function PipelineFlowDiagram() {
             <div className="flex items-start gap-3">
               <span className="text-2xl">⚡</span>
               <div>
-                <h4 className="text-sm font-semibold text-white">On-Chain Verification</h4>
+                <h4 className="text-sm font-semibold text-white">Onchain Verification</h4>
                 <p className="text-xs text-slate-400 mt-1">
                   Todas as execuções são registradas no blockchain Sui de forma imutável
                 </p>

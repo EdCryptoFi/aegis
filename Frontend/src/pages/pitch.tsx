@@ -9,7 +9,7 @@ const MermaidDiagram = dynamic(() => import('@/components/MermaidDiagram'), { ss
 
 const AEGIS_FLOW = `flowchart TD
     A([🤖 AI Agent]) --> B[register_agent]
-    B --> C[(ReputationObject\\non-chain)]
+    B --> C[(ReputationObject\\nonchain)]
     C --> D[record_execution\\nsuccess · volume · slippage]
     D -->|assert sender == agent_id| D
     D --> C
@@ -109,7 +109,7 @@ export default function PitchPage() {
           className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-5"
         >
           {[
-            { icon: XCircle, text: 'Verifiable on-chain reputation', color: 'text-error' },
+            { icon: XCircle, text: 'Verifiable onchain reputation', color: 'text-error' },
             { icon: XCircle, text: 'Accountability for failures', color: 'text-error' },
             { icon: XCircle, text: 'Trust mechanisms for protocols', color: 'text-error' },
           ].map(({ icon: Icon, text, color }) => (
@@ -136,7 +136,7 @@ export default function PitchPage() {
       <Section>
         <div className="text-center mb-6">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">The Solution: AEGIS</span>
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Think "Credit Score for AI Agents" — but on-chain</h2>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Think "Credit Score for AI Agents" — but onchain</h2>
         </div>
 
         <motion.div
@@ -147,7 +147,7 @@ export default function PitchPage() {
           className="grid grid-cols-1 md:grid-cols-2 gap-4"
         >
           {[
-            { text: 'Track on-chain performance (success rate, slippage, uptime)' },
+            { text: 'Track onchain performance (success rate, slippage, uptime)' },
             { text: 'Issue dynamic badges (Gold / Silver / Bronze)' },
             { text: 'Auto-revoke access in &lt;60s if thresholds breached' },
             { text: 'Enable protocols to verify before delegating capital' },
@@ -170,7 +170,7 @@ export default function PitchPage() {
 
         <div className="space-y-3 mb-5">
           {[
-            { num: '1', text: 'Agent executes → Metrics tracked on-chain' },
+            { num: '1', text: 'Agent executes → Metrics tracked onchain' },
             { num: '2', text: 'Aegis Score computed → Badge issued (Move contract)' },
             { num: '3', text: 'Protocol queries badge → Decision: Execute or Fallback' },
             { num: '4', text: 'Performance drops → Auto-revocation + event emitted' },
@@ -207,7 +207,7 @@ export default function PitchPage() {
       <Section>
         <div className="text-center mb-6">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-pill bg-cyan-primary/10 border border-cyan-primary/[0.15] text-cyan-primary text-label-xs font-mono uppercase tracking-wider mb-3">System Architecture</span>
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Full On-Chain Flow</h2>
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-text-primary">Full Onchain Flow</h2>
         </div>
         <motion.div
           initial={{ opacity: 0, y: 16 }}

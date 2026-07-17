@@ -20,7 +20,7 @@ const translations: Translations = {
   'nav.developer': { en: 'Developer', pt: 'Desenvolvedor', es: 'Desarrollador' },
   'nav.docs': { en: 'Docs', pt: 'Docs', es: 'Docs' },
   'home.title': { en: 'Aegis', pt: 'Aegis', es: 'Aegis' },
-  'home.subtitle': { en: 'Trust is not asked. It\'s proven. On-chain.', pt: 'Confiança não é pedida. É provada. On-chain.', es: 'La confianza no se pide. Se demuestra. On-chain.' },
+  'home.subtitle': { en: 'Trust is not asked. It\'s proven. Onchain.', pt: 'Confiança não é pedida. É provada. Onchain.', es: 'La confianza no se pide. Se demuestra. Onchain.' },
   'home.useAgent': { en: 'Use an Agent', pt: 'Usar Agente', es: 'Usar Agente' },
   'home.getBadge': { en: 'Get Badge', pt: 'Adquirir Badge', es: 'Obtener Insignia' },
   'home.deploy': { en: 'Deploy Agent', pt: 'Deploy Agente', es: 'Desplegar Agente' },

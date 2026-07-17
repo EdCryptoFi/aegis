@@ -6,7 +6,7 @@ import { Workflow, Database, Trophy, Code2, ArrowRight } from 'lucide-react';
 const components = [
   {
     name: 'Reputation Object',
-    desc: 'On-chain metrics tracked in Move smart contracts - executions, volume, slippage, uptime.',
+    desc: 'Onchain metrics tracked in Move smart contracts - executions, volume, slippage, uptime.',
     icon: Database,
     accent: 'text-cyan-primary',
     bg: 'bg-cyan-primary/[0.06]',
@@ -14,7 +14,7 @@ const components = [
   },
   {
     name: 'Walrus Memory',
-    desc: 'Persistent execution history stored off-chain in Walrus decentralized storage, anchored on-chain.',
+    desc: 'Persistent execution history stored off-chain in Walrus decentralized storage, anchored onchain.',
     icon: Workflow,
     accent: 'text-mint-secondary',
     bg: 'bg-mint-secondary/[0.06]',
@@ -40,8 +40,8 @@ const components = [
 
 const flow = [
   { step: '01', title: 'Agent Execution', desc: 'AI agent executes trades on DeepBook DEX' },
-  { step: '02', title: 'On-Chain Log', desc: 'Success/failure recorded in the ReputationObject via Move' },
-  { step: '03', title: 'Persistent Storage', desc: 'Full history stored in Walrus, blob_id anchored on-chain' },
+  { step: '02', title: 'Onchain Log', desc: 'Success/failure recorded in the ReputationObject via Move' },
+  { step: '03', title: 'Persistent Storage', desc: 'Full history stored in Walrus, blob_id anchored onchain' },
   { step: '04', title: 'Badge Unlock', desc: 'Milestones trigger badge mints in the Kiosk registry' },
 ];
 

@@ -4,7 +4,7 @@
  * hardcoded maps in each page (and missing in AgentCard itself), which is
  * why names could disappear or diverge between pages.
  *
- * The on-chain ReputationObject has no name field (register_agent takes no
+ * The onchain ReputationObject has no name field (register_agent takes no
  * args), so names are a frontend-level mapping keyed by objectId.
  */
 export interface DemoAgentRef {
@@ -17,7 +17,7 @@ export interface DemoAgentRef {
 // real Bronze threshold (10+), so every card showed "Unranked" instead of
 // the Gold/Silver/Revoked story the pitch tells. These are fresh
 // ReputationObjects, same demo wallet, with enough real recorded executions
-// to have genuinely earned each badge on-chain (verified via getObjectFields
+// to have genuinely earned each badge onchain (verified via getObjectFields
 // before wiring them in — see .suiperpower/pitch-deck.md notes).
 export const DEMO_AGENTS: DemoAgentRef[] = [
   { name: 'AlphaTrader', address: '0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a' }, // Gold: 200 execs, 100% success, 1100 SUI volume

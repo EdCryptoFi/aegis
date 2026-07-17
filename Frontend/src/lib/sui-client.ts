@@ -15,7 +15,7 @@ export const suiClient = new SuiGrpcClient({
 
 /**
  * Reads a Move object's struct fields as JSON. Move field names (snake_case,
- * e.g. `agent_id`) come straight from the on-chain struct, so they read the
+ * e.g. `agent_id`) come straight from the onchain struct, so they read the
  * same under gRPC's `json` include as they did under the old JSON-RPC
  * `content.fields`. Returns null if the object doesn't exist or isn't a
  * Move object (mirrors the old JSON-RPC null-on-not-found behavior).

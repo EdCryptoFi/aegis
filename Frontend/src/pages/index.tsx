@@ -177,7 +177,7 @@ const NaviIcon = () => (
 const stats = [
   { label: 'Agents on Testnet', sublabel: 'Registered on Sui', value: 3, prefix: '', suffix: '', icon: Users, delta: 'Phase 1', positive: true },
   { label: 'Smart Contracts', sublabel: 'Deployed & verified', value: 3, prefix: '', suffix: '', icon: Cpu, delta: 'Live', positive: true },
-  { label: 'Executions', sublabel: 'Recorded on-chain', value: 350, prefix: '~', suffix: '', icon: Zap, delta: 'Testnet', positive: true },
+  { label: 'Executions', sublabel: 'Recorded onchain', value: 350, prefix: '~', suffix: '', icon: Zap, delta: 'Testnet', positive: true },
 ];
 
 const tickerItems = [
@@ -198,7 +198,7 @@ const steps = [
     icon: Cpu,
   },
   {
-    title: 'Record On-Chain Actions',
+    title: 'Record Onchain Actions',
     description: 'Every execution is verified and scored in real-time against performance thresholds.',
     icon: BarChart2,
   },
@@ -299,7 +299,7 @@ export default function Home() {
             variants={itemVariants}
             className="text-body-lg text-text-secondary max-w-none mx-auto mb-10"
           >
-            Before you let an AI agent touch your treasury, Aegis gives you a provable on-chain report card -
+            Before you let an AI agent touch your treasury, Aegis gives you a provable onchain report card -
             success rate, volume, uptime, and badges. One API call.
           </motion.p>
 
@@ -549,7 +549,7 @@ export default function Home() {
               <div className="space-y-2.5 flex-1 mb-7">
                 {[
                   'Register in one transaction.',
-                  'Every execution recorded on-chain.',
+                  'Every execution recorded onchain.',
                   'Earn Bronze → Silver → Gold badges.',
                   'Portable trust across all Sui protocols.',
                 ].map(item => (
@@ -618,7 +618,7 @@ export default function Home() {
                     Check Agent Reputation
                   </h2>
                   <p className="text-sm text-text-secondary">
-                    Enter an agent address to check their on-chain reputation score
+                    Enter an agent address to check their onchain reputation score
                   </p>
                 </div>
 
@@ -724,7 +724,7 @@ export default function Home() {
                   { project: 'Wallets', usage: 'Verify agent trust before delegating funds' },
                   { project: 'DeFi Protocols', usage: 'Trust score for agent-driven trading' },
                   { project: 'AI Marketplaces', usage: 'Badges as proof of trust for listings' },
-                  { project: 'Fund Managers', usage: 'On-chain audit of contracted agents' },
+                  { project: 'Fund Managers', usage: 'Onchain audit of contracted agents' },
                   { project: 'Portfolio Trackers', usage: 'Real-time agent performance metrics' },
                 ].map(({ project, usage }, i) => (
                   <motion.div
@@ -755,7 +755,7 @@ export default function Home() {
               </span>
               <div className="space-y-4 flex-1">
                 {[
-                  { val: 'Verifiable', label: 'on-chain track record - no blind trust' },
+                  { val: 'Verifiable', label: 'onchain track record - no blind trust' },
                   { val: 'Portable', label: 'badges - earned, not assigned' },
                   { val: 'Walrus', label: 'audit trail - full transparency, zero overhead' },
                 ].map(({ val, label }) => (
@@ -772,7 +772,7 @@ export default function Home() {
                 <div className="space-y-1.5">
                   {[
                     '✓  Badge type (Bronze / Silver / Gold)',
-                    '✓  Uptime score  (on-chain)',
+                    '✓  Uptime score  (onchain)',
                     '✓  Is flagged    (safety check)',
                     '✓  Total execs   (track record)',
                   ].map((line) => (

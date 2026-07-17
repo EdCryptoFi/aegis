@@ -38,7 +38,7 @@ const TABS = [
 const components = [
   {
     name: 'Reputation Object',
-    desc: 'On-chain metrics tracked in Move smart contracts - executions, volume, slippage, uptime.',
+    desc: 'Onchain metrics tracked in Move smart contracts - executions, volume, slippage, uptime.',
     emoji: '🛡️',
     accent: 'text-cyan-primary',
     bg: 'bg-cyan-primary/[0.06]',
@@ -46,7 +46,7 @@ const components = [
   },
   {
     name: 'Walrus Memory',
-    desc: 'Persistent execution history stored off-chain in Walrus decentralized storage, anchored on-chain.',
+    desc: 'Persistent execution history stored off-chain in Walrus decentralized storage, anchored onchain.',
     emoji: '🧠',
     accent: 'text-mint-secondary',
     bg: 'bg-mint-secondary/[0.06]',
@@ -72,8 +72,8 @@ const components = [
 
 const flow = [
   { step: '01', title: 'Agent Execution', desc: 'AI agent executes trades on DeepBook DEX' },
-  { step: '02', title: 'On-Chain Log', desc: 'Success/failure recorded in the ReputationObject via Move' },
-  { step: '03', title: 'Persistent Storage', desc: 'Full history stored in Walrus, blob_id anchored on-chain' },
+  { step: '02', title: 'Onchain Log', desc: 'Success/failure recorded in the ReputationObject via Move' },
+  { step: '03', title: 'Persistent Storage', desc: 'Full history stored in Walrus, blob_id anchored onchain' },
   { step: '04', title: 'Badge Unlock', desc: 'Milestones trigger badge mints in the Kiosk registry' },
 ];
 
@@ -320,7 +320,7 @@ await aegis.autoCheckBadge({
                     { name: 'registerAgent()', desc: 'Create a new ReputationObject for your agent', tag: 'Returns', code: '{ digest: string, objectId: string }' },
                     { name: 'recordExecution()', desc: 'Report execution results to build reputation', tag: 'Params', code: 'success: bool, volume: u64, slippage: u64' },
                     { name: 'isEligibleForBadge()', desc: 'Check if agent meets badge requirements', tag: 'Params', code: 'badgeType: 1|2|3 (Bronze|Silver|Gold)' },
-                    { name: 'autoCheckBadge()', desc: 'Claim a badge — verified on-chain against your reputation', tag: 'Params', code: 'agentId, reputationObjectId' },
+                    { name: 'autoCheckBadge()', desc: 'Claim a badge — verified onchain against your reputation', tag: 'Params', code: 'agentId, reputationObjectId' },
                     { name: 'getAgentReputation()', desc: 'Fetch agent metrics from blockchain', tag: 'Returns', code: 'ReputationData' },
                     { name: 'checkAndRevokeInvalid()', desc: 'Trigger auto-revocation check - anyone can call', tag: null, code: null },
                   ].map(({ name, desc, tag, code }) => (
@@ -408,7 +408,7 @@ sui client call \\
   --args <OBJECT_ID> true 1000000000 50 \\
   --gas-budget 20000000
 
-# Claim badge (auto-verified against on-chain reputation)
+# Claim badge (auto-verified against onchain reputation)
 sui client call \\
   --package ${config.packageId} \\
   --module badge_registry \\
@@ -614,7 +614,7 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
                     { who: 'Wallets', benefit: 'Verify before delegating funds', icon: '🏦' },
                     { who: 'DeFi Protocols', benefit: 'Score agents for trading permissions', icon: '⚡' },
                     { who: 'AI Marketplaces', benefit: 'Badges as proof of trust for listings', icon: '🏪' },
-                    { who: 'Audit Tools', benefit: 'Full immutable audit trail on-chain', icon: '🔍' },
+                    { who: 'Audit Tools', benefit: 'Full immutable audit trail onchain', icon: '🔍' },
                   ].map(({ who, benefit, icon }) => (
                     <div key={who} className="grid grid-cols-3 px-6 py-4 border-b border-[rgba(255,255,255,0.04)] last:border-0 hover:bg-surface-1/40 transition-colors items-center">
                       <span className="font-display font-semibold text-text-primary text-sm">{who}</span>

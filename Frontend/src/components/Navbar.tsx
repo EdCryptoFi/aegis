@@ -88,7 +88,7 @@ export default function Navbar() {
                 Aegis
               </span>
               <span className="hidden sm:inline text-xs font-mono text-text-muted tracking-wider">
-                On-Chain
+                Onchain
               </span>
             </Link>
 

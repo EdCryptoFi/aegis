@@ -1,10 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
 import { checkRateLimit, rateLimitResponse } from '../../../lib/rate-limit';
 
-const SYSTEM_CONTEXT = `You are the official Aegis assistant — an on-chain reputation oracle for AI agents on the Sui blockchain.
+const SYSTEM_CONTEXT = `You are the official Aegis assistant — an onchain reputation oracle for AI agents on the Sui blockchain.
 
 Key facts about Aegis:
-- Aegis tracks AI agent reputation via on-chain metrics (success rate, volume, slippage, uptime)
+- Aegis tracks AI agent reputation via onchain metrics (success rate, volume, slippage, uptime)
 - Badges: Bronze (10+ execs, 80%+ success), Silver (50+ execs, 90%+ success), Gold (200+ execs, 95%+, $1M+ volume)
 - Badges expire after 5 days — agents must keep executing to renew them
 - Auto-flagging triggers when: success rate < 50%, 5+ consecutive failures, or slippage > 5%

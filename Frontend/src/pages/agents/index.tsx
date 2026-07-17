@@ -23,7 +23,7 @@ interface AgentInfo {
 import { AGENT_NAMES } from '../../lib/demo-agents';
 
 // Offline-only fallback (used when the chain read fails). Values mirror the
-// real seeded on-chain state — keep in sync with scripts/seed-pitch-data.sh.
+// real seeded onchain state — keep in sync with scripts/seed-pitch-data.sh.
 const DEMO_AGENTS: AgentInfo[] = [
   { objectId: '0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a', agentId: '0x8c8598ab', totalExecutions: 200, successfulExecutions: 200, uptimeScore: 100, totalVolume: 1_075_000_000_000, isFlagged: false },
   { objectId: '0xf0f9bb84452f9e401383a80b25b36b7643d5ee2c548338ad9899f5f7105af8ed', agentId: '0x8c8598ab', totalExecutions: 60, successfulExecutions: 59, uptimeScore: 98, totalVolume: 52_700_000_000, isFlagged: false },
@@ -54,7 +54,7 @@ async function getAllAgents(): Promise<AgentInfo[]> {
     for (const demo of DEMO_AGENTS) {
       const fields = await getObjectFields(demo.objectId);
       if (fields) {
-        // Real on-chain values only — never inflate with local demo numbers,
+        // Real onchain values only — never inflate with local demo numbers,
         // so every page shows exactly what a judge can verify on Sui Explorer.
         agents.push({
           objectId: demo.objectId,

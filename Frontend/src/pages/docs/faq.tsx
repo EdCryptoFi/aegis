@@ -20,7 +20,7 @@ const SIDEBAR = [
 const FAQS = [
   {
     q: 'What is Aegis?',
-    a: 'Aegis is a decentralized reputation oracle for AI agents on the Sui blockchain. It tracks on-chain metrics such as success rate, volume, and slippage to create a verifiable trust score for any registered agent.'
+    a: 'Aegis is a decentralized reputation oracle for AI agents on the Sui blockchain. It tracks onchain metrics such as success rate, volume, and slippage to create a verifiable trust score for any registered agent.'
   },
   {
     q: 'How does an agent get "flagged"?',
@@ -32,15 +32,15 @@ const FAQS = [
   },
   {
     q: 'How do badges work?',
-    a: 'Badges are granted automatically when an agent meets the thresholds: Bronze (10+ executions, 80%+ success), Silver (50+ executions, 90%+ success), Gold (200+ executions, 95%+, $1M+ volume). All verification is done on-chain. Badges expire after 5 days and must be renewed by continued execution.'
+    a: 'Badges are granted automatically when an agent meets the thresholds: Bronze (10+ executions, 80%+ success), Silver (50+ executions, 90%+ success), Gold (200+ executions, 95%+, $1M+ volume). All verification is done onchain. Badges expire after 5 days and must be renewed by continued execution.'
   },
   {
     q: 'Is the data tamper-proof?',
-    a: 'Yes. All metrics are stored in Move smart contracts on Sui. Once an execution is recorded, it cannot be altered or deleted. The full history is permanently auditable on-chain.'
+    a: 'Yes. All metrics are stored in Move smart contracts on Sui. Once an execution is recorded, it cannot be altered or deleted. The full history is permanently auditable onchain.'
   },
   {
     q: 'What is Walrus and why is it used?',
-    a: 'Walrus is a decentralized storage system by Mysten Labs. Aegis uses Walrus to store detailed execution logs that are too large to fit on-chain, while anchoring the blob_id in the ReputationObject - creating a complete, verifiable audit trail.'
+    a: 'Walrus is a decentralized storage system by Mysten Labs. Aegis uses Walrus to store detailed execution logs that are too large to fit onchain, while anchoring the blob_id in the ReputationObject - creating a complete, verifiable audit trail.'
   },
   {
     q: 'Can I use Aegis without connecting a wallet?',
@@ -52,7 +52,7 @@ const FAQS = [
   },
   {
     q: 'Does Aegis provide financial advice?',
-    a: 'No. Aegis displays on-chain metrics only. It is the user\'s responsibility to conduct their own due diligence (DYOR). Reputation is a tool, not a guarantee of future performance.'
+    a: 'No. Aegis displays onchain metrics only. It is the user\'s responsibility to conduct their own due diligence (DYOR). Reputation is a tool, not a guarantee of future performance.'
   },
   {
     q: 'How do I integrate my agent with Aegis?',
@@ -60,11 +60,11 @@ const FAQS = [
   },
   {
     q: 'What is the difference between Aegis and MemWal?',
-    a: 'MemWal provides private memory for agents - encrypted reasoning, context, and decision rationale. Aegis provides public reputation for third parties - verifiable on-chain metrics. Use both together by anchoring the MemWal blob_id inside the ReputationObject for linked, fully auditable intelligence.'
+    a: 'MemWal provides private memory for agents - encrypted reasoning, context, and decision rationale. Aegis provides public reputation for third parties - verifiable onchain metrics. Use both together by anchoring the MemWal blob_id inside the ReputationObject for linked, fully auditable intelligence.'
   },
   {
     q: 'Can I use MemWal together with Aegis?',
-    a: 'Yes. Use MemWal to store private agent decisions and reasoning. Aegis records the public metrics on-chain. Link the MemWal blob_id in the ReputationObject for: (1) complete traceability, (2) decentralized verification, and (3) immutable audit trail.'
+    a: 'Yes. Use MemWal to store private agent decisions and reasoning. Aegis records the public metrics onchain. Link the MemWal blob_id in the ReputationObject for: (1) complete traceability, (2) decentralized verification, and (3) immutable audit trail.'
   },
 ];
 

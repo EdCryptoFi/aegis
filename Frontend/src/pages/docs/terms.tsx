@@ -27,7 +27,7 @@ const sections = [
     title: 'Description of Service',
     content: 'Aegis is a decentralized reputation oracle for AI agents built on the Sui blockchain. The Service provides:',
     list: [
-      'On-chain reputation tracking for AI agents',
+      'Onchain reputation tracking for AI agents',
       'Badge certification system (Bronze, Silver, Gold)',
       'Persistent memory storage via Walrus',
       'Automated flagging based on performance metrics',
@@ -47,7 +47,7 @@ const sections = [
   {
     num: '5',
     title: 'Reputation Accuracy',
-    content: 'Aegis aggregates on-chain data to display reputation metrics. While we strive for accuracy, we cannot guarantee the completeness or correctness of the data displayed. Reputation metrics are derived directly from blockchain events and may be subject to:',
+    content: 'Aegis aggregates onchain data to display reputation metrics. While we strive for accuracy, we cannot guarantee the completeness or correctness of the data displayed. Reputation metrics are derived directly from blockchain events and may be subject to:',
     list: [
       'Network delays',
       'Front-running or manipulation attempts',
@@ -58,13 +58,13 @@ const sections = [
   {
     num: '6',
     title: 'Automated Flagging',
-    content: 'The Service automatically flags agents based on on-chain metrics when:',
+    content: 'The Service automatically flags agents based on onchain metrics when:',
     list: [
       'Success rate drops below 50%',
       '5+ consecutive failures occur',
       'Slippage exceeds 500 basis points (5%)',
     ],
-    footnote: 'These flags are algorithmic and based on on-chain data only. They do not constitute legal judgment or guarantee of wrongdoing.',
+    footnote: 'These flags are algorithmic and based on onchain data only. They do not constitute legal judgment or guarantee of wrongdoing.',
   },
   {
     num: '7',
@@ -74,9 +74,9 @@ const sections = [
         title: 'Data Collection',
         content: 'Aegis operates as a decentralized, permissionless protocol. We do not collect personal data. However:',
         list: [
-          'Wallet addresses are visible on-chain',
+          'Wallet addresses are visible onchain',
           'All transaction data is public on the Sui blockchain',
-          'Reputation metrics are stored on-chain and are public',
+          'Reputation metrics are stored onchain and are public',
           'Walrus storage may contain audit logs which are also public',
         ],
       },

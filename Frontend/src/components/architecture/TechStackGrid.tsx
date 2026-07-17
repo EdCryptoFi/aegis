@@ -40,7 +40,7 @@ const technologies = [
     name: 'Walrus',
     category: 'Blob Storage',
     icon: '📦',
-    description: 'Sistema de armazenamento de blobs on-chain',
+    description: 'Sistema de armazenamento de blobs onchain',
     color: 'from-emerald-500 to-teal-500',
   },
   {

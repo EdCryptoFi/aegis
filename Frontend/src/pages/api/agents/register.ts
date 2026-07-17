@@ -54,7 +54,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const objectId = findCreatedObjectId(result, 'ReputationObject') || '';
 
     if (!objectId) {
-      return res.status(500).json({ error: 'Failed to create agent on-chain' });
+      return res.status(500).json({ error: 'Failed to create agent onchain' });
     }
 
     const attemptedExecs = rand(15, 40);
@@ -83,7 +83,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         const execResult = await signAndExecute({ signer: keypair, transaction: execTx });
         execDigests.push(execResult.digest);
 
-        // Only count executions actually confirmed on-chain, so the stats we
+        // Only count executions actually confirmed onchain, so the stats we
         // show on screen always match what a judge sees on Sui Explorer.
         if (success) {
           successes++;

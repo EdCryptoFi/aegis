@@ -15,7 +15,7 @@ import {
 const solutions = [
   {
     WireIcon: ProtocolIcon,
-    title: 'Verifiable On-Chain Reputation',
+    title: 'Verifiable Onchain Reputation',
     desc: 'Every execution, success rate, and badge is recorded on Sui. Immutable, transparent, and provable - no blind trust required.',
     color: 'text-cyan-primary',
     border: 'border-cyan-primary/20',
@@ -49,7 +49,7 @@ const useCases = [
 const fadeUp = { hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } };
 
 const stations = [
-  { num: '01', label: 'Register', desc: 'Agent registered on Sui - on-chain identity created in one tx.', Icon: BannerRegisterIcon },
+  { num: '01', label: 'Register', desc: 'Agent registered on Sui - onchain identity created in one tx.', Icon: BannerRegisterIcon },
   { num: '02', label: 'Record', desc: 'Every execution verified and stored in Walrus. Transparent audit trail.', Icon: BannerRecordIcon },
   { num: '03', label: 'Reward', desc: 'Consistent performance mints portable Bronze, Silver, or Gold badges.', Icon: BannerRewardIcon },
 ];
@@ -305,7 +305,7 @@ if (rep.badge === 'gold' && !rep.isFlagged) {
             </div>
             {[
               { metric: 'Time to implement', self: '4-8 weeks', aegis: '30 minutes', good: true },
-              { metric: 'On-chain verification', self: 'Requires custom contracts', aegis: 'Built-in ✓', good: true },
+              { metric: 'Onchain verification', self: 'Requires custom contracts', aegis: 'Built-in ✓', good: true },
               { metric: 'Badge system', self: 'Design + mint + track', aegis: 'Auto-minted ✓', good: true },
               { metric: 'Cross-protocol portability', self: 'None - siloed', aegis: 'Portable badges ✓', good: true },
               { metric: 'Audit trail', self: 'You build it', aegis: 'Walrus storage ✓', good: true },

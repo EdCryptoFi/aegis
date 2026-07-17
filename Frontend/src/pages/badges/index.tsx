@@ -132,16 +132,16 @@ export default function BadgesPage() {
         >
           <div className="px-6 py-5 border-b border-cyan-primary/10">
             <p className="text-text-secondary text-base leading-relaxed">
-              The <span className="text-cyan-primary font-semibold">Badge Registry</span> is Aegis&apos;s trust certification system for autonomous agents on Sui. It evaluates real-world performance - success rate, processed volume, uptime - and assigns verification badges that determine access levels and permissions. The registry is integrated on-chain for full public auditability. Performance drops or violations trigger <span className="text-red-400 font-semibold">automatic revocation</span>, instantly removing agent privileges.
+              The <span className="text-cyan-primary font-semibold">Badge Registry</span> is Aegis&apos;s trust certification system for autonomous agents on Sui. It evaluates real-world performance - success rate, processed volume, uptime - and assigns verification badges that determine access levels and permissions. The registry is integrated onchain for full public auditability. Performance drops or violations trigger <span className="text-red-400 font-semibold">automatic revocation</span>, instantly removing agent privileges.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-5 divide-y sm:divide-y-0 sm:divide-x divide-[rgba(255,255,255,0.06)]">
             {[
-              { text: 'Evaluates agents via objective on-chain metrics (executions, success rate, volume)' },
+              { text: 'Evaluates agents via objective onchain metrics (executions, success rate, volume)' },
               { text: 'Classifies into 3 tiers: Gold (LVL 5), Silver (LVL 3), Bronze (LVL 1)' },
               { text: 'Controls access permissions automatically based on tier classification' },
               { text: 'Monitors continuously and revokes credentials on failure or violation' },
-              { text: 'Records everything on-chain for full transparency and public audit' },
+              { text: 'Records everything onchain for full transparency and public audit' },
             ].map(({ text }, i) => (
               <div key={i} className="flex items-start gap-2.5 px-4 py-3">
                 <span className="text-cyan-primary text-sm font-mono font-bold mt-0.5 flex-shrink-0">{i + 1}.</span>
@@ -261,12 +261,12 @@ export default function BadgesPage() {
             <div className="flex items-center gap-2.5 px-6 py-4 border-b border-red-500/20">
               <AlertTriangle size={16} className="text-red-400" />
               <h3 className="text-red-400 font-display font-semibold text-base">Complete Auto-Revocation Process</h3>
-              <span className="ml-auto font-mono text-xs text-red-400/60 uppercase tracking-widest">On-Chain Enforcement</span>
+              <span className="ml-auto font-mono text-xs text-red-400/60 uppercase tracking-widest">Onchain Enforcement</span>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-red-500/10">
               {[
                 { step: '1', icon: XCircle, title: 'Trigger Detection', text: 'Success rate drops below threshold (<95% Gold, <90% Silver), 5+ consecutive failures, slippage >500 BPS, or suspicious behavior detected.' },
-                { step: '2', icon: ShieldOff, title: 'On-Chain Invalidation', text: 'Agent credentials marked "Revoked" in the smart contract. New privileged executions are blocked at the protocol level.' },
+                { step: '2', icon: ShieldOff, title: 'Onchain Invalidation', text: 'Agent credentials marked "Revoked" in the smart contract. New privileged executions are blocked at the protocol level.' },
                 { step: '3', icon: AlertTriangle, title: 'Access Downgrade', text: 'Access level immediately downgraded to LVL 0. No write or production permissions remain active for the agent.' },
                 { step: '4', icon: Shield, title: 'Operational Block', text: 'Agent quarantined. Critical autonomous tasks paused pending manual review and resolution of the incident.' },
               ].map(({ step, icon: RIcon, title, text }) => (
@@ -283,8 +283,8 @@ export default function BadgesPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-0 divide-y sm:divide-y-0 sm:divide-x divide-red-500/10 border-t border-red-500/10">
               {[
                 { step: '5', icon: Activity, title: 'Public Registry Update', text: 'Registry status updates in real-time, displaying a Revoked badge for full community transparency.' },
-                { step: '6', icon: BarChart2, title: 'Audit Logging', text: 'Event logged with timestamp, revocation reason, and incident metrics. Permanent on-chain record for post-analysis.' },
-                { step: '7', icon: Zap, title: 'Stakeholder Alert', text: 'Relevant stakeholders and the agent operator are notified of the status change via on-chain events.' },
+                { step: '6', icon: BarChart2, title: 'Audit Logging', text: 'Event logged with timestamp, revocation reason, and incident metrics. Permanent onchain record for post-analysis.' },
+                { step: '7', icon: Zap, title: 'Stakeholder Alert', text: 'Relevant stakeholders and the agent operator are notified of the status change via onchain events.' },
                 { step: '8', icon: CheckCircle, title: 'Conditional Reinstatement', text: 'Agent may reapply for certification only after resolving issues and passing manual review. No automatic reinstatement.' },
               ].map(({ step, icon: RIcon, title, text }) => (
                 <div key={step} className="flex flex-col gap-2 px-5 py-5">

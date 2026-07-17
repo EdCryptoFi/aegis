@@ -121,7 +121,7 @@ export default function DocsPage() {
             </div>
             <h1 className="font-display text-4xl font-bold text-text-primary mb-4">Welcome to Aegis Documentation</h1>
             <p className="text-text-secondary text-lg leading-relaxed mb-6">
-              Aegis is a decentralized trust layer for autonomous AI agents on Sui. It tracks on-chain metrics - success rate, volume, uptime - and issues verifiable badges that control access permissions for protocols integrating AI agents.
+              Aegis is a decentralized trust layer for autonomous AI agents on Sui. It tracks onchain metrics - success rate, volume, uptime - and issues verifiable badges that control access permissions for protocols integrating AI agents.
             </p>
 
             {/* Roadmap banner */}
@@ -251,10 +251,10 @@ console.log(agent.badge); // 'bronze' | 'silver' | 'gold' | null`} />
             <h2 className="font-display text-2xl font-bold text-text-primary mb-5">Key Concepts</h2>
             <div className="rounded-2xl glass-card-heavy divide-y divide-[rgba(255,255,255,0.06)]">
               {[
-                { label: 'Reputation System', desc: 'On-chain metrics that track agent performance - executions, success rate, slippage, uptime', href: '/agents', internal: true },
-                { label: 'Badge Registry', desc: 'Bronze (LVL 1), Silver (LVL 3), Gold (LVL 5) - access-level certifications issued on-chain', href: '/badges', internal: true },
+                { label: 'Reputation System', desc: 'Onchain metrics that track agent performance - executions, success rate, slippage, uptime', href: '/agents', internal: true },
+                { label: 'Badge Registry', desc: 'Bronze (LVL 1), Silver (LVL 3), Gold (LVL 5) - access-level certifications issued onchain', href: '/badges', internal: true },
                 { label: 'Aegis Score', desc: 'Multi-dimensional score: Performance 37% + Reliability 28% - Risk Penalty + Contribution 10%', href: '/leaderboard', internal: true },
-                { label: 'Auto-Revocation', desc: 'On-chain enforcement - >5 consecutive failures, <50% success rate, or >500 BPS slippage triggers instant credential revocation', href: '/badges', internal: true },
+                { label: 'Auto-Revocation', desc: 'Onchain enforcement - >5 consecutive failures, <50% success rate, or >500 BPS slippage triggers instant credential revocation', href: '/badges', internal: true },
                 { label: 'MemWal Audit Trail', desc: 'Encrypted private memory for agent reasoning; blob_id anchored in ReputationObject for full traceability', href: 'https://docs.memwal.ai/', internal: false },
               ].map(({ label, desc, href, internal }) => (
                 <div key={label} className="px-5 py-4 flex items-start gap-4">
@@ -282,7 +282,7 @@ console.log(agent.badge); // 'bronze' | 'silver' | 'gold' | null`} />
               {/* recordExecution */}
               <div>
                 <h3 className="font-mono text-base font-bold text-cyan-primary mb-1">recordExecution(params)</h3>
-                <p className="text-text-secondary text-sm mb-4">Records an agent execution event on-chain. Updates metrics and checks badge eligibility/revocation.</p>
+                <p className="text-text-secondary text-sm mb-4">Records an agent execution event onchain. Updates metrics and checks badge eligibility/revocation.</p>
                 <div className="rounded-2xl overflow-hidden border border-[rgba(255,255,255,0.08)] mb-3">
                   <table className="w-full text-xs">
                     <thead>
@@ -326,9 +326,9 @@ console.log(agent.badge); // 'bronze' | 'silver' | 'gold' | null`} />
               {/* registerAgent */}
               <div>
                 <h3 className="font-mono text-base font-bold text-cyan-primary mb-1">registerAgent(signer)</h3>
-                <p className="text-text-secondary text-sm mb-3">Deploys a new ReputationObject on-chain. Called once per agent identity.</p>
+                <p className="text-text-secondary text-sm mb-3">Deploys a new ReputationObject onchain. Called once per agent identity.</p>
                 <CodeBlock code={`const { objectId, digest } = await registerAgent(signer);
-// objectId = your permanent on-chain identity
+// objectId = your permanent onchain identity
 // digest = transaction hash for verification`} />
               </div>
 
@@ -350,7 +350,7 @@ console.log(result.breakdown);        // { performance, reliability, riskPenalty
               {/* getBadgeEligibility */}
               <div>
                 <h3 className="font-mono text-base font-bold text-cyan-primary mb-1">getBadgeEligibility(objectId)</h3>
-                <p className="text-text-secondary text-sm mb-3">Returns which badges the agent qualifies for based on current on-chain metrics.</p>
+                <p className="text-text-secondary text-sm mb-3">Returns which badges the agent qualifies for based on current onchain metrics.</p>
                 <CodeBlock code={`const { bronze, silver, gold } = await getBadgeEligibility(objectId);
 // bronze: 10+ execs, 80%+ success
 // silver: 50+ execs, 90%+ success
@@ -386,7 +386,7 @@ console.log(result.breakdown);        // { performance, reliability, riskPenalty
                 {
                   icon: Cpu, title: 'GameFi Agent', audience: 'Game Developers',
                   color: 'text-yellow-400', bg: 'bg-yellow-400/[0.06]', border: 'border-yellow-400/20',
-                  items: ['Session-based reputation per game match', 'Player-agent interaction logged on-chain', 'Bronze badge = entry level, Gold = pro tier', 'Integrate badges into in-game UI via SDK'],
+                  items: ['Session-based reputation per game match', 'Player-agent interaction logged onchain', 'Bronze badge = entry level, Gold = pro tier', 'Integrate badges into in-game UI via SDK'],
                 },
               ].map(({ icon: Icon, title, audience, color, bg, border, items }) => (
                 <div key={title} className={`rounded-2xl border ${border} p-5`}>
@@ -470,7 +470,7 @@ pnpm test:stress --duration=60s --rps=100`} />
             <ul className="space-y-2 mb-5">
               {[
                 { label: 'Private rationale', desc: "Agent's reasoning stays encrypted in Walrus" },
-                { label: 'Public metrics', desc: 'Success/slippage verified on-chain by Aegis' },
+                { label: 'Public metrics', desc: 'Success/slippage verified onchain by Aegis' },
                 { label: 'Linked audit trail', desc: 'MemWal blob_id anchored in ReputationObject' },
               ].map(({ label, desc }) => (
                 <li key={label} className="flex items-start gap-2 text-sm">
@@ -489,7 +489,7 @@ await memwalService.storeRationale({
   decision: 'Execute with conservative slippage'
 });
 
-// 2. Record execution publicly on Aegis (on-chain)
+// 2. Record execution publicly on Aegis (onchain)
 await recordExecution(signer, objectId, true, 1_000_000_000, 50);
 // blob_id is automatically anchored in the ReputationObject`} />
           </section>
@@ -620,7 +620,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                 },
                 {
                   status: 'pass', label: 'Auto-flag: low success rate',
-                  detail: 'Flagged when success_rate < 50% and total_executions > 0. Emits AgentFlagged event on-chain.',
+                  detail: 'Flagged when success_rate < 50% and total_executions > 0. Emits AgentFlagged event onchain.',
                 },
                 {
                   status: 'pass', label: 'Auto-flag: consecutive failures',
@@ -632,10 +632,10 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                 },
                 {
                   status: 'pass', label: 'Badge eligibility double-check (badge_registry)',
-                  detail: 'auto_check verifies reputation eligibility on-chain before granting. Asserts no duplicate or higher badge (E_ALREADY_HAS_BADGE, E_HAS_HIGHER_BADGE). Badge type validated ∈ {1,2,3}.',
+                  detail: 'auto_check verifies reputation eligibility onchain before granting. Asserts no duplicate or higher badge (E_ALREADY_HAS_BADGE, E_HAS_HIGHER_BADGE). Badge type validated ∈ {1,2,3}.',
                 },
                 {
-                  status: 'pass', label: 'Revocation criteria enforced on-chain',
+                  status: 'pass', label: 'Revocation criteria enforced onchain',
                   detail: 'check_and_revoke_invalid re-validates all badge thresholds on each call. Revoked entries emit BadgeRevoked event.',
                 },
                 {
@@ -745,7 +745,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                   'Agent registration with static badges (Gold/Silver/Bronze)',
                   'Contract address + display name identification',
                   'Manual or semi-automatic revocation',
-                  'Simple on-chain event logging',
+                  'Simple onchain event logging',
                   'External monitoring via static dashboard',
                 ].map(t => (
                   <div key={t} className="flex items-start gap-2 text-sm text-text-secondary">
@@ -760,7 +760,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
             <div className="rounded-2xl border border-cyan-primary/25 bg-cyan-primary/[0.05] p-5 mb-8">
               <h3 className="font-display font-bold text-cyan-primary text-base mb-2">Phase 2 Objective</h3>
               <p className="text-text-secondary text-sm leading-relaxed">
-                Transform Aegis from a static certification system into a <strong className="text-text-primary">dynamic trust layer</strong>, enabling DeFi protocols to operate with automatic fallback, continuous on-chain evaluation, and cost-optimized monitoring.
+                Transform Aegis from a static certification system into a <strong className="text-text-primary">dynamic trust layer</strong>, enabling DeFi protocols to operate with automatic fallback, continuous onchain evaluation, and cost-optimized monitoring.
               </p>
             </div>
 
@@ -773,9 +773,9 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                   title: 'Dynamic Badge Registry & Auto-Revocation',
                   rows: [
                     { k: 'Onboarding Text', v: 'Institutional explanation (max 10 lines) covering continuous evaluation, access tiers, and auto-revocation triggers.' },
-                    { k: 'Revocation Pipeline', v: 'Detection → On-chain Invalidation → LVL 0 Downgrade → Quarantine → Audit Log → Notification → Conditional Reinstatement.' },
+                    { k: 'Revocation Pipeline', v: 'Detection → Onchain Invalidation → LVL 0 Downgrade → Quarantine → Audit Log → Notification → Conditional Reinstatement.' },
                     { k: 'Canonical Identity', v: 'Contract Address + Badge ID = unique identity. Display name is UX only - never use for validation.' },
-                    { k: 'On-chain Evaluators', v: 'Pluggable contracts evaluating: Success Rate, Volume, Uptime, Slippage, Security Flags.' },
+                    { k: 'Onchain Evaluators', v: 'Pluggable contracts evaluating: Success Rate, Volume, Uptime, Slippage, Security Flags.' },
                   ],
                 },
                 {
@@ -804,7 +804,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                   rows: [
                     { k: 'Info (🔵)', v: 'Score -10% → Discord/Telegram webhook. $0 cost. Continuous monitoring.' },
                     { k: 'Warn (🟡)', v: 'Timeout/Inoperative → Slack/PagerDuty. $0–$25/mo. Prepare intervention.' },
-                    { k: 'Critical (🔴)', v: 'Auto-Swap Executed → Email + On-Chain Event. ~$0. Validate takeover.' },
+                    { k: 'Critical (🔴)', v: 'Auto-Swap Executed → Email + Onchain Event. ~$0. Validate takeover.' },
                     { k: 'Emergency (🛑)', v: 'No valid backup → SMS/Voice (Twilio). ~$0.50–$1.50/alert. Immediate human response.' },
                   ],
                 },
@@ -840,7 +840,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
             <h3 className="font-display font-bold text-text-primary text-lg mb-4">Suggested Timeline (10 Weeks)</h3>
             <div className="grid grid-cols-1 sm:grid-cols-5 gap-2 mb-10">
               {[
-                { weeks: '1–2', title: 'Core Scoring', desc: 'Aegis Score engine, on-chain evaluators, dynamic tier thresholds' },
+                { weeks: '1–2', title: 'Core Scoring', desc: 'Aegis Score engine, onchain evaluators, dynamic tier thresholds' },
                 { weeks: '3–4', title: 'Auto-Revocation', desc: 'Complete revocation flow, identity clarification, audit logging' },
                 { weeks: '5–6', title: 'Leaderboard', desc: 'Score visualization, trend indicators, real-time updates' },
                 { weeks: '7–8', title: 'Fallback & Breakers', desc: 'Hybrid swap logic, dynamic backup selector, safety limits' },
@@ -860,7 +860,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
             <div className="rounded-2xl border border-[rgba(255,255,255,0.08)] p-5">
               <ul className="space-y-2.5">
                 {[
-                  '100% of badges and scores updated on-chain in real-time',
+                  '100% of badges and scores updated onchain in real-time',
                   'MTTR (Mean Time to Recovery) < 5 minutes for critical failures',
                   'Zero false emergency alerts after debounce logic is applied',
                   '3+ protocols integrated with active hybrid fallback',
@@ -1002,7 +1002,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
                 {
                   icon: <Shield size={18} className="text-cyan-primary" />,
                   title: 'No Pay-to-Play',
-                  desc: 'Badges cannot be bought. Only earned via verifiable on-chain performance - no shortcuts',
+                  desc: 'Badges cannot be bought. Only earned via verifiable onchain performance - no shortcuts',
                   color: 'text-cyan-primary', border: 'border-cyan-primary/20', bg: 'bg-cyan-primary/[0.06]',
                 },
               ].map(({ img, icon, title, desc, color, border, bg }) => (
@@ -1025,7 +1025,7 @@ await recordExecution(signer, objectId, true, 1_000_000_000, 50);
             <div className="rounded-2xl border border-[rgba(255,255,255,0.08)] p-5 mb-4">
               <ul className="space-y-3">
                 {[
-                  { icon: <CheckCircle size={14} className="text-mint-secondary" />, text: 'All fee structures and treasury movements are on-chain and fully auditable by anyone' },
+                  { icon: <CheckCircle size={14} className="text-mint-secondary" />, text: 'All fee structures and treasury movements are onchain and fully auditable by anyone' },
                   { icon: <CheckCircle size={14} className="text-mint-secondary" />, text: 'Governance proposals required for any changes to economic parameters - no unilateral updates' },
                   { icon: <Clock size={14} className="text-cyan-primary" />, text: 'Public dashboard showing fee collection and distribution - coming Q2' },
                 ].map(({ icon, text }) => (

@@ -41,7 +41,7 @@ function deriveStatus(badge: string, isFlagged: boolean): LeaderboardEntry['stat
 import { AGENT_NAMES as KNOWN_NAMES } from '../../lib/demo-agents';
 
 // Offline-only fallback (used when the chain read fails). Values mirror the
-// real seeded on-chain state — keep in sync with scripts/seed-pitch-data.sh.
+// real seeded onchain state — keep in sync with scripts/seed-pitch-data.sh.
 const DEMO_LEADERBOARD: LeaderboardEntry[] = [
   { rank: 0, objectId: '0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a', agentId: '0x8c8598ab', name: 'AlphaTrader', uptimeScore: 100, successRate: 100, totalExecutions: 200, totalVolume: 1_075_000_000_000, isFlagged: false, badge: 'gold', aegisScore: 98.4, status: 'Active' as const },
   { rank: 0, objectId: '0xf0f9bb84452f9e401383a80b25b36b7643d5ee2c548338ad9899f5f7105af8ed', agentId: '0x8c8598ab', name: 'BetaBot', uptimeScore: 98, successRate: 98, totalExecutions: 60, totalVolume: 52_700_000_000, isFlagged: false, badge: 'silver', aegisScore: 78.0, status: 'Supervised' as const },
@@ -178,7 +178,7 @@ async function getLeaderboard(): Promise<LeaderboardEntry[]> {
             aegisScore: 0,
             status: 'Active',
           };
-          // Badge derived from the real on-chain fields, not from the static
+          // Badge derived from the real onchain fields, not from the static
           // fallback — keeps the leaderboard consistent with /demo and /agents.
           entry.aegisScore = computeScore(entry);
           entry.badge = deriveBadge(entry.aegisScore, entry.isFlagged);
@@ -293,7 +293,7 @@ export default function LeaderboardPage() {
               </Link>
             </div>
           </div>
-          <p className="text-text-secondary text-lg">Top AI agents ranked by on-chain performance</p>
+          <p className="text-text-secondary text-lg">Top AI agents ranked by onchain performance</p>
           <p className="text-text-muted text-sm mt-2 font-mono flex items-center gap-4">
             <span>Click on an agent for Full Analytics Dashboard</span>
             {lastSync && (

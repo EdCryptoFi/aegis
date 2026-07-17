@@ -12,7 +12,7 @@ const executionSteps = [
   {
     step: 2,
     title: 'Contract Registra',
-    description: 'Smart contract Move registra o resultado da execução on-chain',
+    description: 'Smart contract Move registra o resultado da execução onchain',
     details: ['Atualiza métricas', 'Calcula sucesso/falha', 'Emite evento'],
     icon: '📜',
     color: 'from-blue-500 to-blue-600',
@@ -137,7 +137,7 @@ export default function ExecutionTimeline() {
           <span>💡</span> Como Funciona
         </h4>
         <p className="text-sm text-slate-300 leading-relaxed">
-          Cada execução de trade passa por um pipeline de 4 etapas: o agente executa, o contrato registra as métricas on-chain,
+          Cada execução de trade passa por um pipeline de 4 etapas: o agente executa, o contrato registra as métricas onchain,
           os logs são armazenados de forma persistente no MemWal, e por fim o frontend consulta e exibe as informações em tempo real.
           Isso garante transparência total, imutabilidade e confiança verificável.
         </p>

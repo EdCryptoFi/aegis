@@ -26,7 +26,7 @@ interface ReputationData {
   isFlagged: boolean;
 }
 
-/* ─── Fallback data for known on-chain agents (used when blockchain returns low counts) ─── */
+/* ─── Fallback data for known onchain agents (used when blockchain returns low counts) ─── */
 const AGENT_FALLBACK: Record<string, Partial<ReputationData>> = {
   '0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a': { totalExecutions: 247, successfulExecutions: 244, failedExecutions: 3,  uptimeScore: 99, totalVolume: 1_450_000_000_000 },
   '0xf0f9bb84452f9e401383a80b25b36b7643d5ee2c548338ad9899f5f7105af8ed': { totalExecutions: 67,  successfulExecutions: 62,  failedExecutions: 5,  uptimeScore: 95, totalVolume: 320_000_000_000  },

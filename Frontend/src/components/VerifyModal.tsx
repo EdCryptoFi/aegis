@@ -69,7 +69,7 @@ function buildCliLines(
     { text: '', color: '', delay: 300 },
     { text: 'Connecting to Sui testnet...', color: 'text-text-muted', delay: 500 },
     { text: 'Fetching reputation object...', color: 'text-text-muted', delay: 900 },
-    { text: `✓  Found on-chain`, color: 'text-mint-secondary', delay: 1300 },
+    { text: `✓  Found onchain`, color: 'text-mint-secondary', delay: 1300 },
     { text: '─────────────────────────', color: 'text-[rgba(255,255,255,0.12)]', delay: 1500 },
     { text: `  AGENT     ${agent.name}`, color: 'text-text-primary', delay: 1700 },
     { text: `  BADGE     ${badge.toUpperCase()}`, color: badge === 'gold' ? 'text-yellow-400' : badge === 'silver' ? 'text-slate-300' : badge === 'bronze' ? 'text-orange-400' : 'text-text-muted', delay: 1950 },
@@ -254,10 +254,10 @@ export default function VerifyModal({ agent, onClose }: VerifyModalProps) {
               </div>
             )}
 
-            {/* On-Chain Technical Details — only for real agents */}
+            {/* Onchain Technical Details — only for real agents */}
             {isRealOnChain && (
               <div className="mt-4 pt-4 border-t border-[rgba(255,255,255,0.06)]">
-                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-2">On-Chain Details</p>
+                <p className="font-mono text-[9px] uppercase tracking-widest text-text-muted mb-2">Onchain Details</p>
                 <div className="space-y-1.5">
                   <div className="flex items-center justify-between">
                     <span className="font-mono text-[10px] text-text-muted">Network</span>

@@ -33,7 +33,7 @@ export default function Footer() {
               </span>
             </Link>
             <p className="text-sm text-text-muted leading-relaxed max-w-[240px]">
-              On-chain reputation oracle for AI agents on Sui. Trust isn't asked for — it's proven.
+              Onchain reputation oracle for AI agents on Sui. Trust isn't asked for — it's proven.
             </p>
           </div>
 

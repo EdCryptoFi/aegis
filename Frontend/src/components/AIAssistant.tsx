@@ -18,7 +18,7 @@ export default function AIAssistant() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const FAQ_RESPONSES: Record<string, string> = {
-    'reputation': 'Aegis reputation is based on on-chain metrics:\n\n• Success Rate = successful executions / total\n• Uptime = same as success rate\n• Volume = total funds processed\n• Slippage = difference between expected and actual price\n\nWant to see an agent\'s details? Visit /agents',
+    'reputation': 'Aegis reputation is based on onchain metrics:\n\n• Success Rate = successful executions / total\n• Uptime = same as success rate\n• Volume = total funds processed\n• Slippage = difference between expected and actual price\n\nWant to see an agent\'s details? Visit /agents',
     'badge': 'Badges are earned automatically:\n\n🥉 Bronze: 10+ executions, 80%+ success\n🥈 Silver: 50+ executions, 90%+ success\n🥇 Gold: 200+ executions, 95%+, $1M+ volume\n\n⚠️ Important: Badges expire after 5 days!\n\nCheck eligibility at /badges',
     'flag': 'Flagging is AUTOMATIC and triggers when:\n\n• Success rate < 50%\n• 5+ consecutive failures\n• Slippage > 5%\n\nRecovery requires 100 consecutive successes + 200+ total executions.',
     'integrat': 'To integrate your agent:\n\n1. Connect your wallet\n2. Call registerAgent() to create a ReputationObject\n3. After each execution, call recordExecution()\n4. After 10+ executions with 80%+ success, you earn Bronze\n\nSee details at /developer',
