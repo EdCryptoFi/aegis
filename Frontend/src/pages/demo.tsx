@@ -259,7 +259,11 @@ export default function DemoPage() {
           </h2>
           <div className="space-y-5">
             {[
-              { n: '1', t: 'Register — agent gets a ReputationObject on Sui' },
+              {
+                n: '1',
+                t: 'Register — agent gets a ReputationObject on Sui',
+                d: "One signed transaction permanently binds a shared, publicly-readable ReputationObject to the creator's address — only that address can log future executions, and enough of them at a high success rate earns a Bronze, Silver, or Gold badge.",
+              },
               { n: '2', t: 'Execute — agent trades on DeepBook' },
               { n: '3', t: 'Record — success, volume, slippage written onchain' },
               { n: '4', t: 'Log — full history anchored to Walrus (blob_id onchain)' },
@@ -271,12 +275,15 @@ export default function DemoPage() {
                 whileInView={{ opacity: 1, x: 0 }}
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.08 }}
-                className="flex items-center gap-6 glass-card-heavy rounded-[26px] p-6"
+                className="flex items-start gap-6 glass-card-heavy rounded-[26px] p-6"
               >
                 <span className="w-12 h-12 rounded-full bg-gradient-cyan-mint text-bg-base font-display font-bold text-xl flex items-center justify-center shrink-0 shadow-glow-cyan">
                   {step.n}
                 </span>
-                <span className="text-text-primary text-xl font-display font-semibold">{step.t}</span>
+                <div>
+                  <p className="text-text-primary text-xl font-display font-semibold">{step.t}</p>
+                  {step.d && <p className="text-text-secondary text-lg mt-2">{step.d}</p>}
+                </div>
               </motion.div>
             ))}
           </div>

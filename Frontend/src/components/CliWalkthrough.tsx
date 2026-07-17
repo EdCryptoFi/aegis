@@ -63,10 +63,10 @@ interface SimResult {
 }
 
 function explorerTxUrl(digest: string) {
-  return `https://suivision.xyz/txblock/${digest}?network=${config.network}`;
+  return `https://suiscan.xyz/${config.network}/tx/${digest}`;
 }
 function explorerObjectUrl(objectId: string) {
-  return `https://suivision.xyz/object/${objectId}?network=${config.network}`;
+  return `https://suiscan.xyz/${config.network}/object/${objectId}`;
 }
 
 function generateSimulation(): SimResult {
