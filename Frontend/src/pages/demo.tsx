@@ -404,11 +404,11 @@ export default function DemoPage() {
         </Slide>
 
         {/* 7. BUSINESS MODEL — who actually pays, per .suiperpower/business-model.md */}
-        <Slide id="business" eyebrow="Business Model">
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-10">
+        <Slide id="business" eyebrow="Business Model" tall wide>
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-6">
             My first customer isn&rsquo;t the wallet — it&rsquo;s the agent operator
           </h2>
-          <div className="glass-card-heavy rounded-[26px] p-10 max-w-4xl mx-auto text-center">
+          <div className="glass-card-heavy rounded-[26px] p-10 mx-auto text-center mb-8">
             <p className="text-text-secondary text-xl leading-relaxed">
               Anyone running an autonomous trading strategy on DeepBook needs delegated capital, and that
               requires reputation that&rsquo;s independently verifiable, not self-reported. That&rsquo;s the
@@ -417,6 +417,29 @@ export default function DemoPage() {
               package a DeFi vault or fund would otherwise have to build in-house. As more verified agents
               join, wallets and marketplaces become the second side of the network.
             </p>
+          </div>
+
+          {/* Live proof: the actual analytics dashboard for a Gold-badged agent */}
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-text-muted text-xl font-mono uppercase tracking-wider">
+              The Verified Agent dashboard, live — AlphaTrader (Gold)
+            </p>
+            <a
+              href="/agent/0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-cyan-primary hover:underline text-lg font-mono shrink-0"
+            >
+              Open full page <ExternalLink size={18} />
+            </a>
+          </div>
+          <div className="rounded-[26px] overflow-hidden border border-[rgba(255,255,255,0.08)]">
+            <iframe
+              src="/agent/0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a"
+              title="AlphaTrader — Verified Agent dashboard"
+              className="w-full h-[900px] bg-bg-base"
+              loading="lazy"
+            />
           </div>
         </Slide>
 

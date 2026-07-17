@@ -35,6 +35,18 @@ const nextConfig = {
         ],
       },
       {
+        // Loosened from the site-wide DENY so /demo can embed the live agent
+        // dashboard in an iframe as a pitch demonstration. SAMEORIGIN still
+        // blocks any cross-origin site from framing this page.
+        source: '/agent/:path*',
+        headers: [
+          {
+            key: 'X-Frame-Options',
+            value: 'SAMEORIGIN',
+          },
+        ],
+      },
+      {
         source: '/api/:path*',
         headers: [
           {
