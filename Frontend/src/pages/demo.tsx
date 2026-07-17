@@ -11,6 +11,7 @@ import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
 import AegisLogo from '@/components/AegisLogo';
 import AgentCard from '@/components/AgentCard';
+import AgentDashboard from '@/components/AgentDashboard';
 import CliWalkthrough from '@/components/CliWalkthrough';
 import Footer from '@/components/Footer';
 import { config } from '@/config';
@@ -419,7 +420,8 @@ export default function DemoPage() {
             </p>
           </div>
 
-          {/* Live proof: the actual analytics dashboard for a Gold-badged agent */}
+          {/* Live proof: the actual analytics dashboard for a Gold-badged agent,
+               rendered directly (not embedded) — same component as /agent/[address] */}
           <div className="flex items-center justify-between mb-3">
             <p className="text-text-muted text-xl font-mono uppercase tracking-wider">
               The Verified Agent dashboard, live — AlphaTrader (Gold)
@@ -433,14 +435,10 @@ export default function DemoPage() {
               Open full page <ExternalLink size={18} />
             </a>
           </div>
-          <div className="rounded-[26px] overflow-hidden border border-[rgba(255,255,255,0.08)]">
-            <iframe
-              src="/agent/0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a"
-              title="AlphaTrader — Verified Agent dashboard"
-              className="w-full h-[900px] bg-bg-base"
-              loading="lazy"
-            />
-          </div>
+          <AgentDashboard
+            address="0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a"
+            showFooterLink={false}
+          />
         </Slide>
 
         {/* 8. ASK */}
