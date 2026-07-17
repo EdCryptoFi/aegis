@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield, XCircle, CheckCircle2, ArrowRight, ArrowUpRight,
@@ -14,6 +15,18 @@ import CliWalkthrough from '@/components/CliWalkthrough';
 import Footer from '@/components/Footer';
 import { config } from '@/config';
 import { DEMO_AGENTS } from '@/lib/demo-agents';
+
+const MermaidDiagram = dynamic(() => import('@/components/MermaidDiagram'), { ssr: false });
+
+// Simplified 1:1 with the 5 Solution bullets — no Move/SDK internals, just
+// the flow a judge can follow in the ~5 seconds this slide gets on screen.
+const SOLUTION_FLOW = `flowchart TD
+    A([Register]) --> B([Execute])
+    B --> C([Record])
+    C --> D([Log · Walrus])
+    D --> E{Badge}
+    E -->|criteria met| F([🥇 Minted])
+    E -->|criteria broken| G([🚫 Revoked])`;
 
 /* ───────────────────────── Demo Day rehearsal page ─────────────────────────
    9 slides, 1:1 with .suiperpower/pitch-deck.md. Each slide embeds the real
@@ -253,39 +266,47 @@ export default function DemoPage() {
         </Slide>
 
         {/* 3. SOLUTION */}
-        <Slide id="solution" eyebrow="The Solution">
+        <Slide id="solution" eyebrow="The Solution" wide>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-12">
             Every execution becomes a verifiable, persistent, composable trust record.
           </h2>
-          <div className="space-y-5">
-            {[
-              {
-                n: '1',
-                t: 'Register — agent gets a ReputationObject on Sui',
-                d: "One signed transaction permanently binds a shared, publicly-readable ReputationObject to the creator's address — only that address can log future executions, and enough of them at a high success rate earns a Bronze, Silver, or Gold badge.",
-              },
-              { n: '2', t: 'Execute — agent trades on DeepBook' },
-              { n: '3', t: 'Record — success, volume, slippage written onchain' },
-              { n: '4', t: 'Log — full history anchored to Walrus (blob_id onchain)' },
-              { n: '5', t: 'Badge — Kiosk NFT minted, or auto-revoked, no human in the loop' },
-            ].map((step, i) => (
-              <motion.div
-                key={step.n}
-                initial={{ opacity: 0, x: -16 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.08 }}
-                className="flex items-start gap-6 glass-card-heavy rounded-[26px] p-6"
-              >
-                <span className="w-12 h-12 rounded-full bg-gradient-cyan-mint text-bg-base font-display font-bold text-xl flex items-center justify-center shrink-0 shadow-glow-cyan">
-                  {step.n}
-                </span>
-                <div>
-                  <p className="text-text-primary text-xl font-display font-semibold">{step.t}</p>
-                  {step.d && <p className="text-text-secondary text-lg mt-2">{step.d}</p>}
-                </div>
-              </motion.div>
-            ))}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
+            {/* Left: the 5 steps as text */}
+            <div className="space-y-5">
+              {[
+                {
+                  n: '1',
+                  t: 'Register — agent gets a ReputationObject on Sui',
+                  d: "One signed transaction permanently binds a shared, publicly-readable ReputationObject to the creator's address — only that address can log future executions, and enough of them at a high success rate earns a Bronze, Silver, or Gold badge.",
+                },
+                { n: '2', t: 'Execute — agent trades on DeepBook' },
+                { n: '3', t: 'Record — success, volume, slippage written onchain' },
+                { n: '4', t: 'Log — full history anchored to Walrus (blob_id onchain)' },
+                { n: '5', t: 'Badge — Kiosk NFT minted, or auto-revoked, no human in the loop' },
+              ].map((step, i) => (
+                <motion.div
+                  key={step.n}
+                  initial={{ opacity: 0, x: -16 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="flex items-start gap-6 glass-card-heavy rounded-[26px] p-6"
+                >
+                  <span className="w-12 h-12 rounded-full bg-gradient-cyan-mint text-bg-base font-display font-bold text-xl flex items-center justify-center shrink-0 shadow-glow-cyan">
+                    {step.n}
+                  </span>
+                  <div>
+                    <p className="text-text-primary text-xl font-display font-semibold">{step.t}</p>
+                    {step.d && <p className="text-text-secondary text-lg mt-2">{step.d}</p>}
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Right: the same 5 steps as a flow diagram */}
+            <div className="glass-card-heavy rounded-[26px] p-8">
+              <MermaidDiagram chart={SOLUTION_FLOW} />
+            </div>
           </div>
         </Slide>
 
@@ -329,12 +350,11 @@ export default function DemoPage() {
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-12">
             Load-bearing, not decorative.
           </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             {[
-              { t: 'Object Model', d: 'Reputation is a first-class ReputationObject, not a row in a database.' },
-              { t: 'Capabilities', d: 'Owner can revoke an agent badge instantly — no admin backdoor.' },
-              { t: 'Kiosk', d: 'Badge NFTs are natively listable, tradeable, verifiable.' },
-              { t: 'Walrus', d: 'Full audit trail anchored onchain via blob_id, cheaply.' },
+              { t: 'Object Model', d: 'Reputation becomes a first-class onchain object — not a database row.' },
+              { t: 'Capabilities', d: 'Only the correct owner can issue or revoke a badge — no admin backdoors. Badges are Kiosk NFTs: natively listable, tradeable, verifiable.' },
+              { t: 'Walrus', d: 'Stores the complete audit trail efficiently, using blob IDs.' },
             ].map(({ t, d }) => (
               <div key={t} className="glass-card-heavy rounded-[26px] p-8 flex items-start gap-5">
                 <CheckCircle2 size={32} className="text-mint-secondary shrink-0 mt-1" />
@@ -345,6 +365,9 @@ export default function DemoPage() {
               </div>
             ))}
           </div>
+          <p className="text-center text-text-muted text-lg font-mono mb-8">
+            Remove any one of these three and the trust model doesn&rsquo;t work — that&rsquo;s why Aegis was built specifically on Sui.
+          </p>
           <div className="flex items-center justify-center gap-3 rounded-2xl bg-cyan-primary/[0.04] border border-cyan-primary/15 px-8 py-5 font-mono text-lg">
             <span className="text-text-muted">Package:</span>
             <PackageLink />
