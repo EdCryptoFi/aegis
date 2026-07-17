@@ -406,20 +406,18 @@ export default function DemoPage() {
         {/* 7. BUSINESS MODEL — who actually pays, per .suiperpower/business-model.md */}
         <Slide id="business" eyebrow="Business Model">
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-10">
-            The agent operator pays, not the wallet
+            My first customer isn&rsquo;t the wallet — it&rsquo;s the agent operator
           </h2>
-          <div className="glass-card-heavy rounded-[26px] p-10 max-w-4xl mx-auto text-center mb-6">
+          <div className="glass-card-heavy rounded-[26px] p-10 max-w-4xl mx-auto text-center">
             <p className="text-text-secondary text-xl leading-relaxed">
-              An agent needs a portable, onchain, third-party-verifiable badge to attract delegated capital.
-              So the operator pays for a <strong className="text-text-primary">Verified Agent</strong> tier: premium badge
-              placement, a performance analytics dashboard, and a Walrus-anchored audit report.
-              Wallets and marketplaces become the second paying side later, once there&rsquo;s enough badge volume
-              to make a query API worth integrating.
+              Anyone running an autonomous trading strategy on DeepBook needs delegated capital, and that
+              requires reputation that&rsquo;s independently verifiable, not self-reported. That&rsquo;s the
+              <strong className="text-text-primary"> Verified Agent</strong> tier: premium badge placement,
+              a performance analytics dashboard, and a Walrus-anchored audit report — the same due-diligence
+              package a DeFi vault or fund would otherwise have to build in-house. As more verified agents
+              join, wallets and marketplaces become the second side of the network.
             </p>
           </div>
-          <p className="text-center text-text-muted text-lg font-mono">
-            Next 2 weeks: DM outreach to other Sui agent-builder teams to test willingness to pay before building more.
-          </p>
         </Slide>
 
         {/* 8. ASK */}
