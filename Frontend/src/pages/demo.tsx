@@ -219,7 +219,7 @@ export default function DemoPage() {
               Sui Overflow 2026 · Demo Day
             </span>
             <h1 className="font-display text-[58px] md:text-[90px] font-black text-text-primary leading-none mb-6 tracking-tight">
-              &ldquo;Trust is not asked.<br />It&rsquo;s proven. On-chain.&rdquo;
+              &ldquo;Trust is not asked.<br />It&rsquo;s proven. Onchain.&rdquo;
             </h1>
             <p className="font-display text-3xl md:text-4xl text-text-secondary max-w-3xl">
               Aegis — the reputation oracle for AI agents on Sui.
@@ -261,8 +261,8 @@ export default function DemoPage() {
             {[
               { n: '1', t: 'Register — agent gets a ReputationObject on Sui' },
               { n: '2', t: 'Execute — agent trades on DeepBook' },
-              { n: '3', t: 'Record — success, volume, slippage written on-chain' },
-              { n: '4', t: 'Log — full history anchored to Walrus (blob_id on-chain)' },
+              { n: '3', t: 'Record — success, volume, slippage written onchain' },
+              { n: '4', t: 'Log — full history anchored to Walrus (blob_id onchain)' },
               { n: '5', t: 'Badge — Kiosk NFT minted, or auto-revoked, no human in the loop' },
             ].map((step, i) => (
               <motion.div
@@ -290,20 +290,20 @@ export default function DemoPage() {
             Trust that updates itself — and can&rsquo;t be faked after the fact
           </h2>
           <p className="text-text-secondary text-xl text-center mb-12 px-4">
-            Live on-chain reads, Sui Testnet. Package <PackageLink />
+            Live onchain reads, Sui Testnet. Package <PackageLink />
           </p>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
             {/* Left: existing agents, stacked */}
             <div className="flex flex-col gap-6">
-              <p className="text-text-muted text-xl font-mono uppercase tracking-wider text-center">Existing on-chain agents</p>
-              {DEMO_AGENTS.map((agent) => (
+              <p className="text-text-muted text-xl font-mono uppercase tracking-wider text-center">Existing onchain agents</p>
+              {DEMO_AGENTS.filter((agent) => agent.name !== 'BetaBot').map((agent) => (
                 <div key={agent.address} className="flex flex-col items-center w-full">
                   <AgentCard agentAddress={agent.address} name={agent.name} />
                 </div>
               ))}
               <p className="text-center text-text-muted text-lg font-mono">
-                GammaScam auto-revoked — high slippage crossed the on-chain threshold, zero manual intervention.
+                GammaScam auto-revoked — high slippage crossed the onchain threshold, zero manual intervention.
               </p>
             </div>
 
@@ -327,7 +327,7 @@ export default function DemoPage() {
               { t: 'Object Model', d: 'Reputation is a first-class ReputationObject, not a row in a database.' },
               { t: 'Capabilities', d: 'Owner can revoke an agent badge instantly — no admin backdoor.' },
               { t: 'Kiosk', d: 'Badge NFTs are natively listable, tradeable, verifiable.' },
-              { t: 'Walrus', d: 'Full audit trail anchored on-chain via blob_id, cheaply.' },
+              { t: 'Walrus', d: 'Full audit trail anchored onchain via blob_id, cheaply.' },
             ].map(({ t, d }) => (
               <div key={t} className="glass-card-heavy rounded-[26px] p-8 flex items-start gap-5">
                 <CheckCircle2 size={32} className="text-mint-secondary shrink-0 mt-1" />
@@ -357,7 +357,7 @@ export default function DemoPage() {
             {[
               { value: '4/4', label: 'Move unit tests passing' },
               { value: 'Live', label: 'deployed on Sui Testnet' },
-              { value: '3', label: 'demo agents, on-chain' },
+              { value: '3', label: 'demo agents, onchain' },
               { value: '100%', label: 'dashboard uptime' },
             ].map((stat) => (
               <div key={stat.label} className="glass-card-heavy rounded-[26px] p-8 text-center">
@@ -380,7 +380,7 @@ export default function DemoPage() {
           </h2>
           <div className="glass-card-heavy rounded-[26px] p-10 max-w-4xl mx-auto text-center mb-6">
             <p className="text-text-secondary text-xl leading-relaxed">
-              An agent needs a portable, on-chain, third-party-verifiable badge to attract delegated capital.
+              An agent needs a portable, onchain, third-party-verifiable badge to attract delegated capital.
               So the operator pays for a <strong className="text-text-primary">Verified Agent</strong> tier: premium badge
               placement, a performance analytics dashboard, and a Walrus-anchored audit report.
               Wallets and marketplaces become the second paying side later, once there&rsquo;s enough badge volume
@@ -419,7 +419,7 @@ export default function DemoPage() {
         <Slide id="close">
           <div className="flex flex-col items-center text-center">
             <h2 className="font-display text-[45px] md:text-[64px] font-black text-text-primary mb-6 tracking-tight">
-              &ldquo;Trust is not asked.<br /><span className="gradient-text-cyan">It&rsquo;s proven. On-chain.&rdquo;</span>
+              &ldquo;Trust is not asked.<br /><span className="gradient-text-cyan">It&rsquo;s proven. Onchain.&rdquo;</span>
             </h2>
             <div className="flex flex-wrap justify-center gap-5 my-10">
               {[

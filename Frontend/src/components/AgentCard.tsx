@@ -58,7 +58,7 @@ async function getAgentReputation(objectId: string): Promise<ReputationData | nu
   }
 }
 
-/** Fallback path: same on-chain data, read server-side via our own API.
+/** Fallback path: same onchain data, read server-side via our own API.
  *  Keeps the card working even if the browser→fullnode gRPC-web read is
  *  blocked (CORS, network) — critical for Demo Day reliability. */
 async function getAgentReputationViaApi(objectId: string): Promise<ReputationData | null> {
@@ -180,7 +180,7 @@ export default function AgentCard({ agentAddress, name }: { agentAddress: string
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="font-display text-lg font-bold text-text-primary">{name || 'Agent Reputation'}</h3>
-          {name && <p className="text-text-muted text-[10px] font-mono uppercase tracking-wider mt-0.5">Agent Reputation · on-chain</p>}
+          {name && <p className="text-text-muted text-[10px] font-mono uppercase tracking-wider mt-0.5">Agent Reputation · onchain</p>}
         </div>
         <span className={`px-3 py-1 rounded-full text-xs font-bold border ${badgeStyle.pill}`}>
           {badgeStyle.label}

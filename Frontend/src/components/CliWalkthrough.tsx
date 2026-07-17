@@ -9,7 +9,7 @@ import {
 import { config } from '@/config';
 
 /* ─────────────────────────────────────────────────────────────────────────
-   Live, on-chain agent lifecycle walkthrough. Attempts a REAL signed
+   Live, onchain agent lifecycle walkthrough. Attempts a REAL signed
    transaction on Sui testnet (register_agent -> record_execution x N ->
    badge auto_check) via /api/agents/register. Falls back to a visual
    simulation only if the real call fails (e.g. faucet rate limit with no
@@ -254,11 +254,11 @@ async function tryRealRegistration(): Promise<SimResult | null> {
         add(`Recording execution ${idx + 1}/${execs}  [FAILED]   vol: ${(Math.random() * 0.5).toFixed(2)} SUI  slippage exceeded${digestSuffix}  ✗`, 'error', rand(20, 60));
       }
     }
-    if (execs > shownExecs) add(`  ... +${execs - shownExecs} more executions recorded on-chain`, 'output', 200);
+    if (execs > shownExecs) add(`  ... +${execs - shownExecs} more executions recorded onchain`, 'output', 200);
 
     add('', 'spacer');
     add(`Summary → ${a.successfulExecutions}/${execs} succeeded  (${a.successRate}%)   Total volume: ${totalVolumeSUI.toFixed(2)} SUI`, 'output', 400);
-    if (a.isFlagged) add(`⚠️  AGENT FLAGGED - on-chain threshold breach detected`, 'error', 400);
+    if (a.isFlagged) add(`⚠️  AGENT FLAGGED - onchain threshold breach detected`, 'error', 400);
 
     add('', 'spacer');
     add('# ── STEP 3: Check Badge Eligibility ───────────', 'section');
@@ -267,12 +267,12 @@ async function tryRealRegistration(): Promise<SimResult | null> {
 
     if (a.badge !== 'none') {
       const badgeLabel = a.badge.charAt(0).toUpperCase() + a.badge.slice(1);
-      add(`✓  Agent qualifies for ${badgeLabel} badge on-chain`, 'success', 300);
+      add(`✓  Agent qualifies for ${badgeLabel} badge onchain`, 'success', 300);
       add('', 'spacer');
       add(`# ── STEP 4: Mint ${badgeLabel} Badge [LIVE] ───────`, 'section');
       add(`$ sui client call --module badge_registry --function auto_check --gas-budget 20000000`, 'cmd', 200);
       add('', 'spacer');
-      add(`🥇  ${badgeLabel} Badge minted on-chain, verified against real reputation data`, 'success', 400);
+      add(`🥇  ${badgeLabel} Badge minted onchain, verified against real reputation data`, 'success', 400);
     } else {
       add(`Agent does not qualify for any badge tier yet`, 'output', 300);
     }
@@ -499,7 +499,7 @@ export default function CliWalkthrough({ compact = false }: { compact?: boolean 
         )}
       </div>
 
-      {/* Verify on-chain — only shown for real, signed transactions */}
+      {/* Verify onchain — only shown for real, signed transactions */}
       {done && currentSim?.isReal && currentSim.explorer && (
         <motion.div
           initial={{ opacity: 0, y: 12 }}
