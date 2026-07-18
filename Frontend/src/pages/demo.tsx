@@ -13,6 +13,7 @@ import AegisLogo from '@/components/AegisLogo';
 import AgentCard from '@/components/AgentCard';
 import AgentDashboard from '@/components/AgentDashboard';
 import CliWalkthrough from '@/components/CliWalkthrough';
+import SupportedBy from '@/components/SupportedBy';
 import Footer from '@/components/Footer';
 import { config } from '@/config';
 import { DEMO_AGENTS } from '@/lib/demo-agents';
@@ -512,10 +513,13 @@ export default function DemoPage() {
               href="https://aegisonchain.xyz"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-primary hover:underline font-mono text-2xl mb-10"
+              className="text-cyan-primary hover:underline font-mono text-5xl mb-10"
             >
               aegisonchain.xyz
             </a>
+            <div className="w-full max-w-2xl mb-10">
+              <SupportedBy />
+            </div>
             <button
               onClick={() => jump(0)}
               className="text-text-muted text-lg font-mono uppercase tracking-widest hover:text-cyan-primary transition-colors flex items-center gap-2"
