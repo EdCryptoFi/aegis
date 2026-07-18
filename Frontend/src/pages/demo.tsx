@@ -5,7 +5,7 @@ import dynamic from 'next/dynamic';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Shield, XCircle, CheckCircle2, ArrowRight, ArrowUpRight,
-  Play, Pause, RotateCcw, ExternalLink, Code2, Vote, Mail,
+  Play, Pause, RotateCcw, ExternalLink, Code2,
 } from 'lucide-react';
 import ParticleBackground from '@/components/ParticleBackground';
 import GlowOrbs from '@/components/GlowOrbs';
@@ -325,21 +325,25 @@ export default function DemoPage() {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-start">
             {/* Left: existing agents, stacked */}
             <div className="flex flex-col gap-6">
-              <p className="text-text-muted text-xl font-mono uppercase tracking-wider text-center">Existing onchain agents</p>
+              <p className="text-text-muted text-xl font-mono uppercase tracking-wider text-center">3 agents registered — 2 shown here</p>
               {DEMO_AGENTS.filter((agent) => agent.name !== 'BetaBot').map((agent) => (
                 <div key={agent.address} className="flex flex-col items-center w-full">
                   <AgentCard agentAddress={agent.address} name={agent.name} />
                 </div>
               ))}
               <p className="text-center text-text-muted text-lg font-mono">
-                GammaScam auto-revoked — high slippage crossed the onchain threshold, zero manual intervention.
+                Gold = high volume, high success, earned onchain. Flagged = the contract detected a risk
+                breach and revoked trust automatically, no human involved.
               </p>
             </div>
 
             {/* Right: live walkthrough */}
             <div className="flex flex-col gap-6 lg:sticky lg:top-24">
               <p className="text-text-muted text-xl font-mono uppercase tracking-wider text-center">
-                Run it live now — a real signed transaction, verifiable on Sui Explorer
+                Run it live now — not a simulation
+              </p>
+              <p className="text-center text-text-secondary text-lg -mt-3">
+                Registers a real agent, executes real transactions on Sui testnet, and Aegis automatically checks and mints the badge — every step verifiable onchain.
               </p>
               <CliWalkthrough compact />
             </div>
@@ -444,23 +448,35 @@ export default function DemoPage() {
 
         {/* 8. ASK */}
         <Slide id="ask" eyebrow="Ask">
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-12">
-            What we need from you
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-10">
+            What I&rsquo;m looking for
           </h2>
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="glass-card-heavy rounded-[26px] p-10 max-w-4xl mx-auto text-center mb-10">
+            <p className="text-text-secondary text-xl leading-relaxed">
+              I&rsquo;m looking for early agent operators willing to pilot the Verified Agent tier, and an
+              introduction to anyone building trust-sensitive systems on Sui.
+            </p>
+            <p className="text-text-secondary text-xl leading-relaxed mt-4">
+              Roadmap: validate this with a handful of Sui agent builders next, then open the badge query
+              API. And Aegis isn&rsquo;t only for trading agents — the same reputation primitives apply to
+              DeFi liquidity pools and vault strategies, which is part of where this goes next.
+            </p>
+          </div>
+          <div className="flex justify-center">
             <a
-              href="https://vote.sui.io/"
+              href="https://x.com/EdCriptoFi"
               target="_blank"
               rel="noopener noreferrer"
-              className="group inline-flex items-center gap-3 px-10 py-5 rounded-[20px] bg-gradient-cyan-mint text-bg-base font-display font-bold text-xl hover:shadow-glow-cyan hover:scale-[1.02] transition-all"
+              className="group inline-flex items-center gap-4 px-8 py-5 rounded-[22px] glass-card-heavy border border-transparent hover:border-cyan-primary/40 transition-all"
             >
-              <Vote size={26} /> Vote for Aegis <ArrowUpRight size={22} className="group-hover:translate-x-0.5 transition-transform" />
-            </a>
-            <a
-              href="mailto:hello@aegisonchain.xyz?subject=Aegis%20pilot%20intro"
-              className="inline-flex items-center gap-3 px-10 py-5 rounded-[20px] border border-cyan-primary/30 bg-cyan-primary/[0.04] text-text-primary font-display font-bold text-xl hover:bg-cyan-primary/[0.08] transition-all"
-            >
-              <Mail size={26} /> Intro us to an agent builder
+              <span className="w-14 h-14 rounded-full bg-gradient-cyan-mint flex items-center justify-center font-display font-black text-bg-base text-xl shrink-0">
+                E
+              </span>
+              <div className="text-left">
+                <p className="font-display font-bold text-text-primary text-xl">Ed</p>
+                <p className="text-cyan-primary font-mono text-lg">@EdCriptoFi</p>
+              </div>
+              <ArrowUpRight size={22} className="text-cyan-primary ml-2 group-hover:translate-x-0.5 transition-transform" />
             </a>
           </div>
         </Slide>
@@ -471,7 +487,11 @@ export default function DemoPage() {
             <h2 className="font-display text-[45px] md:text-[64px] font-black text-text-primary mb-6 tracking-tight">
               &ldquo;Trust is not asked.<br /><span className="gradient-text-cyan">It&rsquo;s proven. Onchain.&rdquo;</span>
             </h2>
-            <div className="flex flex-wrap justify-center gap-5 my-10">
+            <p className="text-text-secondary text-2xl max-w-3xl mt-2 mb-10">
+              If you&rsquo;re building an agent on Sui, wire Aegis in — one transaction to register, and
+              every execution after that becomes part of a trust record only you control.
+            </p>
+            <div className="flex flex-wrap justify-center gap-5 mb-6">
               {[
                 { icon: ExternalLink, label: 'Demo', href: 'https://aegisonchain.xyz' },
                 { icon: Code2, label: 'Code', href: 'https://github.com/EdCryptoFi/aegis' },
@@ -488,6 +508,14 @@ export default function DemoPage() {
                 </a>
               ))}
             </div>
+            <a
+              href="https://aegisonchain.xyz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-primary hover:underline font-mono text-2xl mb-10"
+            >
+              aegisonchain.xyz
+            </a>
             <button
               onClick={() => jump(0)}
               className="text-text-muted text-lg font-mono uppercase tracking-widest hover:text-cyan-primary transition-colors flex items-center gap-2"
