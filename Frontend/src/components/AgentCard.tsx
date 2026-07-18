@@ -172,7 +172,7 @@ export default function AgentCard({ agentAddress, name }: { agentAddress: string
 
   return (
     <motion.div
-      className="rounded-2xl glass-card-heavy p-6 w-full max-w-lg"
+      className="rounded-2xl glass-card-heavy p-6 w-full max-w-lg transition-shadow duration-300 hover:shadow-glow-cyan-intense"
       initial={{ opacity: 0, y: 16 }}
       animate={{ opacity: 1, y: 0 }}
     >

@@ -291,7 +291,7 @@ export default function AgentDashboard({
     <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className={compact ? 'space-y-4' : 'space-y-6'}>
 
       {/* Agent Header */}
-      <div className={`rounded-2xl ${compact ? 'p-4' : 'p-6'} ${rep.isFlagged ? 'glass-card-heavy border-red-500/30' : 'glass-card-heavy'} border`}>
+      <div className={`rounded-2xl ${compact ? 'p-4' : 'p-6'} ${rep.isFlagged ? 'glass-card-heavy border-red-500/30' : 'glass-card-heavy'} border transition-shadow duration-300 hover:shadow-glow-cyan-intense`}>
         <div className="flex flex-col md:flex-row md:items-start gap-4">
           <div className={`${compact ? 'w-12 h-12' : 'w-16 h-16'} rounded-2xl flex items-center justify-center flex-shrink-0 ${
             rep.isFlagged ? 'bg-red-500/10 border border-red-500/30' : 'bg-cyan-primary/10 border border-cyan-primary/20'
@@ -375,7 +375,7 @@ export default function AgentDashboard({
 
       {/* Chart + Connection Info */}
       <div className={`grid grid-cols-1 md:grid-cols-3 ${compact ? 'gap-4' : 'gap-5'}`}>
-        <div className={`md:col-span-2 rounded-2xl glass-card-heavy ${compact ? 'p-4' : 'p-6'}`}>
+        <div className={`md:col-span-2 rounded-2xl glass-card-heavy ${compact ? 'p-4' : 'p-6'} transition-shadow duration-300 hover:shadow-glow-cyan-intense`}>
           <div className={`flex items-center justify-between ${compact ? 'mb-3' : 'mb-5'}`}>
             <h3 className="font-display font-semibold text-text-primary">Performance</h3>
             <div className="flex gap-1">
@@ -420,7 +420,7 @@ export default function AgentDashboard({
           </ResponsiveContainer>
         </div>
 
-        <div className={`rounded-2xl glass-card-matte ${compact ? 'p-4 gap-3' : 'p-6 gap-4'} flex flex-col`}>
+        <div className={`rounded-2xl glass-card-matte ${compact ? 'p-4 gap-3' : 'p-6 gap-4'} flex flex-col transition-shadow duration-300 hover:shadow-glow-cyan-intense`}>
           <h3 className="font-display font-semibold text-text-primary">Connection</h3>
           {[
             { icon: Globe, label: 'Network', value: meta?.network || 'Sui Testnet' },

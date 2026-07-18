@@ -194,7 +194,7 @@ function generateSimulation(): SimResult {
     add(`# ── STEP 4: Mint ${b.name} Badge ────────────────`, 'section');
     add(`$ sui client call --module badge_registry --function auto_check --gas-budget 20000000`, 'cmd', 200);
     add('', 'spacer');
-    add('Minting badge NFT in Kiosk registry...', 'output', 400);
+    add('Checking eligibility and updating BadgeRegistry (non-transferable)...', 'output', 400);
     add(`${b.emoji}  ${b.name} Badge minted!  Token: ${b.token}...${Math.random().toString(16).slice(2, 6).toUpperCase()}`, 'success', 400);
   }
 
@@ -427,7 +427,7 @@ export default function CliWalkthrough({ compact = false }: { compact?: boolean 
       )}
 
       {/* Terminal window */}
-      <div className={`rounded-2xl overflow-hidden border bg-[#0a0d0f] transition-all duration-500 ${!running && !done ? 'glow-pulse border-cyan-primary/25' : 'border-[rgba(255,255,255,0.08)] shadow-lg shadow-cyan-primary/5'}`}>
+      <div className={`rounded-2xl overflow-hidden border bg-[#0a0d0f] transition-all duration-500 hover:shadow-glow-cyan-intense ${!running && !done ? 'glow-pulse border-cyan-primary/25' : 'border-[rgba(255,255,255,0.08)] shadow-lg shadow-cyan-primary/5'}`}>
         <div className="flex items-center gap-2 px-5 py-3.5 border-b border-[rgba(255,255,255,0.06)] bg-[#0e1214]">
           <span className="w-3 h-3 rounded-full bg-red-500/70" />
           <span className="w-3 h-3 rounded-full bg-yellow-500/70" />

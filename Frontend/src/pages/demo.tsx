@@ -255,7 +255,7 @@ export default function DemoPage() {
               "Memory fragmented per app/model/device — fragile systems",
               'Users and wallets fear delegating funds to unknown agents',
             ].map((text) => (
-              <div key={text} className="glass-card-heavy rounded-[26px] p-8 flex items-start gap-5">
+              <div key={text} className="glass-card-heavy rounded-[26px] p-8 flex items-start gap-5 transition-shadow duration-300 hover:shadow-glow-cyan-intense">
                 <XCircle size={32} className="text-error shrink-0 mt-1" />
                 <span className="text-text-primary text-xl">{text}</span>
               </div>
@@ -283,7 +283,7 @@ export default function DemoPage() {
                 { n: '2', t: 'Execute — agent trades on DeepBook' },
                 { n: '3', t: 'Record — success, volume, slippage written onchain' },
                 { n: '4', t: 'Log — full history anchored to Walrus (blob_id onchain)' },
-                { n: '5', t: 'Badge — Kiosk NFT minted, or auto-revoked, no human in the loop' },
+                { n: '5', t: 'Badge — minted or auto-revoked to the agent’s address, no human in the loop' },
               ].map((step, i) => (
                 <motion.div
                   key={step.n}
@@ -291,7 +291,7 @@ export default function DemoPage() {
                   whileInView={{ opacity: 1, x: 0 }}
                   viewport={{ once: true }}
                   transition={{ delay: i * 0.08 }}
-                  className="flex items-start gap-6 glass-card-heavy rounded-[26px] p-6"
+                  className="flex items-start gap-6 glass-card-heavy rounded-[26px] p-6 transition-shadow duration-300 hover:shadow-glow-cyan-intense"
                 >
                   <span className="w-12 h-12 rounded-full bg-gradient-cyan-mint text-bg-base font-display font-bold text-xl flex items-center justify-center shrink-0 shadow-glow-cyan">
                     {step.n}
@@ -305,7 +305,7 @@ export default function DemoPage() {
             </div>
 
             {/* Right: the same 5 steps as a flow diagram */}
-            <div className="glass-card-heavy rounded-[26px] p-8">
+            <div className="glass-card-heavy rounded-[26px] p-8 transition-shadow duration-300 hover:shadow-glow-cyan-intense">
               <MermaidDiagram chart={SOLUTION_FLOW} />
             </div>
           </div>
@@ -358,10 +358,10 @@ export default function DemoPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
             {[
               { t: 'Object Model', d: 'Reputation becomes a first-class onchain object — not a database row.' },
-              { t: 'Capabilities', d: 'Only the correct owner can issue or revoke a badge — no admin backdoors. Badges are Kiosk NFTs: natively listable, tradeable, verifiable.' },
+              { t: 'Capabilities', d: 'Only the correct owner can issue or revoke a badge — no admin backdoors. Badges are bound to the agent’s address: non-transferable, can’t be bought, sold, or faked.' },
               { t: 'Walrus', d: 'Stores the complete audit trail efficiently, using blob IDs.' },
             ].map(({ t, d }) => (
-              <div key={t} className="glass-card-heavy rounded-[26px] p-8 flex items-start gap-5">
+              <div key={t} className="glass-card-heavy rounded-[26px] p-8 flex items-start gap-5 transition-shadow duration-300 hover:shadow-glow-cyan-intense">
                 <CheckCircle2 size={32} className="text-mint-secondary shrink-0 mt-1" />
                 <div>
                   <p className="font-display font-semibold text-text-primary text-2xl">{t}</p>
@@ -395,7 +395,7 @@ export default function DemoPage() {
               { value: '2', label: 'demo agents, onchain' },
               { value: '100%', label: 'dashboard uptime' },
             ].map((stat) => (
-              <div key={stat.label} className="glass-card-heavy rounded-[26px] p-8 text-center">
+              <div key={stat.label} className="glass-card-heavy rounded-[26px] p-8 text-center transition-shadow duration-300 hover:shadow-glow-cyan-intense">
                 <p className="font-display text-4xl md:text-5xl font-black gradient-text-cyan mb-1.5">{stat.value}</p>
                 <p className="text-text-muted font-mono text-lg uppercase tracking-wider">{stat.label}</p>
               </div>
@@ -413,7 +413,7 @@ export default function DemoPage() {
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-6">
             My first customer isn&rsquo;t the wallet — it&rsquo;s the agent operator
           </h2>
-          <div className="glass-card-heavy rounded-[26px] p-10 mx-auto text-center mb-8">
+          <div className="glass-card-heavy rounded-[26px] p-10 mx-auto text-center mb-8 transition-shadow duration-300 hover:shadow-glow-cyan-intense">
             <p className="text-text-secondary text-xl leading-relaxed">
               Anyone running an autonomous trading strategy on DeepBook needs delegated capital, and that
               requires reputation that&rsquo;s independently verifiable, not self-reported. That&rsquo;s the
@@ -451,7 +451,7 @@ export default function DemoPage() {
           <h2 className="font-display text-4xl md:text-5xl font-bold text-text-primary text-center mb-10">
             What I&rsquo;m looking for
           </h2>
-          <div className="glass-card-heavy rounded-[26px] p-10 max-w-4xl mx-auto text-center mb-10">
+          <div className="glass-card-heavy rounded-[26px] p-10 max-w-4xl mx-auto text-center mb-10 transition-shadow duration-300 hover:shadow-glow-cyan-intense">
             <p className="text-text-secondary text-xl leading-relaxed">
               I&rsquo;m looking for early agent operators willing to pilot the Verified Agent tier, and an
               introduction to anyone building trust-sensitive systems on Sui.
