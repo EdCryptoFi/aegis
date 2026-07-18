@@ -388,7 +388,7 @@ export default function DemoPage() {
             {[
               { value: '4/4', label: 'Move unit tests passing' },
               { value: 'Live', label: 'deployed on Sui Testnet' },
-              { value: '3', label: 'demo agents, onchain' },
+              { value: '2', label: 'demo agents, onchain' },
               { value: '100%', label: 'dashboard uptime' },
             ].map((stat) => (
               <div key={stat.label} className="glass-card-heavy rounded-[26px] p-8 text-center">
