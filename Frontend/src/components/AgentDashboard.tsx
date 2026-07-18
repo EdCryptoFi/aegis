@@ -177,7 +177,9 @@ function agentBadge(rep: ReputationData): { label: string; pill: string } {
 
 type Tab = 'success' | 'volume' | 'executions';
 
-export default function AgentDashboard({ address, showFooterLink = true }: { address: string; showFooterLink?: boolean }) {
+export default function AgentDashboard({
+  address, showFooterLink = true, compact = false,
+}: { address: string; showFooterLink?: boolean; compact?: boolean }) {
   const [rep, setRep] = useState<ReputationData | null>(null);
   const [loading, setLoading] = useState(true);
   const [tab, setTab] = useState<Tab>('success');
@@ -286,23 +288,23 @@ export default function AgentDashboard({ address, showFooterLink = true }: { add
   }
 
   return (
-    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="space-y-6">
+    <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className={compact ? 'space-y-4' : 'space-y-6'}>
 
       {/* Agent Header */}
-      <div className={`rounded-2xl p-6 ${rep.isFlagged ? 'glass-card-heavy border-red-500/30' : 'glass-card-heavy'} border`}>
-        <div className="flex flex-col md:flex-row md:items-start gap-5">
-          <div className={`w-16 h-16 rounded-2xl flex items-center justify-center flex-shrink-0 ${
+      <div className={`rounded-2xl ${compact ? 'p-4' : 'p-6'} ${rep.isFlagged ? 'glass-card-heavy border-red-500/30' : 'glass-card-heavy'} border`}>
+        <div className="flex flex-col md:flex-row md:items-start gap-4">
+          <div className={`${compact ? 'w-12 h-12' : 'w-16 h-16'} rounded-2xl flex items-center justify-center flex-shrink-0 ${
             rep.isFlagged ? 'bg-red-500/10 border border-red-500/30' : 'bg-cyan-primary/10 border border-cyan-primary/20'
           }`}>
             {rep.isFlagged
-              ? <ShieldOff size={28} className="text-red-400" />
-              : <Shield size={28} className="text-cyan-primary" />
+              ? <ShieldOff size={compact ? 20 : 28} className="text-red-400" />
+              : <Shield size={compact ? 20 : 28} className="text-cyan-primary" />
             }
           </div>
 
           <div className="flex-1 min-w-0">
-            <div className="flex flex-wrap items-center gap-3 mb-2">
-              <h1 className="font-display text-3xl font-bold text-text-primary">
+            <div className="flex flex-wrap items-center gap-3 mb-1.5">
+              <h1 className={`font-display font-bold text-text-primary ${compact ? 'text-xl' : 'text-3xl'}`}>
                 {meta?.name || `Agent ${address?.slice(0, 6)}...`}
               </h1>
               <span className={`px-3 py-1 rounded-full text-xs font-bold border ${trust.pill}`}>
@@ -315,36 +317,40 @@ export default function AgentDashboard({ address, showFooterLink = true }: { add
               )}
             </div>
 
-            {meta && (
+            {meta && !compact && (
               <p className="text-text-secondary text-sm leading-relaxed mb-3 max-w-2xl">{meta.description}</p>
             )}
 
-            <div className="flex flex-wrap gap-2">
-              {meta?.tags.map(tag => (
-                <span key={tag} className={`px-2 py-0.5 rounded-md text-[11px] font-mono font-semibold ${
-                  tag === 'FLAGGED' ? 'bg-red-500/10 text-red-400' : 'bg-surface-2 text-text-muted'
-                }`}>{tag}</span>
-              ))}
-            </div>
+            {!compact && (
+              <div className="flex flex-wrap gap-2">
+                {meta?.tags.map(tag => (
+                  <span key={tag} className={`px-2 py-0.5 rounded-md text-[11px] font-mono font-semibold ${
+                    tag === 'FLAGGED' ? 'bg-red-500/10 text-red-400' : 'bg-surface-2 text-text-muted'
+                  }`}>{tag}</span>
+                ))}
+              </div>
+            )}
           </div>
 
-          <div className="flex-shrink-0 text-right flex flex-col items-end gap-3">
-            <div>
-              <p className="text-text-muted text-[10px] uppercase tracking-widest mb-1">Created</p>
-              <p className="font-mono text-sm text-text-secondary">{meta?.createdAt || '-'}</p>
+          {!compact && (
+            <div className="flex-shrink-0 text-right flex flex-col items-end gap-3">
+              <div>
+                <p className="text-text-muted text-[10px] uppercase tracking-widest mb-1">Created</p>
+                <p className="font-mono text-sm text-text-secondary">{meta?.createdAt || '-'}</p>
+              </div>
+              <button
+                onClick={() => setVerifyOpen(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-cyan-primary/25 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
+              >
+                <Shield size={14} /> Verify Agent
+              </button>
             </div>
-            <button
-              onClick={() => setVerifyOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl border border-cyan-primary/25 text-cyan-primary text-sm font-medium hover:bg-cyan-primary/[0.06] transition-all"
-            >
-              <Shield size={14} /> Verify Agent
-            </button>
-          </div>
+          )}
         </div>
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className={`grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 ${compact ? 'gap-2' : 'gap-3'}`}>
         {[
           { label: 'Success Rate', value: `${successRate}%`, icon: TrendingUp, WireIcon: SuccessIcon, color: 'text-mint-secondary', bg: 'bg-mint-secondary/[0.06]' },
           { label: 'Uptime Score', value: `${rep.uptimeScore}%`, icon: Activity, WireIcon: UptimeIcon, color: 'text-cyan-primary', bg: 'bg-cyan-primary/[0.06]' },
@@ -353,7 +359,7 @@ export default function AgentDashboard({ address, showFooterLink = true }: { add
           { label: 'Avg Slippage', value: formatSlippage(avgSlippage), icon: Zap, WireIcon: AlertIcon, color: successRate < 80 ? 'text-red-400' : 'text-text-secondary', bg: 'bg-surface-2' },
           { label: 'Failed', value: rep.failedExecutions.toLocaleString(), icon: XCircle, WireIcon: FlaggedIcon, color: rep.failedExecutions > 0 ? 'text-red-400' : 'text-text-muted', bg: rep.failedExecutions > 0 ? 'bg-red-500/[0.05]' : 'bg-surface-2' },
         ].map(({ label, value, icon: Icon, WireIcon, color, bg }) => (
-          <div key={label} className={`rounded-2xl p-4 ${bg} flex flex-col gap-1.5`}>
+          <div key={label} className={`rounded-2xl ${compact ? 'p-3' : 'p-4'} ${bg} flex flex-col gap-1.5`}>
             <div className="flex items-center gap-1.5">
               {WireIcon ? (
                 <div className="w-3.5 h-3.5 text-text-muted flex-shrink-0"><WireIcon /></div>
@@ -362,15 +368,15 @@ export default function AgentDashboard({ address, showFooterLink = true }: { add
               )}
               <p className="text-text-muted text-[10px] uppercase tracking-wide">{label}</p>
             </div>
-            <p className={`font-display font-bold text-lg leading-tight ${color}`}>{value}</p>
+            <p className={`font-display font-bold leading-tight ${compact ? 'text-base' : 'text-lg'} ${color}`}>{value}</p>
           </div>
         ))}
       </div>
 
       {/* Chart + Connection Info */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-        <div className="md:col-span-2 rounded-2xl glass-card-heavy p-6">
-          <div className="flex items-center justify-between mb-5">
+      <div className={`grid grid-cols-1 md:grid-cols-3 ${compact ? 'gap-4' : 'gap-5'}`}>
+        <div className={`md:col-span-2 rounded-2xl glass-card-heavy ${compact ? 'p-4' : 'p-6'}`}>
+          <div className={`flex items-center justify-between ${compact ? 'mb-3' : 'mb-5'}`}>
             <h3 className="font-display font-semibold text-text-primary">Performance</h3>
             <div className="flex gap-1">
               {(['success', 'volume', 'executions'] as Tab[]).map(t => (
@@ -387,7 +393,7 @@ export default function AgentDashboard({ address, showFooterLink = true }: { add
             </div>
           </div>
 
-          <ResponsiveContainer width="100%" height={180}>
+          <ResponsiveContainer width="100%" height={compact ? 130 : 180}>
             <AreaChart data={chartData}>
               <defs>
                 <linearGradient id="grad" x1="0" y1="0" x2="0" y2="1">
@@ -414,7 +420,7 @@ export default function AgentDashboard({ address, showFooterLink = true }: { add
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-2xl glass-card-matte p-6 flex flex-col gap-4">
+        <div className={`rounded-2xl glass-card-matte ${compact ? 'p-4 gap-3' : 'p-6 gap-4'} flex flex-col`}>
           <h3 className="font-display font-semibold text-text-primary">Connection</h3>
           {[
             { icon: Globe, label: 'Network', value: meta?.network || 'Sui Testnet' },
@@ -436,30 +442,32 @@ export default function AgentDashboard({ address, showFooterLink = true }: { add
         </div>
       </div>
 
-      {/* Badge Eligibility */}
-      <div className="rounded-2xl glass-card-heavy p-6">
-        <h3 className="font-display font-semibold text-text-primary mb-5">Badge Eligibility</h3>
-        <div className="space-y-4">
-          <BadgeProgress
-            emoji="🥉" label="Bronze"
-            needed="10 execs · 80% success"
-            current={Math.min(successRate >= 80 ? rep.totalExecutions : successRate, 10)}
-            max={10}
-          />
-          <BadgeProgress
-            emoji="🥈" label="Silver"
-            needed="50 execs · 90% success"
-            current={successRate >= 90 ? Math.min(rep.totalExecutions, 50) : Math.round(successRate / 90 * 50)}
-            max={50}
-          />
-          <BadgeProgress
-            emoji="🥇" label="Gold"
-            needed="200 execs · 95% success · $1M volume"
-            current={successRate >= 95 ? Math.min(rep.totalExecutions, 200) : Math.round(successRate / 95 * 200)}
-            max={200}
-          />
+      {/* Badge Eligibility — skipped in compact mode (embedded pitch view) */}
+      {!compact && (
+        <div className="rounded-2xl glass-card-heavy p-6">
+          <h3 className="font-display font-semibold text-text-primary mb-5">Badge Eligibility</h3>
+          <div className="space-y-4">
+            <BadgeProgress
+              emoji="🥉" label="Bronze"
+              needed="10 execs · 80% success"
+              current={Math.min(successRate >= 80 ? rep.totalExecutions : successRate, 10)}
+              max={10}
+            />
+            <BadgeProgress
+              emoji="🥈" label="Silver"
+              needed="50 execs · 90% success"
+              current={successRate >= 90 ? Math.min(rep.totalExecutions, 50) : Math.round(successRate / 90 * 50)}
+              max={50}
+            />
+            <BadgeProgress
+              emoji="🥇" label="Gold"
+              needed="200 execs · 95% success · $1M volume"
+              current={successRate >= 95 ? Math.min(rep.totalExecutions, 200) : Math.round(successRate / 95 * 200)}
+              max={200}
+            />
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Contract info */}
       {showFooterLink && (

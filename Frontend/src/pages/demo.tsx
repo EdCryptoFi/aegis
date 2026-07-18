@@ -438,6 +438,7 @@ export default function DemoPage() {
           <AgentDashboard
             address="0xfe3cb0c9dd9e147b860034ae9ec5591f10f6a35517e5d2bd6023a9aa86bd1a2a"
             showFooterLink={false}
+            compact
           />
         </Slide>
 
