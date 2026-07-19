@@ -407,6 +407,13 @@ export default function DemoPage() {
               aegisonchain.xyz →
             </a>
           </div>
+
+          <div className="mt-10 max-w-xl mx-auto">
+            <p className="text-text-muted text-lg font-mono uppercase tracking-wider text-center mb-3">Installation</p>
+            <div className="rounded-2xl bg-bg-base border border-[rgba(255,255,255,0.08)] p-6 transition-shadow duration-300 hover:shadow-glow-cyan-intense">
+              <pre className="font-mono text-lg text-cyan-primary text-center leading-relaxed whitespace-pre">{`npm install @aegis/sdk`}</pre>
+            </div>
+          </div>
         </Slide>
 
         {/* 7. BUSINESS MODEL — who actually pays, per .suiperpower/business-model.md */}
